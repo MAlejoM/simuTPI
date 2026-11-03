@@ -522,8 +522,8 @@ double recovered = Math.min(inventorySystem.get(0).inventory, inventorySystem.ge
 inventorySystem.get(0).inventory -= recovered;
 inventorySystem.get(0).backlog -= recovered;
 
-// traceln("LAVANDINA DISPONIBLE: " + Math.round(inventorySystem.get(0).inventory) 
-        + " | Backlog restante: " + Math.round(inventorySystem.get(0).backlog));]]></Code>
+/* traceln("LAVANDINA DISPONIBLE: " + Math.round(inventorySystem.get(0).inventory) 
+        + " | Backlog restante: " + Math.round(inventorySystem.get(0).backlog)); */]]></Code>
 				</Value>
 			</Parameter>
 			<Parameter>
@@ -2152,9 +2152,9 @@ for (ProductState ps : inventorySystem) {
         ps.inventory -= recovered;
         ps.backlog -= recovered;
         
-        // traceln("LIQUIDO TERMINADO: " + ps.product 
+        /* traceln("LIQUIDO TERMINADO: " + ps.product 
                 + " | Stock: " + Math.round(ps.inventory) 
-                + " | Backlog restante: " + Math.round(ps.backlog));
+                + " | Backlog restante: " + Math.round(ps.backlog)); */
         break;
     }
 }]]></Code>
