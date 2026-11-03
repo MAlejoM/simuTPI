@@ -11,11 +11,38 @@
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
 
 double totBacklog = 0;
+double totStock = 0;
 for (ProductState ps : root.domitecPlant.inventorySystem) {
     totBacklog += ps.backlog;
+    totStock += ps.inventory;
 }
 
-traceln("&gt;&gt;&gt; [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.format("%.2f%%", fr) + " | Backlog: " + Math.round(totBacklog) + " cajas");</AfterSimulationRunCode>
+// Calculo de Razon BW (Bullwhip Ratio = (Var_Ordenes / Mean_Ordenes) / (Var_Demanda / Mean_Demanda))
+double bwRatio = 1.0;
+int nDem = root.dsDemanda.size();
+int nOrd = root.dsOrdenes.size();
+if (nDem &gt; 1 &amp;&amp; nOrd &gt; 1) {
+    double meanDem = root.dsDemanda.getYMean();
+    double meanOrd = root.dsOrdenes.getYMean();
+    double sumSqDem = 0;
+    double sumSqOrd = 0;
+    for (int i = 0; i &lt; nDem; i++) {
+        double diffD = root.dsDemanda.getY(i) - meanDem;
+        sumSqDem += diffD * diffD;
+    }
+    for (int i = 0; i &lt; nOrd; i++) {
+        double diffO = root.dsOrdenes.getY(i) - meanOrd;
+        sumSqOrd += diffO * diffO;
+    }
+    double varDem = sumSqDem / (nDem - 1);
+    double varOrd = sumSqOrd / (nOrd - 1);
+    if (meanDem &gt; 0 &amp;&amp; varDem &gt; 0 &amp;&amp; meanOrd &gt; 0) {
+        bwRatio = (varOrd / meanOrd) / (varDem / meanDem);
+    }
+}
+
+traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %,d cajas | Razon BW: %.2f | Stock Deposito: %,d cajas",
+    getCurrentIteration(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));</AfterSimulationRunCode>
 		<SeedValue>1</SeedValue>
 		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 		<VmArgs/>
@@ -72,11 +99,38 @@ traceln("&gt;&gt;&gt; [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + S
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
 
 double totBacklog = 0;
+double totStock = 0;
 for (ProductState ps : root.domitecPlant.inventorySystem) {
     totBacklog += ps.backlog;
+    totStock += ps.inventory;
 }
 
-traceln("&gt;&gt;&gt; [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.format("%.2f%%", fr) + " | Backlog: " + Math.round(totBacklog) + " cajas");</AfterSimulationRunCode>
+// Calculo de Razon BW (Bullwhip Ratio = (Var_Ordenes / Mean_Ordenes) / (Var_Demanda / Mean_Demanda))
+double bwRatio = 1.0;
+int nDem = root.dsDemanda.size();
+int nOrd = root.dsOrdenes.size();
+if (nDem &gt; 1 &amp;&amp; nOrd &gt; 1) {
+    double meanDem = root.dsDemanda.getYMean();
+    double meanOrd = root.dsOrdenes.getYMean();
+    double sumSqDem = 0;
+    double sumSqOrd = 0;
+    for (int i = 0; i &lt; nDem; i++) {
+        double diffD = root.dsDemanda.getY(i) - meanDem;
+        sumSqDem += diffD * diffD;
+    }
+    for (int i = 0; i &lt; nOrd; i++) {
+        double diffO = root.dsOrdenes.getY(i) - meanOrd;
+        sumSqOrd += diffO * diffO;
+    }
+    double varDem = sumSqDem / (nDem - 1);
+    double varOrd = sumSqOrd / (nOrd - 1);
+    if (meanDem &gt; 0 &amp;&amp; varDem &gt; 0 &amp;&amp; meanOrd &gt; 0) {
+        bwRatio = (varOrd / meanOrd) / (varDem / meanDem);
+    }
+}
+
+traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %,d cajas | Razon BW: %.2f | Stock Deposito: %,d cajas",
+    getCurrentIteration(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));</AfterSimulationRunCode>
 		<SeedValue>1</SeedValue>
 		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 		<VmArgs/>
@@ -139,11 +193,38 @@ traceln("&gt;&gt;&gt; [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + S
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
 
 double totBacklog = 0;
+double totStock = 0;
 for (ProductState ps : root.domitecPlant.inventorySystem) {
     totBacklog += ps.backlog;
+    totStock += ps.inventory;
 }
 
-traceln("&gt;&gt;&gt; [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.format("%.2f%%", fr) + " | Backlog: " + Math.round(totBacklog) + " cajas");</AfterSimulationRunCode>
+// Calculo de Razon BW (Bullwhip Ratio = (Var_Ordenes / Mean_Ordenes) / (Var_Demanda / Mean_Demanda))
+double bwRatio = 1.0;
+int nDem = root.dsDemanda.size();
+int nOrd = root.dsOrdenes.size();
+if (nDem &gt; 1 &amp;&amp; nOrd &gt; 1) {
+    double meanDem = root.dsDemanda.getYMean();
+    double meanOrd = root.dsOrdenes.getYMean();
+    double sumSqDem = 0;
+    double sumSqOrd = 0;
+    for (int i = 0; i &lt; nDem; i++) {
+        double diffD = root.dsDemanda.getY(i) - meanDem;
+        sumSqDem += diffD * diffD;
+    }
+    for (int i = 0; i &lt; nOrd; i++) {
+        double diffO = root.dsOrdenes.getY(i) - meanOrd;
+        sumSqOrd += diffO * diffO;
+    }
+    double varDem = sumSqDem / (nDem - 1);
+    double varOrd = sumSqOrd / (nOrd - 1);
+    if (meanDem &gt; 0 &amp;&amp; varDem &gt; 0 &amp;&amp; meanOrd &gt; 0) {
+        bwRatio = (varOrd / meanOrd) / (varDem / meanDem);
+    }
+}
+
+traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %,d cajas | Razon BW: %.2f | Stock Deposito: %,d cajas",
+    getCurrentIteration(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));</AfterSimulationRunCode>
 		<SeedValue>1</SeedValue>
 		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 		<VmArgs/>
