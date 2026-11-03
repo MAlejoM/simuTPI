@@ -521,6 +521,7 @@ inventorySystem.get(0).inventory += agent.cajasEquivalentes;
 double recovered = Math.min(inventorySystem.get(0).inventory, inventorySystem.get(0).backlog);
 inventorySystem.get(0).inventory -= recovered;
 inventorySystem.get(0).backlog -= recovered;
+despachoTotalAcumulado += recovered;
 
 /* traceln("LAVANDINA DISPONIBLE: " + Math.round(inventorySystem.get(0).inventory) 
         + " | Backlog restante: " + Math.round(inventorySystem.get(0).backlog)); */]]></Code>
@@ -2151,6 +2152,7 @@ for (ProductState ps : inventorySystem) {
         double recovered = Math.min(ps.inventory, ps.backlog);
         ps.inventory -= recovered;
         ps.backlog -= recovered;
+despachoTotalAcumulado += recovered;
         
         /* traceln("LIQUIDO TERMINADO: " + ps.product 
                 + " | Stock: " + Math.round(ps.inventory) 

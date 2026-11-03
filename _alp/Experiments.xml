@@ -8,7 +8,7 @@
 		<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 		<AfterSimulationRunCode>double fr = (root.domitecPlant.demandaTotalAcumulada &gt; 0) ? 
-    (root.domitecPlant.despachoInmediatoAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
+    (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
 
 double totBacklog = 0;
 for (ProductState ps : root.domitecPlant.inventorySystem) {
@@ -47,6 +47,73 @@ traceln("&gt;&gt;&gt; [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + S
 		<PresentationProperties>
 			<EnableZoomAndPanning>true</EnableZoomAndPanning>
 			<Title>Domitec_planta_produccion_simulada_3 : ParametersVariation</Title>
+			<EnableDeveloperPanel>true</EnableDeveloperPanel>
+			<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
+		</PresentationProperties>
+		<ReplicationsProperties>
+			<UseReplication>true</UseReplication>
+			<FixedReplicationsNumber>true</FixedReplicationsNumber>
+			<ReplicationPerIteration>30</ReplicationPerIteration>
+			<MinimumReplication>2</MinimumReplication>
+			<MaximumReplication>10</MaximumReplication>
+			<ConfidenceLevel>LEVEL_80</ConfidenceLevel>
+			<ErrorPercent>0.5</ErrorPercent>
+			<ExpressionForConfidenceComputation>0</ExpressionForConfidenceComputation>
+		</ReplicationsProperties>
+	</ParamVariationExperiment>
+	<ParamVariationExperiment ActiveObjectClassId="1787747219700">
+		<Id>1793737796032</Id>
+		<Name><![CDATA[ParametersVariation1]]></Name>
+		<CommandLineArguments/>
+		<MaximumMemory>512</MaximumMemory>
+		<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
+		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+		<AfterSimulationRunCode>double fr = (root.domitecPlant.demandaTotalAcumulada &gt; 0) ? 
+    (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
+
+double totBacklog = 0;
+for (ProductState ps : root.domitecPlant.inventorySystem) {
+    totBacklog += ps.backlog;
+}
+
+traceln("&gt;&gt;&gt; [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.format("%.2f%%", fr) + " | Backlog: " + Math.round(totBacklog) + " cajas");</AfterSimulationRunCode>
+		<SeedValue>1</SeedValue>
+		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
+		<VmArgs/>
+		<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+		<AllowParallelEvaluations>true</AllowParallelEvaluations>
+		<UseFreeformParameters>true</UseFreeformParameters>
+		<NumberOfRuns>10</NumberOfRuns>
+		<FreeformParamValue>
+			<Id>1793663800123</Id>
+			<Expression Class="CodeValue">
+				<Code><![CDATA[1]]></Code>
+			</Expression>
+		</FreeformParamValue>
+		<FreeformParamValue>
+			<Id>1793672089876</Id>
+		</FreeformParamValue>
+		<RangeVariationParamValue>
+			<Id>1793663800123</Id>
+			<Type><![CDATA[FIXED]]></Type>
+			<Expression Class="CodeValue">
+				<Code><![CDATA[1]]></Code>
+			</Expression>
+		</RangeVariationParamValue>
+		<RangeVariationParamValue>
+			<Id>1793672089876</Id>
+			<Type><![CDATA[FIXED]]></Type>
+		</RangeVariationParamValue>
+		<ModelTimeProperties>
+			<StopOption>Stop at specified time</StopOption>
+			<InitialDate>1787702400000</InitialDate>
+			<InitialTime>0.0</InitialTime>
+			<FinalDate>1790380800000</FinalDate>
+			<FinalTime>100.0</FinalTime>
+		</ModelTimeProperties>
+		<PresentationProperties>
+			<EnableZoomAndPanning>true</EnableZoomAndPanning>
+			<Title>Domitec_planta_produccion_simulada_3 : ParametersVariation1</Title>
 			<EnableDeveloperPanel>true</EnableDeveloperPanel>
 			<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
 		</PresentationProperties>

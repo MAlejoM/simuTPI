@@ -96,6 +96,7 @@ if (msg instanceof OrderMessage) {
         
         // Contabilizamos lo despachado de forma inmediata
         despachoInmediatoAcumulado += dispatched;
+        despachoTotalAcumulado += dispatched;
         
         /* traceln("PLANTA: " + ps.product + " solicitado=" + order.amount
             + " despachado=" + Math.round(dispatched)
