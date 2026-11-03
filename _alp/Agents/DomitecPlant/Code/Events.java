@@ -183,6 +183,21 @@ estado_detergente.setText("Stock: " + Math.round(inventorySystem.get(5).inventor
 // Reinicio de acumuladores de la semana
 m.demandaSemanalActual = 0;
 m.produccionSemanalActual = 0;
+
+// === REPORTE RESUMEN FINAL AL TERMINAR LA CORRIDA ===
+if (time() >= 99.0) {
+    double fillRateGlobal = (demandaTotalAcumulada > 0) ? (despachoInmediatoAcumulado / demandaTotalAcumulada) * 100.0 : 0.0;
+    traceln("====================================================================");
+    traceln(">> RESULTADOS FINALES DE CORRIDA (Semana 100.0 - Fin de Simulacion):");
+    traceln("   * Nivel de Servicio (Fill Rate): " + String.format("%.2f%%", fillRateGlobal));
+    traceln("   * Demanda Total Acumulada:       " + Math.round(demandaTotalAcumulada) + " cajas");
+    traceln("   * Despachado Inmediato:          " + Math.round(despachoInmediatoAcumulado) + " cajas");
+    traceln("   * Backlog Residual en Planta:    " + Math.round(totalBacklog) + " cajas");
+    traceln("   * Stock en Deposito:             " + Math.round(totalStock) + " cajas");
+    traceln("   * WIP en Proceso Fabril:         " + Math.round(totalWip) + " cajas");
+    traceln("   * Ordenes Historicas Emitidas:   " + Math.round(m.ordenesHistoricas) + " cajas");
+    traceln("====================================================================");
+}
 /*ALCODEEND*/}
 
 void avanceProduccion()
