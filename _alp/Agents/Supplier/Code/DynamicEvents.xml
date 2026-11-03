@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DynamicEvents>
+	<DynamicEventClass>
+		<Id>1788974335148</Id>
+		<Name><![CDATA[DeliverOrder]]></Name>
+		<X>80</X>
+		<Y>230</Y>
+		<Label>
+			<X>10</X>
+			<Y>0</Y>
+		</Label>
+		<PublicFlag>false</PublicFlag>
+		<PresentationFlag>true</PresentationFlag>
+		<ShowLabel>true</ShowLabel>
+		<Parameter>
+			<Name><![CDATA[producto]]></Name>
+			<Type><![CDATA[ProductType]]></Type>
+		</Parameter>
+		<Parameter>
+			<Name><![CDATA[cantidad]]></Name>
+			<Type><![CDATA[double]]></Type>
+		</Parameter>
+		<Action xmlns:al="http://anylogic.com"/>
+	</DynamicEventClass>
+</DynamicEvents>

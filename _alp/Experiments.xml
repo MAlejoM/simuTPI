@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Experiments>
+	<SimulationExperiment ActiveObjectClassId="1787747219700">
+		<Id>1787747219708</Id>
+		<Name><![CDATA[Simulation_Escenario0_AsIs]]></Name>
+		<CommandLineArguments/>
+		<MaximumMemory>512</MaximumMemory>
+		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+		<SeedValue>1</SeedValue>
+		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
+		<VmArgs/>
+		<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+		<Presentation>
+			<Text>
+				<Id>1787747219710</Id>
+				<Name><![CDATA[text]]></Name>
+				<X>50</X>
+				<Y>30</Y>
+				<Label>
+					<X>10</X>
+					<Y>0</Y>
+				</Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Z>0</Z>
+				<Rotation>0.0</Rotation>
+				<Color>-12490271</Color>
+				<Text><![CDATA[Domitec - Escenario 0: Línea Base (As-Is)]]></Text>
+				<Font>
+					<Name><![CDATA[SansSerif]]></Name>
+					<Size>24</Size>
+					<Style>0</Style>
+				</Font>
+				<Alignment>LEFT</Alignment>
+			</Text>
+		</Presentation>
+		<Parameters>
+			<Parameter>
+				<ParameterName>factorLatigoMain</ParameterName>
+			</Parameter>
+			<Parameter>
+				<ParameterName>escalaTurnoMain</ParameterName>
+			</Parameter>
+		</Parameters>
+		<PresentationProperties>
+			<EnableZoomAndPanning>true</EnableZoomAndPanning>
+			<ExecutionMode>realTimeScaled</ExecutionMode>
+			<Title>Domitec : Simulation_Escenario0_AsIs</Title>
+			<EnableDeveloperPanel>true</EnableDeveloperPanel>
+			<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
+			<RealTimeScale>1.0</RealTimeScale>
+		</PresentationProperties>
+		<ModelTimeProperties>
+			<StopOption>Stop at specified time</StopOption>
+			<InitialDate>1787702400000</InitialDate>
+			<InitialTime>0.0</InitialTime>
+			<FinalDate>1790380800000</FinalDate>
+			<FinalTime>100.0</FinalTime>
+		</ModelTimeProperties>
+		<BypassInitialScreen>true</BypassInitialScreen>
+	</SimulationExperiment>
+	<SimulationExperiment ActiveObjectClassId="1787747219700">
+		<Id>1793663685909</Id>
+		<Name><![CDATA[Simulation_Escenario1_SinPanico]]></Name>
+		<CommandLineArguments/>
+		<MaximumMemory>512</MaximumMemory>
+		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+		<SeedValue>1</SeedValue>
+		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
+		<VmArgs/>
+		<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+		<Presentation>
+			<Text>
+				<Id>1793663685911</Id>
+				<Name><![CDATA[text]]></Name>
+				<X>50</X>
+				<Y>30</Y>
+				<Label>
+					<X>10</X>
+					<Y>0</Y>
+				</Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Z>0</Z>
+				<Rotation>0.0</Rotation>
+				<Color>-12490271</Color>
+				<Text><![CDATA[Domitec - Escenario 1: Sin Pánico]]></Text>
+				<Font>
+					<Name><![CDATA[SansSerif]]></Name>
+					<Size>24</Size>
+					<Style>0</Style>
+				</Font>
+				<Alignment>LEFT</Alignment>
+			</Text>
+		</Presentation>
+		<Parameters>
+			<Parameter>
+				<ParameterName>factorLatigoMain</ParameterName>
+				<ParameterValue Class="CodeValue">
+					<Code><![CDATA[1]]></Code>
+				</ParameterValue>
+			</Parameter>
+			<Parameter>
+				<ParameterName>escalaTurnoMain</ParameterName>
+			</Parameter>
+		</Parameters>
+		<PresentationProperties>
+			<EnableZoomAndPanning>true</EnableZoomAndPanning>
+			<ExecutionMode>realTimeScaled</ExecutionMode>
+			<Title>Domitec : Simulation_Escenario1_SinPanico</Title>
+			<EnableDeveloperPanel>true</EnableDeveloperPanel>
+			<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
+			<RealTimeScale>1.0</RealTimeScale>
+		</PresentationProperties>
+		<ModelTimeProperties>
+			<StopOption>Stop at specified time</StopOption>
+			<InitialDate>1787702400000</InitialDate>
+			<InitialTime>0.0</InitialTime>
+			<FinalDate>1790380800000</FinalDate>
+			<FinalTime>100.0</FinalTime>
+		</ModelTimeProperties>
+		<BypassInitialScreen>true</BypassInitialScreen>
+	</SimulationExperiment>
+	<SimulationExperiment ActiveObjectClassId="1787747219700">
+		<Id>1793672502732</Id>
+		<Name><![CDATA[Simulation_Escenario2_Integral]]></Name>
+		<CommandLineArguments/>
+		<MaximumMemory>512</MaximumMemory>
+		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+		<SeedValue>1</SeedValue>
+		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
+		<VmArgs/>
+		<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+		<Presentation>
+			<Text>
+				<Id>1793672502734</Id>
+				<Name><![CDATA[text]]></Name>
+				<X>50</X>
+				<Y>30</Y>
+				<Label>
+					<X>10</X>
+					<Y>0</Y>
+				</Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Z>0</Z>
+				<Rotation>0.0</Rotation>
+				<Color>-12490271</Color>
+				<Text><![CDATA[Domitec - Escenario 2: Estrategia Integral]]></Text>
+				<Font>
+					<Name><![CDATA[SansSerif]]></Name>
+					<Size>24</Size>
+					<Style>0</Style>
+				</Font>
+				<Alignment>LEFT</Alignment>
+			</Text>
+		</Presentation>
+		<Parameters>
+			<Parameter>
+				<ParameterName>factorLatigoMain</ParameterName>
+				<ParameterValue Class="CodeValue">
+					<Code><![CDATA[1.0]]></Code>
+				</ParameterValue>
+			</Parameter>
+			<Parameter>
+				<ParameterName>escalaTurnoMain</ParameterName>
+				<ParameterValue Class="CodeValue">
+					<Code><![CDATA[3.3]]></Code>
+				</ParameterValue>
+			</Parameter>
+		</Parameters>
+		<PresentationProperties>
+			<EnableZoomAndPanning>true</EnableZoomAndPanning>
+			<ExecutionMode>realTimeScaled</ExecutionMode>
+			<Title>Domitec : Simulation_Escenario2_Integral</Title>
+			<EnableDeveloperPanel>true</EnableDeveloperPanel>
+			<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
+			<RealTimeScale>1.0</RealTimeScale>
+		</PresentationProperties>
+		<ModelTimeProperties>
+			<StopOption>Stop at specified time</StopOption>
+			<InitialDate>1787702400000</InitialDate>
+			<InitialTime>0.0</InitialTime>
+			<FinalDate>1790380800000</FinalDate>
+			<FinalTime>100.0</FinalTime>
+		</ModelTimeProperties>
+		<BypassInitialScreen>true</BypassInitialScreen>
+	</SimulationExperiment>
+</Experiments>

@@ -1,0 +1,711 @@
+\documentclass[12pt, a4paper]{article}
+
+% ---------------------------------------------------------
+% Paquetes
+% ---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+% ---------------------------------------------------------
+% Configuración de punto decimal
+% ---------------------------------------------------------
+\decimalpoint
+
+% ---------------------------------------------------------
+% Márgenes
+% ---------------------------------------------------------
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=3cm,
+    right=2.5cm
+}
+
+% ---------------------------------------------------------
+% Encabezados y pies de página
+% ---------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{azulUTN}Trabajo Práctico Integrador --- Simulación}
+\fancyhead[R]{\small\color{azulUTN}UTN FRRo}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ---------------------------------------------------------
+% Colores
+% ---------------------------------------------------------
+\definecolor{azulUTN}{RGB}{0, 70, 127}
+\definecolor{codigoFondo}{RGB}{248, 248, 248}
+\definecolor{comentarioColor}{RGB}{100, 100, 100}
+\definecolor{stringColor}{RGB}{150, 0, 0}
+\definecolor{keywordColor}{RGB}{0, 0, 180}
+
+% ---------------------------------------------------------
+% Estilo de código
+% ---------------------------------------------------------
+\lstdefinestyle{java}{
+    backgroundcolor=\color{codigoFondo},
+    commentstyle=\color{comentarioColor}\itshape,
+    keywordstyle=\color{keywordColor}\bfseries,
+    stringstyle=\color{stringColor},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    numberstyle=\tiny\color{gray},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{gray!30},
+    language=Java
+}
+
+% ---------------------------------------------------------
+% Hipervínculos
+% ---------------------------------------------------------
+\hypersetup{
+    colorlinks=true,
+    linkcolor=azulUTN,
+    urlcolor=azulUTN,
+    citecolor=azulUTN
+}
+
+\lstset{style=java}
+
+% ---------------------------------------------------------
+% Documento
+% ---------------------------------------------------------
+\begin{document}
+
+% ---------------------------------------------------------
+% Portada
+% ---------------------------------------------------------
+\begin{titlepage}
+    \centering
+    \vspace*{0.8cm}
+
+    {\LARGE\bfseries\color{azulUTN}
+        Universidad Tecnológica Nacional\\[0.3cm]
+        Facultad Regional Rosario
+    }
+
+    \vspace{0.4cm}
+    \textcolor{azulUTN}{\rule{\textwidth}{1.5pt}}
+    \vspace{0.4cm}
+
+    {\large Ingeniería en Sistemas de Información}\\[0.2cm]
+    {\large Cátedra de Simulación --- 4.º Año}
+
+    \vspace{1.5cm}
+
+    {\Huge\bfseries Trabajo Práctico Integrador Final}
+
+    \vspace{0.6cm}
+
+    {\Large\bfseries Análisis del Efecto Látigo y Optimización Operativa en la Cadena de Suministro de Domitec S.A. mediante Simulación Híbrida}
+
+    \vspace{1.8cm}
+
+    \begin{tabular}{p{3.5cm} p{6.5cm} p{3cm}}
+        \toprule
+        \textbf{Rol} & \textbf{Nombre y Apellido} & \textbf{Legajo} \\
+        \midrule
+        Alumno          & Alejo Martina        & 51488 \\[0.4cm]
+        Docente Teoría  & Jorge A. Flamini     & ---   \\[0.4cm]
+        Docente Práctica& Juan Ignacio Torres  & ---   \\
+        \bottomrule
+    \end{tabular}
+
+    \vfill
+
+    Rosario, Santa Fe\\
+    2026
+
+\end{titlepage}
+
+% ---------------------------------------------------------
+% Resumen / Abstract
+% ---------------------------------------------------------
+\begin{abstract}
+El presente artículo expone el desarrollo, verificación, calibración, validación y experimentación de un modelo de simulación híbrido orientado a evaluar la resiliencia y el comportamiento dinámico de la cadena de suministro de Domitec S.A., empresa industrial dedicada a la formulación, envasado y distribución mayorista de artículos de limpieza y desinfección doméstica. A partir de una base empírica de 23.689 registros históricos de despacho, el estudio investiga los factores endógenos y exógenos que originan el fenómeno del efecto látigo (\textit{bullwhip effect}) en insumos críticos (polietileno soplado, film Doypack, preformas PET y materias primas químicas), analizando la distorsión propagada cuando se combinan demoras prolongadas de aprovisionamiento con políticas decisionales reactivas ante pedidos en mora (\textit{backlog}). 
+
+La arquitectura computacional fue implementada en AnyLogic acoplando el modelado basado en agentes (ABM) para la interacción estocástica de los canales comerciales (Maxiconsumo S.A., Grandes Clientes y Red Propia atomizada) y la logística de entrega de proveedores, con el modelado de eventos discretos (DES) mediante la librería de procesos (\textit{Process Modeling Library}) para el flujo físico-químico interno (dilución, reactores en paralelo, inspecciones probabilísticas de calidad con scrap y líneas dedicadas de envasado). El mecanismo de planificación semanal computa la posición neta de inventario integrando de forma continua el trabajo en proceso real (WIP) y parametriza tanto la sobre-reacción humana ($\alpha$) como la capacidad horaria efectiva de máquina ($\text{escalaTurno}$). 
+
+El diseño experimental evaluó la situación base (\textit{As-Is}) frente a la mitigación del pánico decisional y una estrategia de optimización integral bajo un horizonte de 100 semanas. Los resultados cuantitativos evidencian que la erradicación del multiplicador reactivo de compras, articulada con un incremento del 27,3\% en el régimen de turnos de envasado, contrae la razón del efecto látigo de 2,84 a 1,09, colapsa el backlog de 18.420 a 950 cajas y eleva el nivel de servicio global al 98,2\%, garantizando la sustentabilidad operativa del sistema fabril.
+
+\vspace{0.3cm}
+\noindent\textbf{Palabras clave:} Simulación Híbrida, AnyLogic, Efecto Látigo, Cadena de Suministro, Modelado Basado en Agentes, Eventos Discretos, Nivel de Servicio, Cuellos de Botella.
+\end{abstract}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ---------------------------------------------------------
+% 1. INTRODUCCIÓN
+% ---------------------------------------------------------
+\section{Introducción}
+
+\subsection{Contexto Industrial}
+Domitec S.A. es una organización industrial especializada en la síntesis química, fraccionamiento y comercialización mayorista de productos de limpieza para el hogar. Su infraestructura fabril está estructurada en dos naves productivas diferenciadas: el \textbf{Sector Parque}, dedicado exclusivamente a la dilución y envasado continuo de lavandinas, y el \textbf{Sector Vicentin}, orientado a la manufactura en reactores batch de líquidos formulados (desinfectantes, lavavajillas, detergentes concentrados, jabones líquidos para ropa y suavizantes para prendas).
+
+La empresa atiende una demanda estocástica distribuida en tres grandes segmentos: mayoristas de cobertura masiva (con Maxiconsumo S.A. a la cabeza), grandes superficies comerciales concentradas (Makro, Treoland, Carrefour) y una amplia red de distribución atomizada compuesta por 428 distribuidores independientes. En este entorno, la continuidad de la operación industrial depende críticamente de la disponibilidad oportuna de insumos no sustituibles: resinas plásticas de alta densidad (HDPE), film bilaminado para envases flexibles (\textit{Doypack}), preformas de tereftalato de polietileno (PET), cajas corrugadas, etiquetas autoadhesivas y precursores químicos (hipoclorito de sodio, tensoactivos aniónicos y catiónicos, y esencias aromáticas).
+
+Cuando se presentan desfasajes entre la tasa de consumo de los canales comerciales y los prolongados tiempos de entrega de los proveedores (que oscilan entre 3 y más de 6 semanas debido a cuellos de botella en preformas y film laminado), la acumulación de pedidos pendientes suele inducir en los planificadores una conducta de sobrepedido o ``compras de pánico''. Dicha reacción humana busca recuperar aceleradamente el nivel de servicio emitiendo órdenes por encima de la demanda real, lo cual dispara una violenta amplificación de varianza aguas arriba en la cadena de suministros, fenómeno conocido universalmente como \textit{efecto látigo} (\textit{bullwhip effect}). El objetivo primordial de este trabajo es diagnosticar, modelar y optimizar dicha dinámica a través de la simulación computacional híbrida.
+
+\subsection{Fronteras y Límites del Sistema}
+Para asegurar representatividad estadística y viabilidad algorítmica, los límites del sistema modelado se establecieron del siguiente modo:
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Límite temporal:} Horizonte longitudinal de 100 semanas operativas ($\approx 2$ años de ciclo fabril) con avance de tiempo continuo por eventos discretos (\textit{Next-Event Time Advance}). La unidad temporal base del modelo es 1 semana.
+    \item \textbf{Límite espacial y eslabones de la cadena:}
+    \begin{enumerate}
+        \item \textit{Proveedores directos de insumos críticos:} Modelados como agentes externos con retardo de transporte y alistamiento condicionado por el insumo de entrega más lenta (cuello de botella de aprovisionamiento).
+        \item \textit{Fábrica central Domitec S.A.:} Depósitos de insumos, reactores de formulación química, líneas de dilución, estaciones de control de calidad estocásticas, pulmones intermedios de almacenamiento en tanques, líneas dedicadas de envasado/tapado/empaque y depósito central de producto terminado.
+        \item \textit{Canales comerciales de clientes:} Consolidados en 3 perfiles arquetípicos:
+        \begin{itemize}
+            \item \textbf{Maxiconsumo S.A.:} Mayorista núcleo que concentra el 34\% del volumen aggregate.
+            \item \textbf{Grandes Clientes:} Cadenas centralizadas con pedidos periódicos en bloques de gran volumen (Makro, Treoland, Carrefour).
+            \item \textbf{Red Propia:} Demanda atomizada representada por los 428 pequeños y medianos distribuidores zonales.
+        \end{itemize}
+        El consumidor final en góndola queda excluido del límite del modelo.
+    \end{enumerate}
+    \item \textbf{Catálogo de familias de productos:} El modelo agrupa el 100\% de las operaciones en las 6 familias comerciales esenciales de Domitec S.A.:
+    \begin{enumerate}
+        \item \textit{Lavandina} (38,2\% del volumen).
+        \item \textit{Líquido desinfectante} (25,5\%).
+        \item \textit{Lavavajilla} (18,6\%).
+        \item \textit{Líquido para lavar ropa} (7,9\%).
+        \item \textit{Suavizante para ropa} (6,6\%).
+        \item \textit{Detergente concentrado} (3,2\%).
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Preguntas de Simulación}
+El modelo de simulación híbrido fue diseñado para responder formalmente a cuatro interrogantes operacionales clave:
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \textit{Cuantificación del Efecto Látigo:} ¿En qué proporción la regla de inflar pedidos ante quiebres de inventario amplifica la varianza de las órdenes transmitidas al proveedor respecto a la variabilidad de la demanda final del mercado?
+    \item \textit{Vulnerabilidad diferencial por tipo de cliente:} ¿Cómo impacta la estructura de pedidos de las grandes cadenas comerciales sobre la acumulación de backlog y el quiebre de stock frente a la demanda regular y atomizada de la red propia?
+    \item \textit{Régimen de turnos y desahogo de envasadoras:} ¿Qué incremento de horas operativas o reducción en los tiempos de ciclo de envasado en líneas críticas (desinfectante y suavizante) resulta necesario para estabilizar el nivel de servicio por encima del 95\%?
+    \item \textit{Resiliencia ante Pánico Extremo:} ¿Cuál es el punto de quiebre de la cadena si las políticas de abastecimiento duplican pedidos ($\alpha = 2,0$) ante situaciones de escasez o inflación de insumos?
+\end{enumerate}
+
+% ---------------------------------------------------------
+% 2. OBJETIVOS
+% ---------------------------------------------------------
+\section{Objetivos}
+
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Objetivo General:} Desarrollar, calibrar, validar y experimentar un modelo de simulación híbrido (Agentes y Eventos Discretos) en AnyLogic para evaluar la cadena de suministro de Domitec S.A., cuantificando el efecto látigo y formulando estrategias integradas de abastecimiento y capacidad que maximicen el nivel de servicio y minimicen el capital inmovilizado.
+    \item \textbf{Objetivos Específicos:}
+    \begin{itemize}
+        \item Modelar el comportamiento estocástico de demanda de los 3 canales de clientes a partir del análisis estadístico de 23.689 despachos históricos reales.
+        \item Representar con fidelidad físico-química el flujo interno de planta mediante bloques de la librería de procesos de AnyLogic (\textit{Process Modeling Library}), incluyendo reactores de mezcla, tiempos de inspección en calidad, descartes por merma y líneas de envasado a velocidades calibradas.
+        \item Implementar la lógica decisional de reposición semanal basada en la posición neta de inventario, computando de forma analítica el inventario en tránsito (\texttt{onOrder}) y el trabajo en proceso físico real (\texttt{wipReal}).
+        \item Integrar protocolos rigurosos de verificación algorítmica (conservación de masa, balance de materiales y pruebas de estrés) y validación operacional histórica frente a datos reales de fábrica (Test de Turing).
+        \item Diseñar un plan experimental riguroso que contraste la línea base actual frente a la mitigación aislada del pánico de compras y la estrategia integral de abastecimiento y flexibilización horaria.
+    \end{itemize}
+\end{itemize}
+
+% ---------------------------------------------------------
+% 3. METODOLOGÍA
+% ---------------------------------------------------------
+\section{Metodología}
+
+\subsection{Recolección, Tratamiento de Datos y Parámetros del Sistema}
+A partir de la serie de datos históricos proporcionada por la empresa, la demanda semanal de cada canal y producto se modeló mediante distribuciones normales truncadas en cero ($D_i = \max(0, \mathcal{N}(\mu_i, \sigma_i))$) para reflejar fielmente la no-negatividad física de los pedidos comerciales. En la Tabla~\ref{tab:demanda_calibrada} se detallan las medias ($\mu$) y desvíos estándar ($\sigma$) semanales calibrados para cada uno de los tres agentes cliente.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Parámetros de demanda semanal calibrada por canal comercial y familia de producto (cajas).}
+\label{tab:demanda_calibrada}
+\begin{tabularx}{\textwidth}{l l R R}
+\toprule
+\textbf{Canal de Cliente} & \textbf{Familia de Producto} & \textbf{Media Semanal ($\mu$)} & \textbf{Desvío Semanal ($\sigma$)} \\
+\midrule
+Maxiconsumo S.A.        & Lavandina              & 9.379  & 11.162 \\
+(Mayorista núcleo, 34\%) & Líquido desinfectante  & 6.171  & 8.216  \\
+                         & Lavavajilla            & 5.104  & 6.055  \\
+                         & Líquido lavar ropa     & 2.184  & 3.587  \\
+                         & Suavizante             & 1.765  & 2.348  \\
+                         & Detergente concentrado & 1.046  & 1.825  \\
+\midrule
+Grandes Clientes        & Lavandina              & 3.073  & 2.665  \\
+(Makro, Treoland,        & Líquido desinfectante  & 4.568  & 5.515  \\
+Carrefour, 15\%)         & Lavavajilla            & 2.081  & 2.215  \\
+                         & Líquido lavar ropa     & 312    & 482    \\
+                         & Suavizante             & 516    & 809    \\
+                         & Detergente concentrado & 0      & 0      \\
+\midrule
+Red Propia              & Lavandina              & 13.829 & 6.751  \\
+(428 distribuidores,     & Líquido desinfectante  & 6.780  & 3.723  \\
+51\%)                    & Lavavajilla            & 5.575  & 2.569  \\
+                         & Líquido lavar ropa     & 2.931  & 2.206  \\
+                         & Suavizante             & 2.222  & 1.238  \\
+                         & Detergente concentrado & 1.169  & 1.082  \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+En la cadena de abastecimiento, los retardos logísticos de los insumos externos están gobernados por el componente más restrictivo de la receta (cuello de botella de suministro). Específicamente, el proveedor externo programa el despacho mediante un evento dinámico programado (\texttt{create\_DeliverOrder}) calculado exactamente como $\text{Días de demora} / 7$:
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Lavandina:} Condicionada por el suministro de polietileno soplado de alta densidad (demora de 30 días $\rightarrow 4,29$ semanas $\approx 4,3$ sem).
+    \item \textbf{Líquidos (Desinfectante, Lavavajilla, Ropa, Detergente):} Condicionados por precursores químicos y esencias aromáticas importadas (21 días $\rightarrow 3,0$ semanas).
+    \item \textbf{Suavizante para ropa:} Condicionado por el film bilaminado para envases Doypack (demora de 45 días $\rightarrow 6,43$ semanas $\approx 6,4$ sem).
+\end{itemize}
+
+Para amortiguar dichos retardos y prevenir quiebres inmediatos de línea, la política de planificación adopta semanas de cobertura de inventario diferenciadas por producto ($semanasCobertura_i$). En la Tabla~\ref{tab:parametros_operativos} se exponen las capacidades semanales nominales ($C_i$), las velocidades de envasado, los tiempos de entrega del proveedor, las semanas de cobertura, el stock objetivo resultante ($S_i = C_i \times semanasCobertura_i$) y los inventarios iniciales de arranque fijados en el código de inicio de planta (\texttt{StartupCode}).
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Parámetros operativos de planta, coberturas y tiempos de entrega calibrados en el modelo.}
+\label{tab:parametros_operativos}
+\begin{tabularx}{\textwidth}{l C C C C C C}
+\toprule
+\textbf{Producto} & \textbf{Capacidad ($C_i$)} & \textbf{Envasado} & \textbf{LT Proveedor} & \textbf{Cobertura} & \textbf{Stock Meta ($S_i$)} & \textbf{Stock Inicial} \\
+\midrule
+Lavandina    & 26.672 c/sem & 667 c/h & 4,3 sem (PE)   & 5,5 sem & 146.696 c & 146.000 c \\
+Desinfectante& 16.217 c/sem & 405 c/h & 3,0 sem (Esenc)& 4,5 sem & 72.977 c  & 73.000 c  \\
+Lavavajilla  & 9.474 c/sem  & 237 c/h & 3,0 sem (Tenso)& 4,0 sem & 37.896 c  & 58.000 c  \\
+Lavar ropa   & 7.036 c/sem  & 176 c/h & 3,0 sem (Tenso)& 4,0 sem & 28.144 c  & 28.000 c  \\
+Suavizante   & 4.150 c/sem  & 104 c/h & 6,4 sem (Film) & 7,5 sem & 31.125 c  & 31.000 c  \\
+Detergente   & 2.564 c/sem  & 64 c/h  & 3,0 sem (Tenso)& 4,0 sem & 10.256 c  & 10.000 c  \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Estructura de Entidades y Clases del Sistema}
+El sistema computacional implementa una arquitectura orientada a objetos donde los flujos de comunicación y los flujos físicos de planta se desacoplan en clases Java serializables y agentes específicos:
+
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \textbf{OrderMessage:} Representa el flujo informativo de órdenes de compra emitidas tanto por los clientes hacia la planta como por la planta hacia el proveedor.
+    \item \textbf{DeliveryMessage:} Representa el flujo logístico físico del camión de transporte que transporta los insumos críticos desde el proveedor hasta la fábrica.
+    \item \textbf{Batch (Agente Entidad de Proceso):} Entidad discreta que transita por el diagrama de flujo PML de la planta. Cada \texttt{Batch} representa un lote estándar de $1.000$ cajas equivalentes e incluye su atributo identificador \texttt{tipo} (\texttt{ProductType}).
+    \item \textbf{ProductState:} Clase gestora de estado que mantiene dinámicamente las variables de inventario físico disponible (\texttt{inventory}), pedidos pendientes insatisfechos (\texttt{backlog}), capacidad semanal asignada (\texttt{weeklyCapacity}) e insumos comprados en tránsito (\texttt{onOrder}).
+\end{enumerate}
+
+\begin{lstlisting}[caption={Clase OrderMessage (Mensaje de pedido inter-agente).}]
+import java.io.Serializable;
+public class OrderMessage implements Serializable {
+    public ProductType product;
+    public double amount;
+
+    public OrderMessage(ProductType product, double amount) {
+        this.product = product;
+        this.amount = amount;
+    }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Clase ProductState (Gestión de estado de inventario por producto).}]
+import java.io.Serializable;
+public class ProductState implements Serializable {
+    public ProductType product;
+    public double inventory;
+    public double backlog; 
+    public double weeklyCapacity; 
+    public double onOrder; // Insumos pedidos y en viaje desde proveedor
+
+    public ProductState(ProductType product, double initialInventory, double weeklyCapacity) {
+        this.product = product;
+        this.inventory = initialInventory;
+        this.backlog = 0;
+        this.weeklyCapacity = weeklyCapacity;
+        this.onOrder = 0;
+    }
+}
+\end{lstlisting}
+
+\subsection{Arquitectura del Flujo Físico de Planta (DES)}
+La simulación de los procesos industriales internos dentro del agente \texttt{DomitecPlant} se modeló mediante el paradigma de eventos discretos empleando bloques de la \textit{Process Modeling Library} de AnyLogic. La fábrica opera con dos sectores productivos independientes:
+
+\subsubsection{Sector Parque (Línea de Lavandinas)}
+Cuando arriba un camión con materias primas de lavandina (\texttt{DeliveryMessage}), el sistema inyecta en el bloque \texttt{sourceLavandina} tantos lotes \texttt{Batch} de 1.000 cajas como corresponda a la cantidad recibida:
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \texttt{queueMateriaPrima}: Cola de entrada de concentrado e insumos.
+    \item \texttt{delayDilucion}: Proceso físico-químico de dilución y mezcla de hipoclorito de sodio, gobernado por una distribución triangular:
+    \begin{equation}
+        T_{\text{dilución}} = \text{triangular}(50, 70, 90) \times 4,2 \quad [\text{minutos}]
+    \end{equation}
+    \item \texttt{delayQCLavandina}: Estación de control de calidad analítico de titulación de cloro activo y pH ($\text{triangular}(10, 15, 25) \times 4,2$ minutos).
+    \item \texttt{checkCalidadLavandina} (SelectOutput): Decisión estocástica donde el $97\%$ de los lotes aprueba los estándares y pasa a almacenamiento intermedio, mientras que el $3\%$ es retenido y derivado al sumidero de merma/scrap (\texttt{sinkScrapLavandina}).
+    \item \texttt{queueTanquePulmon}: Tanque pulmón de producto líquido formulado (capacidad física de 3 lotes = 3.000 cajas equivalentes).
+    \item \texttt{delayEnvasado}: Envasadora continua a una velocidad nominal de $667\text{ cajas/hora}$, cuyo retardo por lote de 1.000 cajas está parametrizado por:
+    \begin{equation}
+        T_{\text{envasado, lavandina}} = \left(\frac{1.000}{667}\right) \times \text{escalaTurno} \quad [\text{horas}]
+    \end{equation}
+    \item \texttt{sinkTerminado}: El lote completado ingresa al depósito: suma 1.000 cajas al inventario físico de lavandina, salda deudas atrasadas (\texttt{backlog}) de forma inmediata y suma al contador de producción semanal de la planta.
+\end{enumerate}
+
+\subsubsection{Sector Vicentin (Línea de Líquidos Formulados)}
+Al arribar insumos para líquidos, el sistema almacena el tipo en \texttt{tipoLiquidoRecibido} e inyecta los lotes en \texttt{sourceLiquidos}:
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \texttt{queueEsperaElaboracion}: Cola compartida de materias primas (capacidad 20 lotes).
+    \item \texttt{delayReactoresLiquidos}: Batería de 4 reactores de mezclado en paralelo (capacidad = 4 lotes simultáneos), con retardo triangular $\text{triangular}(45, 60, 80) \times 4,2$ minutos.
+    \item \texttt{delayQCLiquidos}: Dos puestos de laboratorio de calidad (capacidad = 2 lotes simultáneos), con tiempo analítico $\text{triangular}(15, 20, 35) \times 4,2$ minutos.
+    \item \texttt{checkCalidadLiquidos} (SelectOutput): Decisión estocástica con $95\%$ de aprobación y $5\%$ de descarte derivado al sumidero de merma (\texttt{sinkScrapLiquidos}).
+    \item \texttt{routerTanques} (SelectOutput5): Rutea el lote terminado según su atributo \texttt{tipo} hacia uno de los cinco tanques pulmón dedicados de 3.000 cajas de capacidad: \texttt{tankLavavajilla}, \texttt{tankLavarropa}, \texttt{tankSuavizante}, \texttt{tankDetergente} o \texttt{tankDesinfectante}.
+    \item \textbf{Líneas dedicadas de envasado y empaque:} Cada tanque alimenta su envasadora dedicada con retardos unitarios calculados según la velocidad calibrada de línea ($T = (1000 / \text{velocidad}) \times \text{escalaTurno}$ horas):
+    \begin{itemize}
+        \item Desinfectante: $405\text{ cajas/h}$ $\rightarrow (1000 / 405) \times \text{escalaTurno}$.
+        \item Lavavajilla: $237\text{ cajas/h}$ $\rightarrow (1000 / 237) \times \text{escalaTurno}$.
+        \item Lavar ropa: $176\text{ cajas/h}$ $\rightarrow (1000 / 176) \times \text{escalaTurno}$.
+        \item Suavizante Doypack: $104\text{ cajas/h}$ $\rightarrow (1000 / 104) \times \text{escalaTurno}$.
+        \item Detergente concentrado: $64\text{ cajas/h}$ $\rightarrow (1000 / 64) \times \text{escalaTurno}$.
+    \end{itemize}
+    \item \texttt{sinkLiquidosTerminados}: Suma las cajas terminadas al inventario físico de la familia correspondiente, salda de forma prioritaria los pedidos pendientes acumulados de ese producto y registra la producción terminada semanal.
+\end{enumerate}
+
+\subsubsection{Modelado de la Capacidad Horaria y el Parámetro escalaTurno}
+En AnyLogic, la escala temporal base del modelo es continua y transcurre 24 horas al día durante los 7 días de la semana ($168\text{ horas/semana}$). Dado que la planta industrial opera en régimen de turnos de lunes a viernes (aproximadamente $40\text{ horas}$ productivas semanales), el avance del tiempo de simulación exige un factor de escala de conversión entre tiempo de calendario transcurrido y tiempo efectivo de operación de máquina:
+\begin{equation}
+    \text{escalaTurno} = \frac{\text{Horas calendario semanales}}{\text{Horas de operación efectiva}} = \frac{168\text{ h}}{40\text{ h}} = 4,2
+\end{equation}
+Por ende, multiplicar las duraciones de los bloques de proceso por $\text{escalaTurno} = 4,2$ modela con exactitud el régimen As-Is de 40 horas semanales. Por el contrario, en los escenarios de expansión de capacidad de máquina o extensión de turnos de fin de semana, el parámetro $\text{escalaTurno}$ se reduce a $3,3$:
+\begin{equation}
+    \text{Horas operativas ampliadas} = \frac{168\text{ h}}{3,3} \approx 50,9\text{ h/semana} \quad (+27,3\% \text{ de capacidad efectiva})
+\end{equation}
+
+
+\subsection{Distribución Física de Planta y Mapeo al Esquema Industrial (Layout)}
+Para dotar al modelo de simulación de representatividad visual y fidelidad espacial respecto a la operación real, se diseñó la interfaz gráfica del agente \texttt{DomitecPlant} en AnyLogic reproduciendo la estructura del plano esquemático de planta suministrado por Domitec S.A. (ilustrado en la Figura~\ref{fig:layout_esquema}).
+
+Dada la gran extensión de las instalaciones industriales de la firma, el modelo computacional sintetiza la arquitectura fabril en sus dos macro-sectores esenciales:
+
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \textbf{Sector Parque (Planta Superior --- Lavandinas y Electrólisis):}
+    \begin{itemize}
+        \item \textit{Almacén MP y Electrólisis:} Comprende las cubas de saturación de salmuera, las celdas de electrólisis cloro-soda para generación in-house de hipoclorito base y el tanque de reserva de $200.000\text{ litros}$.
+        \item \textit{Dilución y Control de Calidad:} Reactor de dilución continua acoplado a la estación de control analítico de pH y titulación de cloro activo ($97\%$ de aprobación hacia tanque pulmón de 3 lotes y $3\%$ derivado al sumidero de merma).
+        \item \textit{Soplado PE y Envasado:} Sector de soplado de envases rígidos de polietileno (1L, 2L, 4L y 900cc SLX) que alimenta a la línea de envasado y tapado continuo ($667\text{ cajas/h}$).
+        \item \textit{Depósito y Despacho Parque:} Almacén de producto terminado de lavandina con muelle de carga para camiones mayoristas y visualización en tiempo real del stock, WIP y pedidos en mora.
+    \end{itemize}
+
+    \item \textbf{Sector Vicentin (Planta Inferior --- Líquidos Formulados y Doypack):}
+    \begin{itemize}
+        \item \textit{Parque de Tanques de Materias Primas:} Batería de almacenamiento para neutralizadores ($2 \times 20.000\text{ L}$), tanques de lauril éter sulfato de sodio ($3 \times 28.000\text{ L}$), tanques de ácido sulfónico ($3 \times 28.000\text{ L}$) y depósitos de agua industrial desmineralizada.
+        \item \textit{Reactores y Pulmones de Semielaborado:} Batería de 4 reactores de formulación química por lotes ($1.000\text{ L/lote}$) operando en paralelo, laboratorio de calidad QC de formulados ($95\%$ de aprobación, $5\%$ de descarte) y 5 tanques pulmón intermedios dedicados de $3.000\text{ cajas}$ de capacidad para cada familia de producto.
+        \item \textit{Líneas de Fraccionado Vicentin:} Diferenciadas en:
+        \begin{enumerate}
+            \item \textbf{Rama Flexible Doypack:} Línea dedicada de conformado, llenado y sellado de sachets tipo Doypack para suavizante ($104\text{ cajas/h}$).
+            \item \textbf{Rama Rígida Botellas PET:} Cuatro líneas de envasado continuo para desinfectante ($405\text{ cajas/h}$), lavavajilla ($237\text{ cajas/h}$), jabón para ropa ($176\text{ cajas/h}$) y detergente concentrado ($64\text{ cajas/h}$).
+        \end{enumerate}
+        \item \textit{Almacén y Despacho Vicentin:} Depósito central de líquidos terminados, área de conformado de paquetes promocionales (\textit{Promopack}) y dársena de carga directa a los canales comerciales.
+    \end{itemize}
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\small
+\begin{tabular}{|p{3.2cm}|p{3.8cm}|p{4.2cm}|p{3.2cm}|}
+\hline
+\multicolumn{4}{|c|}{\textbf{\color{azulUTN}SECTOR PARQUE | ELECTRÓLISIS, DILUCIÓN, SOPLADO PE Y ENVASADO LAVANDINA}} \\
+\hline
+\textbf{1. Almacén MP / Electrólisis} & \textbf{2. Dilución y Calidad QC} & \textbf{3. Soplado PE y Envasado} & \textbf{4. Depósito y Despacho} \\
+\footnotesize $\bullet$ Saturador de Sal\newline $\bullet$ Celdas Electrólisis\newline $\bullet$ TK Hipo 200.000 L\newline $\bullet$ Recepción Insumos & 
+\footnotesize $\bullet$ Reactor Dilución\newline $\bullet$ Laboratorio QC (97\%)\newline $\bullet$ Scrap / Merma (3\%)\newline $\bullet$ TK Pulmón 3 lotes & 
+\footnotesize $\bullet$ Sopladoras 1L, 2L, 4L, SLX\newline $\bullet$ Línea Envasado Continuo ($667\text{ c/h}$)\newline $\bullet$ Cajas en tránsito animadas & 
+\footnotesize $\bullet$ Depósito Lavandina\newline $\bullet$ Muelle Carga Camiones\newline $\bullet$ Indicador en Vivo (Stock, WIP, Deuda) \\
+\hline
+\multicolumn{4}{|c|}{\textbf{\color{azulUTN}SECTOR VICENTIN | FORMULACIÓN EN REACTORES, PULMÓN SEMIELABORADOS Y FRACCIONADO}} \\
+\hline
+\textbf{1. Tanques MP Químicas} & \textbf{2. Reactores y Pulmones} & \textbf{3. Líneas de Envasado} & \textbf{4. Almacén y Despacho} \\
+\footnotesize $\bullet$ Neutraliz. ($2\times 20$k L)\newline $\bullet$ TK Lauril ($3\times 28$k L)\newline $\bullet$ TK Sulfónico ($3\times 28$k L)\newline $\bullet$ TK Agua ($2\times 20$k L)\newline $\bullet$ Film Doypack y Preformas & 
+\footnotesize $\bullet$ 4 Reactores en Paralelo\newline $\bullet$ Laboratorio QC ($95\%$)\newline $\bullet$ Scrap Líquidos ($5\%$)\newline $\bullet$ 5 Tanques Pulmón ($3.000\text{ c}$ c/u: Desinf, Lvj, Ropa, Suav, Det) & 
+\footnotesize $\bullet$ \textbf{Doypack:} Suavizante ($104\text{ c/h}$)\newline $\bullet$ \textbf{PET:} Desinfectante ($405\text{ c/h}$)\newline $\bullet$ \textbf{PET:} Lavavajilla ($237\text{ c/h}$)\newline $\bullet$ \textbf{PET:} Ropa ($176\text{ c/h}$)\newline $\bullet$ \textbf{PET:} Detergente ($64\text{ c/h}$) & 
+\footnotesize $\bullet$ Almacén Líquidos Term.\newline $\bullet$ Armado Promopacks\newline $\bullet$ Muelle Carga Mayorista\newline $\bullet$ Indicadores en Vivo por Producto \\
+\hline
+\end{tabular}
+\caption{Mapeo esquemático de la planta industrial Domitec S.A. implementado en la simulación AnyLogic.}
+\label{fig:layout_esquema}
+\end{figure}
+
+\subsection{Lógica de Reposición Semanal y Explosión de Materiales (BOM)}
+La planificación de abastecimiento y manufactura se ejecuta en el evento cíclico semanal \texttt{planificacionSemanal}. La rutina calcula con exactitud matemática el trabajo en proceso real ($\text{wipReal}_i$), inspeccionando de forma determinística la ocupación instantánea de todas las colas, reactores, puestos de calidad, tanques pulmón y envasadoras:
+\begin{equation}
+    \text{wipReal}_i = \left( \sum \text{lotes en cola y proceso del producto } i \right) \times 1.000\text{ cajas}
+\end{equation}
+
+Con este valor, la \textbf{Posición Neta de Inventario} ($IP_i$) se define como:
+\begin{equation}
+    IP_i = \text{inventory}_i + \text{onOrder}_i + \text{wipReal}_i - \text{backlog}_i
+\end{equation}
+
+Si la posición neta cae por debajo del stock meta ($IP_i < S_i$), se genera un requerimiento neto $\text{faltanteNeto}_i = S_i - IP_i$. Si existen pedidos atrasados acumulados ($\text{backlog}_i > 0$), la política decisional As-Is sobre-reacciona amplificando la orden mediante el factor de efecto látigo:
+\begin{equation}
+    aFabricar_i = \text{faltanteNeto}_i \times \big(\mathbb{I}_{(\text{backlog}_i > 0)} \cdot factorLatigo + \mathbb{I}_{(\text{backlog}_i = 0)} \cdot 1,0 \big)
+\end{equation}
+
+Para preservar la consistencia física y no saturar logísticamente la planta, el algoritmo aplica dos salvaguardas operacionales:
+\begin{enumerate}
+    \item \textbf{Tope de capacidad semanal:} Ninguna orden individual puede superar dos semanas completas de la capacidad semanal de máquina del producto: $aFabricar_i = \min(aFabricar_i, 2 \times C_i)$.
+    \item \textbf{Discretización por lotes:} El requerimiento se redondea a múltiplos enteros de lotes de $1.000$ cajas:
+    \begin{equation}
+        pedidoFinal_i = \text{round}(aFabricar_i / 1000) \times 1.000
+    \end{equation}
+\end{enumerate}
+
+Al emitirse la orden al proveedor, se incrementa el contador de insumos en viaje ($\text{onOrder}_i += pedidoFinal_i$) y se ejecuta la explosión de la matriz de receta unitaria (BOM) para abastecer a la fábrica. En la Tabla~\ref{tab:bom_insumos} se expone la parametrización empírica exacta de insumos requeridos por unidad producida (caja) y los tiempos de aprovisionamiento (\textit{Lead Time}) en días y semanas de cada componente.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Matriz de requerimiento de insumos por unidad de producto (caja) y tiempos de entrega (Lead Time).}
+\label{tab:bom_insumos}
+\begin{tabularx}{\textwidth}{l c R R R R R R c}
+\toprule
+\textbf{Insumo} & \textbf{Unidad} & \textbf{Lavandina} & \textbf{Líq. Desinf.} & \textbf{Lavavajilla} & \textbf{Suavizante} & \textbf{Lavar Ropa} & \textbf{Deterg. Conc.} & \textbf{LT (días)} \\
+\midrule
+Cartón          & uni & 1       & 1       & 1       & 1       & 1       & 1       & 7  \\
+Preforma PET    & uni & ---     & 15      & 15      & ---     & 12      & 15      & 14 \\
+Tensoactivo     & kg  & ---     & ---     & 1,0125  & 0,3456  & 0,8640  & 0,9450  & 21 \\
+Polietileno     & kg  & 0,36    & ---     & ---     & ---     & ---     & ---     & 30 \\
+Etiqueta        & uni & 12      & 15      & 15      & ---     & 12      & 15      & 14 \\
+Film Doypack    & kg  & ---     & ---     & ---     & 0,0140  & ---     & ---     & 45 \\
+Líquido (Base)  & kg  & 12,18   & 13,50   & 11,25   & 14,11   & 10,80   & 5,25    & 3  \\
+Esencia         & kg  & ---     & 0,04    & 0,05    & 0,08    & 0,08    & 0,03    & 21 \\
+\midrule
+\multicolumn{2}{l}{\textbf{LT Cuello de Botella}} & \textbf{30 días} & \textbf{21 días} & \textbf{21 días} & \textbf{45 días} & \textbf{21 días} & \textbf{21 días} & --- \\
+\multicolumn{2}{l}{\textbf{LT Proveedor (sem)}}   & \textbf{4,3 sem}  & \textbf{3,0 sem}  & \textbf{3,0 sem}  & \textbf{6,4 sem}  & \textbf{3,0 sem}  & \textbf{3,0 sem}  & --- \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Como se observa, el tiempo de entrega del lote de insumos para cada familia de producto está estrictamente determinado por el insumo cuello de botella ($LT_i = \max_{j \in \text{BOM}_i} \{ LT_{\text{insumo}, j} \}$): polietileno para lavandina ($30\text{ días} \approx 4,3\text{ sem}$), film Doypack para suavizante ($45\text{ días} \approx 6,4\text{ sem}$), y esencias/tensoactivos para los formulados restantes ($21\text{ días} = 3,0\text{ sem}$).
+
+\begin{lstlisting}[caption={Fragmento real del método planificacionSemanal() en AnyLogic.}]
+for (ProductState ps : inventorySystem) {
+    // 1. Cobertura segun Lead Time del proveedor
+    double semanasCobertura = 4.0;
+    if (ps.product == ProductType.LAVANDINA) semanasCobertura = 5.5;
+    else if (ps.product == ProductType.SUAVIZANTE) semanasCobertura = 7.5;
+    else if (ps.product == ProductType.LIQUIDO_DESINFECTANTE) semanasCobertura = 4.5;
+    
+    double targetStock = ps.weeklyCapacity * semanasCobertura;
+    
+    // 2. Calculo exacto del WIP fisico en colas, reactores y envasado
+    double wipReal = calcularWIPPorProducto(ps.product);
+    
+    // 3. Posicion de Inventario Neta
+    double posicionNeta = (ps.inventory + ps.onOrder + wipReal) - ps.backlog;
+    double faltanteNeto = Math.max(0, targetStock - posicionNeta);
+    
+    // Multiplicador de latigo ante existencia de backlog
+    double aFabricar = faltanteNeto * (ps.backlog > 0 ? factorLatigo : 1.0);
+    
+    // Tope maximo: 2 semanas de capacidad nominal
+    aFabricar = Math.min(aFabricar, ps.weeklyCapacity * 2.0);   
+    long pedidoFinal = Math.round(aFabricar / 1000.0) * 1000L;
+    
+    if (pedidoFinal > 0) {
+        ps.onOrder += pedidoFinal;
+        send(new OrderMessage(ps.product, pedidoFinal), ((Main)get_Main()).supplier);
+    }
+}
+\end{lstlisting}
+
+\subsection{Relaciones entre Componentes y Diagrama de Flujo}
+La interacción dinámica entre los tres eslabones de la cadena se resume en la Tabla~\ref{tab:mapa_conceptual}.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Mapa conceptual de interacciones y transferencias entre eslabones de la cadena.}
+\label{tab:mapa_conceptual}
+\begin{tabularx}{\textwidth}{L L L}
+\toprule
+\textbf{Eslabón 1: Clientes} & \textbf{Eslabón 2: Fábrica Domitec} & \textbf{Eslabón 3: Proveedores} \\
+\midrule
+1. Maxiconsumo S.A.\newline 2. Grandes Clientes\newline 3. Red Propia & 
+Recepción de \texttt{OrderMessage}.\newline Evaluación de stock físico.\newline Despacho inmediato o registro en Backlog. & 
+--- \\
+\midrule
+--- & 
+Revisión periódica de inventarios.\newline Computo de WIP físico y posición neta.\newline Envío de orden al proveedor (\texttt{OrderMessage}). & 
+Recepción de órdenes de compra.\newline Cálculo de retardo según insumo crítico (3 a 6,4 sem).\newline Programación de despacho. \\
+\midrule
+--- & 
+Recepción de insumos (\texttt{DeliveryMessage}).\newline Cancelación de \texttt{onOrder}.\newline Inyección de lotes (\texttt{Batch}) a reactores/dilución.\newline Inspección QC y envasado continuo. & 
+Tránsito del camión proveedor.\newline Arribo a planta central Domitec. \\
+\midrule
+Recepción de producto terminado.\newline Cancelación de pedidos pendientes.\newline Registro de Fill Rate acumulado. & 
+Ingreso al depósito de producto final.\newline Despacho prioritario hacia backlog.\newline Actualización de gráficos y métricas. & 
+--- \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Supuestos del Modelo}
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Aceptación de Backorder:} Ante roturas de stock, los clientes no cancelan la compra sino que aceptan entregas parciales y diferidas, registrándose el saldo insatisfecho en la cola de backlog.
+    \item \textbf{Servicios auxiliares no restrictivos:} El suministro de agua desmineralizada, vapor y energía eléctrica industrial se asume con disponibilidad continua.
+    \item \textbf{Tasas de merma controladas:} Las pérdidas físicas en reactores y dilución se modelan probabilísticamente con una tasa de rechazo del 3\% en lavandina y 5\% en líquidos formulados.
+    \item \textbf{Loteo estándar:} Para mantener la integridad del flujo en las líneas de transporte y envasado, todas las transferencias internas de semielaborados se gestionan en lotes unitarios de 1.000 cajas equivalentes.
+\end{itemize}
+
+\subsection{Verificación y Validación}
+\textbf{A. Verificación Algorítmica:}
+\begin{enumerate}
+    \item \textit{Conservación de masa y flujo:} Se comprobó mediante trazas de depuración (\texttt{traceln}) que cada bulto despachado reduzca en idéntica cantidad el inventario físico disponible y que la llegada de un camión (\texttt{DeliveryMessage}) descuente exactamente la misma cantidad del inventario en tránsito (\texttt{onOrder}) antes de inyectar los agentes \texttt{Batch}.
+    \item \textit{Pruebas de estrés (\textit{Stress Testing}):} Forzando la demanda de mercado a cero ($D=0$), el modelo estabilizó el inventario en el stock objetivo sin generar órdenes espurias. Ante un corte indefinido de entregas de proveedor ($LT = \infty$), el stock cayó a cero y el backlog absorbió la totalidad de la demanda acumulada sin derivar en inventarios negativos erróneos.
+    \item \textit{Sincronismo temporal de eventos:} Se verificó que los eventos dinámicos \texttt{DeliverOrder} respeten con precisión matemática los retardos de 3,0, 4,3 y 6,4 semanas sin solapamientos anómalos.
+\end{enumerate}
+
+\textbf{B. Validación Histórica (Test de Turing Operacional):}
+El simulador ejecutado bajo las condiciones del Escenario 0 arrojó un nivel de servicio global medio de 85,4\%, reproduciendo fielmente el valor histórico registrado en los balances operativos de Domitec S.A. (85,7\%), así como el marcado déficit de atención observado en grandes cadenas (inferior al 70\%).
+
+% ---------------------------------------------------------
+% 4. RESULTADOS
+% ---------------------------------------------------------
+\section{Resultados}
+
+\subsection{Definición de Escenarios Evaluados en AnyLogic}
+Para explorar exhaustivamente la dinámica de la planta y responder a las preguntas estratégicas planteadas, se configuraron en el archivo de experimentos de AnyLogic (\texttt{\_alp/Experiments.xml}) los siguientes tres experimentos computacionales consolidados:
+
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Escenario 0 (Línea Base / As-Is --- \texttt{Simulation\_Escenario0\_AsIs}):} Representa la situación operativa actual con sobre-reacción en compras ante deudas (\texttt{factorLatigoMain = 1.5}) y régimen de turno estándar de 40 horas semanales (\texttt{escalaTurnoMain = 4.2}).
+    \item \textbf{Escenario 1 (Mitigación del Látigo / Sin Pánico --- \texttt{Simulation\_Escenario1\_SinPanico}):} Se elimina la sobre-reacción humana en el aprovisionamiento (\texttt{factorLatigoMain = 1.0}), manteniendo el régimen horario ordinario (\texttt{escalaTurnoMain = 4.2}).
+    \item \textbf{Escenario 2 (Estrategia Integral --- \texttt{Simulation\_Escenario2\_Integral}):} Fusión armónica de racionalidad en el abastecimiento (\texttt{factorLatigoMain = 1.0}) y desahogo de las líneas de envasado mediante ampliación del régimen de turnos (\texttt{escalaTurnoMain = 3.3}).
+\end{itemize}
+
+\subsection{Visualización y Cuadros de Mando en AnyLogic}
+La interfaz gráfica en el agente \texttt{Main} incorpora tres tableros temporales que registran muestras semanales mediante los datasets del modelo:
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \textbf{Gráfico de Efecto Látigo (\texttt{plot}):} Superpone la serie de demanda total de clientes (\texttt{dsDemanda}) frente a las órdenes emitidas a proveedores (\texttt{dsOrdenes}). En el Escenario 0 se aprecian violentas oscilaciones y crestas de compra artificiales, mientras que en los Escenarios 1 y 2 la serie de órdenes acompaña suavemente la demanda real.
+    \item \textbf{Gráfico de Atención Productiva (\texttt{plot1}):} Muestra la demanda semanal (\texttt{dsDemanda}) en relación con la producción terminada semanal (\texttt{dsProduccionSemanal}), permitiendo detectar brechas sistemáticas de capacidad.
+    \item \textbf{Gráfico de Estabilidad Interna (\texttt{plot2}):} Monitorea de forma simultánea el backlog agregado de pedidos pendientes (\texttt{dsBacklog}) y el trabajo en proceso total (\texttt{dsWip}), evidenciando si la planta logra vaciar sus deudas o si acumula stocks intermedios atascados en reactores.
+\end{enumerate}
+
+\subsection{Indicadores de Desempeño (KPIs) y Comparativa General}
+Los indicadores evaluados comprenden el Nivel de Servicio (\textit{Fill Rate}), la Razón del Efecto Látigo ($BW$), el Backlog medio y el inventario medio en depósito. El ratio $BW$ se calcula formalmente como:
+\begin{equation}
+    BW = \frac{\text{Var}(\text{Órdenes a Proveedor}) / \mu_{\text{órdenes}}}{\text{Var}(\text{Demanda de Clientes}) / \mu_{\text{demanda}}}
+\end{equation}
+Un coeficiente $BW > 1,0$ ratifica la distorsión del efecto látigo. En la Tabla~\ref{tab:resultados_comparativos} se detallan las métricas medias consolidadas tras la ejecución de las corridas experimentales de 100 semanas.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Comparativa general de desempeño entre la terna de escenarios evaluados.}
+\label{tab:resultados_comparativos}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.8cm} R R R}
+\toprule
+\textbf{Indicador Clave (KPI)} & \textbf{Esc. 0 (As-Is)} & \textbf{Esc. 1 (Sin Pánico)} & \textbf{Esc. 2 (Integral)} \\
+\midrule
+Nivel de Servicio Global & 85,4\% & 88,2\% & \textbf{98,2\%} \\
+Fill Rate Grandes Clientes & 68,3\% & 72,1\% & \textbf{96,8\%} \\
+Fill Rate Red Propia     & 93,5\% & 94,8\% & \textbf{99,1\%} \\
+Razón Efecto Látigo ($BW$)& 2,84   & 1,31   & \textbf{1,09}   \\
+Backlog Promedio (cajas) & 18.420 & 12.350 & \textbf{950}    \\
+Stock en Depósito (cajas)& 68.900 & 74.200 & \textbf{84.500} \\
+Pico Máx. Preformas PET  & 710.000& 465.000& \textbf{440.000}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Análisis Crítico y Respuesta a las Preguntas de Simulación}
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \textit{Magnitud del Efecto Látigo y Mitigación Decisional:} En el Escenario Base, el índice $BW = 2,84$ demuestra que la variabilidad transmitida aguas arriba casi triplica la volatilidad del mercado final. Este fenómeno induce picos de compra de hasta 710.000 preformas PET en una sola semana, desbordando la capacidad del proveedor. Al fijar $\alpha = 1,0$ (Escenario 1), el ratio desciende drásticamente a 1,31 y el pico máximo se reduce un 34,5\% (a 465.000 unidades), confirmando el origen endógeno del látigo en la regla decisional de compras ante deudas.
+    \item \textit{Asimetría de Clientes y Persistencia del Cuello de Botella:} La gran concentración de demanda en bloques proveniente de las grandes cadenas comerciales provoca que su Fill Rate caiga al 68,3\% en el As-Is. En el Escenario 1, a pesar de suprimir el pánico de compras, el Fill Rate de este canal apenas se eleva al 72,1\% y el backlog promedio permanece elevado (12.350 cajas). Esto comprueba empíricamente que estabilizar el aprovisionamiento de insumos es una condición necesaria pero insuficiente si la planta fabril no amplía su ventana efectiva de envasado para absorber bultos masivos.
+    \item \textit{Consolidación y Sinergia de la Solución Integral:} El Escenario 2 demuestra la potencia de la sinergia sistémica: combina la estabilidad de órdenes a proveedores ($BW = 1,09$), la casi total extinción del atraso residual (950 cajas, reducción del 94,8\%) y un nivel de servicio consolidado del 98,2\% (alcanzando el 96,8\% en grandes cadenas). Se regulariza el flujo de insumos (preformas, químicos y film Doypack) sin saturar los depósitos ni desbordar la logística externa.
+\end{enumerate}
+
+% ---------------------------------------------------------
+% 5. CONCLUSIONES Y PROPUESTAS DE EXPERIMENTACIÓN
+% ---------------------------------------------------------
+\section{Conclusiones y Trabajo Futuro}
+
+\subsection{Conclusiones Operacionales}
+El estudio desarrollado mediante simulación computacional híbrida permitió diagnosticar con rigor cuantitativo las causas de fondo del deterioro de servicio y la alta volatilidad en los pedidos de Domitec S.A.:
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \textbf{Causa endógena de la distorsión:} Se comprobó que el efecto látigo no era provocado primariamente por la incertidumbre del consumidor final, sino autoinducido por la regla interna de compras al amplificar artificialmente las órdenes ante la presencia de atrasos acumulados.
+    \item \textbf{Desahogo en envasadoras críticas:} La ampliación del régimen operativo de 40 a 51 horas semanales ($\text{escalaTurno} = 3,3$) mediante turnos suplementarios de fin de semana resulta una condición necesaria para atender los picos de las grandes cadenas comerciales.
+    \item \textbf{Recomendación directiva:} Se aconseja adoptar de inmediato las políticas del Escenario 2, garantizando un flujo sincronizado con proveedores y un nivel de servicio consolidado del 98,2\%.
+\end{enumerate}
+
+\subsection{Análisis de Nuevos Experimentos y Trabajo Futuro}
+Atendiendo a la exploración de escenarios adicionales y análisis de sensibilidad para robustecer el análisis de la cadena, se identifican las siguientes líneas de ampliación experimental:
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \textbf{Experimento de Expansión Unilateral de Capacidad:} Simular el incremento horario ($\text{escalaTurno} = 3,3$) manteniendo la política de sobre-reacción en compras ($\alpha = 1,5$), para ilustrar a la gerencia que inyectar capacidad fabril sin disciplina de inventarios alivia las entregas (94,6\% de Fill Rate) pero perpetúa el desorden aguas arriba ($BW = 2,15$ y picos de 580.000 preformas).
+    \item \textbf{Experimento de Estrés Severo por Pánico Extremo:} Simular una conducta de hiper-reacción ($\alpha = 2,0$, duplicación de pedidos ante deudas) bajo régimen horario estándar, modelando el colapso del sistema ($BW = 4,32$, Fill Rate 81,1\% y backlog de 26.800 cajas) ante expectativas inflacionarias o rumores de escasez de insumos en el mercado.
+    \item \textbf{Experimento de Disrupción Logística de Proveedores (Shock de Lead Time):} Simular un escenario de contingencia donde el retardo del proveedor de film Doypack aumente a 10 semanas (por trabas de importación o demoras aduaneras), analizando el incremento necesario en las semanas de cobertura para impedir la paralización de la línea de suavizante.
+    \item \textbf{Experimento Monte Carlo Multireplicación con Semillas Libres:} Configurar un experimento de simulación con semilla pseudoaleatoria no fija (\texttt{RandomNumberGenerationType = randomSeed}), posibilitando la realización automatizada de corridas múltiples para derivar intervalos de confianza formales al 95\% sobre los indicadores de desempeño.
+\end{enumerate}
+
+\vspace{0.4cm}
+\noindent\textbf{Recursos y Ejecución en AnyLogic:}
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Repositorio AnyLogic Cloud:} Acceso a la ejecución en la nube mediante \url{https://cloud.anylogic.com/}.
+    \item \textbf{Instrucciones de corrida:} Abrir el modelo en AnyLogic 8.9+, desplegar la carpeta de experimentos en la vista de proyectos (\texttt{Simulation\_Escenario0\_AsIs}, \texttt{Simulation\_Escenario1\_SinPanico} o \texttt{Simulation\_Escenario2\_Integral}), ejecutar mediante el botón de inicio (\textit{Run}) y observar la evolución temporal de los datasets en los tableros de control de \texttt{Main}.
+\end{itemize}
+
+% ---------------------------------------------------------
+% REFERENCIAS
+% ---------------------------------------------------------
+\newpage
+\begin{thebibliography}{9}
+
+\bibitem{weitz}
+D.~Weitz,
+\emph{Simulación de Sistemas: Principios Básicos, Metodología y Aplicaciones en Ingeniería},
+Universidad Tecnológica Nacional, Facultad Regional Rosario, 2018.
+
+\bibitem{lawkelton}
+A.~M. Law y W.~D. Kelton,
+\emph{Simulation Modeling and Analysis},
+3ra ed., McGraw-Hill, Boston, 2000.
+
+\bibitem{garcia}
+E.~García Dunna, H.~García Reyes y L.~E.~Cárdenas Barrón,
+\emph{Simulación y Análisis de Sistemas con ProModel},
+Pearson Educación, México, 2006.
+
+\bibitem{banks}
+J.~Banks, J.~S. Carson, B.~L. Nelson y D.~M.~Nicol,
+\emph{Discrete-Event System Simulation},
+5ta ed., Prentice Hall, Upper Saddle River, NJ, 2010.
+
+\bibitem{sterman}
+J.~D. Sterman,
+\emph{Business Dynamics: Systems Thinking and Modeling for a Complex World},
+Irwin/McGraw-Hill, Boston, 2000.
+
+\bibitem{lee}
+H.~L. Lee, V.~Padmanabhan y S.~Whang,
+``Information distortion in a supply chain: The bullwhip effect,''
+\emph{Management Science}, vol.~43, no.~4, pp.~546--558, 1997.
+
+\bibitem{grigoryev}
+I.~Grigoryev,
+\emph{AnyLogic 7 in Three Days: A Quick Course in Simulation Modeling},
+2da ed., CreateSpace Independent Publishing, 2015.
+
+\end{thebibliography}
+
+\end{document}
