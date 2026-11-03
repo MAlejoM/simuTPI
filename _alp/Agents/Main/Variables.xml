@@ -10,8 +10,8 @@
 			<Y>0</Y>
 		</Label>
 		<PublicFlag>false</PublicFlag>
-		<PresentationFlag>true</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<PresentationFlag>false</PresentationFlag>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true"
               Constant="false"
               AccessType="public"
@@ -29,8 +29,8 @@
 			<Y>0</Y>
 		</Label>
 		<PublicFlag>false</PublicFlag>
-		<PresentationFlag>true</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<PresentationFlag>false</PresentationFlag>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true"
               Constant="false"
               AccessType="public"
@@ -48,8 +48,8 @@
 			<Y>0</Y>
 		</Label>
 		<PublicFlag>false</PublicFlag>
-		<PresentationFlag>true</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<PresentationFlag>false</PresentationFlag>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true"
               Constant="false"
               AccessType="public"
@@ -70,8 +70,8 @@
 			<Y>0</Y>
 		</Label>
 		<PublicFlag>false</PublicFlag>
-		<PresentationFlag>true</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<PresentationFlag>false</PresentationFlag>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true"
               Constant="false"
               AccessType="public"
@@ -92,8 +92,8 @@
 			<Y>0</Y>
 		</Label>
 		<PublicFlag>false</PublicFlag>
-		<PresentationFlag>true</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<PresentationFlag>false</PresentationFlag>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true"
               Constant="false"
               AccessType="public"
@@ -114,8 +114,8 @@
 			<Y>0</Y>
 		</Label>
 		<PublicFlag>false</PublicFlag>
-		<PresentationFlag>true</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<PresentationFlag>false</PresentationFlag>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true"
               Constant="false"
               AccessType="public"
@@ -136,8 +136,8 @@
 			<Y>0</Y>
 		</Label>
 		<PublicFlag>false</PublicFlag>
-		<PresentationFlag>true</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<PresentationFlag>false</PresentationFlag>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 			<Type><![CDATA[double]]></Type>
 			<UnitType>NONE</UnitType>
@@ -164,8 +164,8 @@
 			<Y>0</Y>
 		</Label>
 		<PublicFlag>false</PublicFlag>
-		<PresentationFlag>true</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<PresentationFlag>false</PresentationFlag>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 			<Type><![CDATA[double]]></Type>
 			<UnitType>NONE</UnitType>
@@ -193,7 +193,7 @@
 		</Label>
 		<PublicFlag>false</PublicFlag>
 		<PresentationFlag>false</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true"
               Constant="false"
               AccessType="public"
@@ -212,7 +212,7 @@
 		</Label>
 		<PublicFlag>false</PublicFlag>
 		<PresentationFlag>false</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true"
               Constant="false"
               AccessType="public"
@@ -231,7 +231,7 @@
 		</Label>
 		<PublicFlag>false</PublicFlag>
 		<PresentationFlag>false</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true"
               Constant="false"
               AccessType="public"
@@ -250,7 +250,7 @@
 		</Label>
 		<PublicFlag>false</PublicFlag>
 		<PresentationFlag>false</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true"
               Constant="false"
               AccessType="public"
@@ -269,7 +269,7 @@
 		</Label>
 		<PublicFlag>false</PublicFlag>
 		<PresentationFlag>false</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
+		<ShowLabel>false</ShowLabel>
 		<Properties SaveInSnapshot="true"
               Constant="false"
               AccessType="public"
