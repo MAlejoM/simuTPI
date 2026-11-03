@@ -236,9 +236,15 @@ traceln("&gt;&gt;&gt; [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + S
 		<Parameters>
 			<Parameter>
 				<ParameterName>factorLatigoMain</ParameterName>
+				<ParameterValue Class="CodeValue">
+					<Code><![CDATA[1.5]]></Code>
+				</ParameterValue>
 			</Parameter>
 			<Parameter>
 				<ParameterName>escalaTurnoMain</ParameterName>
+				<ParameterValue Class="CodeValue">
+					<Code><![CDATA[4.2]]></Code>
+				</ParameterValue>
 			</Parameter>
 		</Parameters>
 		<PresentationProperties>
@@ -393,4 +399,396 @@ traceln("&gt;&gt;&gt; [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + S
 		</ModelTimeProperties>
 		<BypassInitialScreen>true</BypassInitialScreen>
 	</SimulationExperiment>
+	
+	<ParamVariationExperiment ActiveObjectClassId="1787747219700">
+		<Id>1794000000400</Id>
+		<Name><![CDATA[MonteCarlo_PanelControl]]></Name>
+		<CommandLineArguments/>
+		<MaximumMemory>512</MaximumMemory>
+		<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
+		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+		<BeforeSimulationRunCode><![CDATA[if (getCurrentIteration() > corridasDeseadas) {
+    stop();
+    return;
+}
+root.factorLatigoMain = selFactorLatigo;
+root.escalaTurnoMain = selEscalaTurno;
+root.domitecPlant.factorLatigo = selFactorLatigo;
+root.domitecPlant.escalaTurno = selEscalaTurno;]]></BeforeSimulationRunCode>
+		<AfterSimulationRunCode><![CDATA[double fr = (root.domitecPlant.demandaTotalAcumulada > 0)
+    ? (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
+
+double backlog = 0.0;
+for (ProductState ps : root.domitecPlant.inventorySystem) {
+    backlog += ps.backlog;
+}
+
+traceln("Corrida " + getCurrentIteration() + "/" + corridasDeseadas
+    + " | Fill Rate: " + String.format(java.util.Locale.US, "%.2f%%", fr)
+    + " | Backlog: " + Math.round(backlog) + " cajas");
+]]></AfterSimulationRunCode>
+		<SeedValue>1</SeedValue>
+		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
+		<VmArgs/>
+		<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+		<Variables>
+			<Variable Class="PlainVariable">
+				<Id>1794000000401</Id>
+				<Name><![CDATA[selFactorLatigo]]></Name>
+				<X>-200</X><Y>100</Y>
+				<Label><X>10</X><Y>0</Y></Label>
+				<PublicFlag>false</PublicFlag>
+				<PresentationFlag>false</PresentationFlag>
+				<ShowLabel>true</ShowLabel>
+				<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+					<Type><![CDATA[double]]></Type>
+					<InitialValue Class="CodeValue">
+						<Code><![CDATA[1.5]]></Code>
+					</InitialValue>
+				</Properties>
+			</Variable>
+			<Variable Class="PlainVariable">
+				<Id>1794000000402</Id>
+				<Name><![CDATA[selEscalaTurno]]></Name>
+				<X>-200</X><Y>130</Y>
+				<Label><X>10</X><Y>0</Y></Label>
+				<PublicFlag>false</PublicFlag>
+				<PresentationFlag>false</PresentationFlag>
+				<ShowLabel>true</ShowLabel>
+				<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+					<Type><![CDATA[double]]></Type>
+					<InitialValue Class="CodeValue">
+						<Code><![CDATA[4.2]]></Code>
+					</InitialValue>
+				</Properties>
+			</Variable>
+			<Variable Class="PlainVariable">
+				<Id>1794000000403</Id>
+				<Name><![CDATA[corridasDeseadas]]></Name>
+				<X>-200</X><Y>160</Y>
+				<Label><X>10</X><Y>0</Y></Label>
+				<PublicFlag>false</PublicFlag>
+				<PresentationFlag>false</PresentationFlag>
+				<ShowLabel>true</ShowLabel>
+				<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+					<Type><![CDATA[int]]></Type>
+					<InitialValue Class="CodeValue">
+						<Code><![CDATA[30]]></Code>
+					</InitialValue>
+				</Properties>
+			</Variable>
+		</Variables>
+		<Presentation>
+			<Text>
+				<Id>1794000000404</Id>
+				<Name><![CDATA[tituloMC]]></Name>
+				<X>40</X>
+				<Y>25</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D</DrawMode>
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Z>0</Z>
+				<Rotation>0.0</Rotation>
+				<Color>-12490271</Color>
+				<Text><![CDATA[Domitec - Monte Carlo de Escenarios]]></Text>
+				<Font><Name><![CDATA[SansSerif]]></Name><Size>26</Size><Style>1</Style></Font>
+				<Alignment>LEFT</Alignment>
+			</Text>
+			<Text>
+				<Id>1794000000405</Id>
+				<Name><![CDATA[instruccionesMC]]></Name>
+				<X>40</X>
+				<Y>65</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D</DrawMode>
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Z>0</Z>
+				<Rotation>0.0</Rotation>
+				<Color>-8355712</Color>
+				<Text><![CDATA[Elegí el escenario, ajustá los sliders y la cantidad de corridas. Presioná Run: el experimento ejecuta esa cantidad de réplicas con semillas distintas.]]></Text>
+				<Font><Name><![CDATA[SansSerif]]></Name><Size>13</Size><Style>0</Style></Font>
+				<Alignment>LEFT</Alignment>
+			</Text>
+			<Text>
+				<Id>1794000000406</Id>
+				<Name><![CDATA[labelEscenarioMC]]></Name>
+				<X>40</X>
+				<Y>105</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D</DrawMode>
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Z>0</Z>
+				<Rotation>0.0</Rotation>
+				<Color>-16777216</Color>
+				<Text><![CDATA[Escenario:]]></Text>
+				<Font><Name><![CDATA[SansSerif]]></Name><Size>15</Size><Style>1</Style></Font>
+				<Alignment>LEFT</Alignment>
+			</Text>
+			<Control Type="RadioButtons">
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Id>1794000000407</Id>
+				<Name><![CDATA[radioEscenarioMC]]></Name>
+				<X>40</X>
+				<Y>125</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<BasicProperties Width="360" Height="85">
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<TextColor>-16777216</TextColor>
+					<Enabled>true</Enabled>
+					<ActionCode><![CDATA[if (value == 0) {
+    selFactorLatigo = 1.5;
+    selEscalaTurno = 4.2;
+} else if (value == 1) {
+    selFactorLatigo = 1.0;
+    selEscalaTurno = 4.2;
+} else {
+    selFactorLatigo = 1.0;
+    selEscalaTurno = 3.3;
+}
+sliderFactorMC.setValue(selFactorLatigo);
+sliderEscalaMC.setValue(selEscalaTurno);
+textoParamsMC.setText("factor = " + String.format(java.util.Locale.US, "%.2f", selFactorLatigo) + "   |   escala = " + String.format(java.util.Locale.US, "%.2f", selEscalaTurno) + "   |   corridas = " + corridasDeseadas);]]></ActionCode>
+				</BasicProperties>
+				<ExtendedProperties>
+					<Font Name="SansSerif" Size="13" Style="0"/>
+					<DefaultValueCode><![CDATA[0]]></DefaultValueCode>
+					<Orientation>VERTICAL</Orientation>
+					<Button><![CDATA[Escenario 0 - As-Is (factor 1.5 / escala 4.2)]]></Button>
+					<Button><![CDATA[Escenario 1 - Sin Pánico (factor 1.0 / escala 4.2)]]></Button>
+					<Button><![CDATA[Escenario 2 - Integral (factor 1.0 / escala 3.3)]]></Button>
+					<LinkTo>false</LinkTo>
+				</ExtendedProperties>
+			</Control>
+			<Text>
+				<Id>1794000000408</Id>
+				<Name><![CDATA[labelFactorMC]]></Name>
+				<X>440</X>
+				<Y>105</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D</DrawMode>
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Z>0</Z>
+				<Rotation>0.0</Rotation>
+				<Color>-16777216</Color>
+				<Text><![CDATA[factorLatigo (1.0 a 1.5):]]></Text>
+				<Font><Name><![CDATA[SansSerif]]></Name><Size>14</Size><Style>1</Style></Font>
+				<Alignment>LEFT</Alignment>
+			</Text>
+			<Control Type="Slider">
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Id>1794000000409</Id>
+				<Name><![CDATA[sliderFactorMC]]></Name>
+				<X>440</X>
+				<Y>130</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<BasicProperties Width="260" Height="30">
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Enabled>true</Enabled>
+				
+					<ActionCode><![CDATA[selFactorLatigo = value;
+textoParamsMC.setText("factor = " + String.format(java.util.Locale.US, "%.2f", selFactorLatigo) + "   |   escala = " + String.format(java.util.Locale.US, "%.2f", selEscalaTurno) + "   |   corridas = " + corridasDeseadas);]]></ActionCode>
+				</BasicProperties>
+				<ExtendedProperties>
+					<DefaultValueCode><![CDATA[selFactorLatigo]]></DefaultValueCode>
+					<Orientation>HORIZONTAL</Orientation>
+					<MinValue><![CDATA[1.0]]></MinValue>
+					<MaxValue><![CDATA[1.5]]></MaxValue>
+					<Step><![CDATA[0.05]]></Step>
+					<LinkTo>true</LinkTo>
+					<Link>selFactorLatigo</Link>
+				</ExtendedProperties>
+			</Control>
+			<Text>
+				<Id>1794000000410</Id>
+				<Name><![CDATA[labelEscalaMC]]></Name>
+				<X>440</X>
+				<Y>175</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D</DrawMode>
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Z>0</Z>
+				<Rotation>0.0</Rotation>
+				<Color>-16777216</Color>
+				<Text><![CDATA[escalaTurno (3.3 a 4.2):]]></Text>
+				<Font><Name><![CDATA[SansSerif]]></Name><Size>14</Size><Style>1</Style></Font>
+				<Alignment>LEFT</Alignment>
+			</Text>
+			<Control Type="Slider">
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Id>1794000000411</Id>
+				<Name><![CDATA[sliderEscalaMC]]></Name>
+				<X>440</X>
+				<Y>200</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<BasicProperties Width="260" Height="30">
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Enabled>true</Enabled>
+				
+					<ActionCode><![CDATA[selEscalaTurno = value;
+textoParamsMC.setText("factor = " + String.format(java.util.Locale.US, "%.2f", selFactorLatigo) + "   |   escala = " + String.format(java.util.Locale.US, "%.2f", selEscalaTurno) + "   |   corridas = " + corridasDeseadas);]]></ActionCode>
+				</BasicProperties>
+				<ExtendedProperties>
+					<DefaultValueCode><![CDATA[selEscalaTurno]]></DefaultValueCode>
+					<Orientation>HORIZONTAL</Orientation>
+					<MinValue><![CDATA[3.3]]></MinValue>
+					<MaxValue><![CDATA[4.2]]></MaxValue>
+					<Step><![CDATA[0.05]]></Step>
+					<LinkTo>true</LinkTo>
+					<Link>selEscalaTurno</Link>
+				</ExtendedProperties>
+			</Control>
+			<Text>
+				<Id>1794000000412</Id>
+				<Name><![CDATA[labelCorridas]]></Name>
+				<X>440</X>
+				<Y>300</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D</DrawMode>
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Z>0</Z>
+				<Rotation>0.0</Rotation>
+				<Color>-16777216</Color>
+				<Text><![CDATA[Cantidad de corridas (1 a 100):]]></Text>
+				<Font><Name><![CDATA[SansSerif]]></Name><Size>14</Size><Style>1</Style></Font>
+				<Alignment>LEFT</Alignment>
+			</Text>
+			<Control Type="Slider">
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Id>1794000000413</Id>
+				<Name><![CDATA[sliderCorridas]]></Name>
+				<X>440</X>
+				<Y>325</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<BasicProperties Width="260" Height="30">
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Enabled>true</Enabled>
+				
+					<ActionCode><![CDATA[corridasDeseadas = (int) value;
+textoParamsMC.setText("factor = " + String.format(java.util.Locale.US, "%.2f", selFactorLatigo) + "   |   escala = " + String.format(java.util.Locale.US, "%.2f", selEscalaTurno) + "   |   corridas = " + corridasDeseadas);]]></ActionCode>
+				</BasicProperties>
+				<ExtendedProperties>
+					<DefaultValueCode><![CDATA[corridasDeseadas]]></DefaultValueCode>
+					<Orientation>HORIZONTAL</Orientation>
+					<MinValue><![CDATA[1]]></MinValue>
+					<MaxValue><![CDATA[100]]></MaxValue>
+					<Step><![CDATA[1]]></Step>
+					<LinkTo>true</LinkTo>
+					<Link>corridasDeseadas</Link>
+				</ExtendedProperties>
+			</Control>
+			<Text>
+				<Id>1794000000414</Id>
+				<Name><![CDATA[textoParamsMC]]></Name>
+				<X>40</X>
+				<Y>245</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D</DrawMode>
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Z>0</Z>
+				<Rotation>0.0</Rotation>
+				<Color>-10066330</Color>
+				<Text><![CDATA[Parámetros]]></Text>
+				<TextCode><![CDATA["factor = " + String.format(java.util.Locale.US, "%.2f", selFactorLatigo) + "   |   escala = " + String.format(java.util.Locale.US, "%.2f", selEscalaTurno) + "   |   corridas = " + corridasDeseadas]]></TextCode>
+				<Font><Name><![CDATA[SansSerif]]></Name><Size>16</Size><Style>1</Style></Font>
+				<Alignment>LEFT</Alignment>
+			</Text>
+			<Text>
+				<Id>1794000000415</Id>
+				<Name><![CDATA[notaMC]]></Name>
+				<X>40</X>
+				<Y>385</Y>
+				<Label><X>0</X><Y>-10</Y></Label>
+				<PublicFlag>true</PublicFlag>
+				<PresentationFlag>true</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D</DrawMode>
+				<EmbeddedIcon>false</EmbeddedIcon>
+				<Z>0</Z>
+				<Rotation>0.0</Rotation>
+				<Color>-8355712</Color>
+				<Text><![CDATA[Este experimento corre en modo rápido y muestra el resultado de cada réplica en la consola.]]></Text>
+				<Font><Name><![CDATA[SansSerif]]></Name><Size>12</Size><Style>0</Style></Font>
+				<Alignment>LEFT</Alignment>
+			</Text>
+		</Presentation>
+		<AllowParallelEvaluations>false</AllowParallelEvaluations>
+		<UseFreeformParameters>true</UseFreeformParameters>
+		<NumberOfRuns>100</NumberOfRuns>
+		<FreeformParamValue>
+			<Id>1793663800123</Id>
+			<Expression Class="CodeValue"><Code><![CDATA[1.5]]></Code></Expression>
+		</FreeformParamValue>
+		<FreeformParamValue>
+			<Id>1793672089876</Id>
+			<Expression Class="CodeValue"><Code><![CDATA[4.2]]></Code></Expression>
+		</FreeformParamValue>
+		<RangeVariationParamValue>
+			<Id>1793663800123</Id>
+			<Type><![CDATA[FIXED]]></Type>
+		</RangeVariationParamValue>
+		<RangeVariationParamValue>
+			<Id>1793672089876</Id>
+			<Type><![CDATA[FIXED]]></Type>
+		</RangeVariationParamValue>
+		<ModelTimeProperties>
+			<StopOption>Stop at specified time</StopOption>
+			<InitialDate>1787702400000</InitialDate>
+			<InitialTime>0.0</InitialTime>
+			<FinalDate>1790380800000</FinalDate>
+			<FinalTime>100.0</FinalTime>
+		</ModelTimeProperties>
+		<PresentationProperties>
+			<EnableZoomAndPanning>true</EnableZoomAndPanning>
+			<Title>Domitec : Monte Carlo</Title>
+			<EnableDeveloperPanel>true</EnableDeveloperPanel>
+			<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
+		</PresentationProperties>
+		<ReplicationsProperties>
+			<UseReplication>false</UseReplication>
+			<FixedReplicationsNumber>true</FixedReplicationsNumber>
+			<ReplicationPerIteration>1</ReplicationPerIteration>
+			<MinimumReplication>2</MinimumReplication>
+			<MaximumReplication>10</MaximumReplication>
+			<ConfidenceLevel>LEVEL_95</ConfidenceLevel>
+			<ErrorPercent>0.5</ErrorPercent>
+			<ExpressionForConfidenceComputation>0</ExpressionForConfidenceComputation>
+		</ReplicationsProperties>
+	</ParamVariationExperiment>
 </Experiments>
