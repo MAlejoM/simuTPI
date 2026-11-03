@@ -53,7 +53,7 @@
     }
     
     // Imprimimos el aviso en consola
-    traceln("      [!] PROVEEDOR: Orden de " + order.product + " procesada. Por demora de insumos, se entregará en " + String.format("%.1f", leadTimeSemanas) + " semanas.");
+    // traceln("      [!] PROVEEDOR: Orden de " + order.product + " procesada. Por demora de insumos, se entregará en " + String.format("%.1f", leadTimeSemanas) + " semanas.");
     
     // Programamos el envío del camión con el tiempo exacto que calculamos
     create_DeliverOrder(leadTimeSemanas, WEEK, order.product, order.amount);

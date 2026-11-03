@@ -1,6 +1,6 @@
 void planificacionSemanal()
 {/*ALCODESTART::1788973656817*/
-traceln("=== 📊 REVISIÓN SEMANAL DE PRODUCCIÓN Y COMPRAS ===");
+// traceln("=== 📊 REVISIÓN SEMANAL DE PRODUCCIÓN Y COMPRAS ===");
 
 double reqCajas = 0;
 double reqPreformas = 0;
@@ -187,16 +187,16 @@ m.produccionSemanalActual = 0;
 // === REPORTE RESUMEN FINAL AL TERMINAR LA CORRIDA ===
 if (time() >= 99.0) {
     double fillRateGlobal = (demandaTotalAcumulada > 0) ? (despachoInmediatoAcumulado / demandaTotalAcumulada) * 100.0 : 0.0;
-    traceln("====================================================================");
-    traceln(">> RESULTADOS FINALES DE CORRIDA (Semana 100.0 - Fin de Simulacion):");
-    traceln("   * Nivel de Servicio (Fill Rate): " + String.format("%.2f%%", fillRateGlobal));
-    traceln("   * Demanda Total Acumulada:       " + Math.round(demandaTotalAcumulada) + " cajas");
-    traceln("   * Despachado Inmediato:          " + Math.round(despachoInmediatoAcumulado) + " cajas");
-    traceln("   * Backlog Residual en Planta:    " + Math.round(totalBacklog) + " cajas");
-    traceln("   * Stock en Deposito:             " + Math.round(totalStock) + " cajas");
-    traceln("   * WIP en Proceso Fabril:         " + Math.round(totalWip) + " cajas");
-    traceln("   * Ordenes Historicas Emitidas:   " + Math.round(m.ordenesHistoricas) + " cajas");
-    traceln("====================================================================");
+    // traceln("====================================================================");
+    // traceln(">> RESULTADOS FINALES DE CORRIDA (Semana 100.0 - Fin de Simulacion):");
+    // traceln("   * Nivel de Servicio (Fill Rate): " + String.format("%.2f%%", fillRateGlobal));
+    // traceln("   * Demanda Total Acumulada:       " + Math.round(demandaTotalAcumulada) + " cajas");
+    // traceln("   * Despachado Inmediato:          " + Math.round(despachoInmediatoAcumulado) + " cajas");
+    // traceln("   * Backlog Residual en Planta:    " + Math.round(totalBacklog) + " cajas");
+    // traceln("   * Stock en Deposito:             " + Math.round(totalStock) + " cajas");
+    // traceln("   * WIP en Proceso Fabril:         " + Math.round(totalWip) + " cajas");
+    // traceln("   * Ordenes Historicas Emitidas:   " + Math.round(m.ordenesHistoricas) + " cajas");
+    // traceln("====================================================================");
 }
 /*ALCODEEND*/}
 

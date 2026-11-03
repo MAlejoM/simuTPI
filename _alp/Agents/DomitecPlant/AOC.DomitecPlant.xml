@@ -97,7 +97,7 @@ if (msg instanceof OrderMessage) {
         // Contabilizamos lo despachado de forma inmediata
         despachoInmediatoAcumulado += dispatched;
         
-        traceln("PLANTA: " + ps.product + " solicitado=" + order.amount
+        // traceln("PLANTA: " + ps.product + " solicitado=" + order.amount
             + " despachado=" + Math.round(dispatched)
             + " pendiente=" + Math.round(ps.backlog));
         break;
@@ -120,7 +120,7 @@ if (msg instanceof DeliveryMessage) {
             for (int b = 0; b &lt; numBatches; b++) {
                 sourceLavandina.inject();
             }
-            traceln("&gt;&gt;&gt; INSUMO RECIBIDO: Inyectados " + numBatches + " lotes a Dilución de Lavandina");
+            // traceln("&gt;&gt;&gt; INSUMO RECIBIDO: Inyectados " + numBatches + " lotes a Dilución de Lavandina");
         } 
         // Rama 2: Líquidos Formulados
         else {
@@ -128,7 +128,7 @@ if (msg instanceof DeliveryMessage) {
             for (int b = 0; b &lt; numBatches; b++) {
                 sourceLiquidos.inject();
             }
-            traceln("&gt;&gt;&gt; INSUMO RECIBIDO: Inyectados " + numBatches + " lotes de " + delivery.product + " a Reactores de Líquidos");
+            // traceln("&gt;&gt;&gt; INSUMO RECIBIDO: Inyectados " + numBatches + " lotes de " + delivery.product + " a Reactores de Líquidos");
         }
         break;
     }
