@@ -165,6 +165,32 @@ m.dsBacklog.add(time(), totalBacklog);
 m.dsWip.add(time(), totalWip);
 m.dsProduccionSemanal.add(time(), m.produccionSemanalActual);
 
+// --- ACTUALIZACION EN TIEMPO REAL DEL DASHBOARD INTERACTIVO EN MAIN ---
+double frActual = (demandaTotalAcumulada > 0) ? (despachoInmediatoAcumulado / demandaTotalAcumulada) * 100.0 : 100.0;
+if (m.lblFillRate != null) {
+    m.lblFillRate.setText(String.format("%.1f%%", frActual));
+    if (frActual >= 95.0) {
+        m.lblFillRate.setColor(new java.awt.Color(40, 167, 69));
+        if (m.barraGaugeFillRate != null) m.barraGaugeFillRate.setFillColor(new java.awt.Color(40, 167, 69));
+    } else if (frActual >= 90.0) {
+        m.lblFillRate.setColor(new java.awt.Color(255, 193, 7));
+        if (m.barraGaugeFillRate != null) m.barraGaugeFillRate.setFillColor(new java.awt.Color(255, 193, 7));
+    } else {
+        m.lblFillRate.setColor(new java.awt.Color(220, 53, 69));
+        if (m.barraGaugeFillRate != null) m.barraGaugeFillRate.setFillColor(new java.awt.Color(220, 53, 69));
+    }
+}
+if (m.barraGaugeFillRate != null) {
+    m.barraGaugeFillRate.setWidth(Math.max(2.0, Math.min(180.0, 180.0 * (frActual / 100.0))));
+}
+if (m.lblBacklog != null) {
+    m.lblBacklog.setText(String.format("%,d cajas", Math.round(totalBacklog)));
+}
+if (m.lblSemana != null) {
+    m.lblSemana.setText(String.format("Semana: %.0f de 100", time()));
+}
+// ----------------------------------------------------------------------
+
 // Actualización dinámica de los indicadores en el plano visual de planta
 double wipLav = (queueMateriaPrima.size() + delayDilucion.size() + delayQCLavandina.size() + queueTanquePulmon.size() + delayEnvasado.size()) * 1000.0;
 double wipDes = (tankDesinfectante.size() + delayEnvasadoDesinfectante.size()) * 1000.0;

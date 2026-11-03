@@ -2,6 +2,198 @@
 <ActiveObjectClass>
 	<Id>1787747219700</Id>
 	<Name><![CDATA[Main]]></Name>
+	<StartupCode><![CDATA[// === CONSTRUCCION VISUAL DEL DASHBOARD INTERACTIVO Y SELECTOR DE ESCENARIOS ===
+// 1. Panel de Control de Escenarios (Fondo)
+ShapeRectangle panelCtrl = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    20, 20, 0, 0,
+    new java.awt.Color(200, 200, 200), new java.awt.Color(248, 249, 250),
+    300, 210, 0, 1.0, LineStyle.SOLID
+);
+presentation.add(panelCtrl);
+
+ShapeText titCtrl = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    30, 42, 0, 0,
+    new java.awt.Color(33, 37, 41), "CONFIGURACIÓN DE ESCENARIO",
+    new Font("SansSerif", Font.BOLD, 13), ALIGNMENT_LEFT
+);
+presentation.add(titCtrl);
+
+// Boton Escenario 0
+ShapeButton btnEsc0 = new ShapeButton(
+    this, true, 30, 55, 280, 32,
+    new java.awt.Color(33, 37, 41), true,
+    new Font("SansSerif", Font.BOLD, 11), "1. As-Is (40 hs, Pánico 1.5x)"
+) {
+    @Override
+    public void action() {
+        factorLatigoMain = 1.5;
+        escalaTurnoMain = 4.2;
+        domitecPlant.factorLatigo = 1.5;
+        domitecPlant.escalaTurno = 4.2;
+        lblEscenarioActual.setText("Escenario 0: As-Is (40h, Pánico)");
+        lblEscenarioActual.setColor(new java.awt.Color(180, 40, 40));
+        traceln(">>> [SELECCIÓN] Escenario 0 aplicado: Pánico=1.5 | 40 hs (escala=4.2)");
+    }
+};
+presentation.add(btnEsc0);
+
+// Boton Escenario 1
+ShapeButton btnEsc1 = new ShapeButton(
+    this, true, 30, 95, 280, 32,
+    new java.awt.Color(33, 37, 41), true,
+    new Font("SansSerif", Font.BOLD, 11), "2. Sin Pánico (40 hs, Racional 1.0x)"
+) {
+    @Override
+    public void action() {
+        factorLatigoMain = 1.0;
+        escalaTurnoMain = 4.2;
+        domitecPlant.factorLatigo = 1.0;
+        domitecPlant.escalaTurno = 4.2;
+        lblEscenarioActual.setText("Escenario 1: Sin Pánico (40h, Racional)");
+        lblEscenarioActual.setColor(new java.awt.Color(220, 140, 0));
+        traceln(">>> [SELECCIÓN] Escenario 1 aplicado: Racional=1.0 | 40 hs (escala=4.2)");
+    }
+};
+presentation.add(btnEsc1);
+
+// Boton Escenario 2
+ShapeButton btnEsc2 = new ShapeButton(
+    this, true, 30, 135, 280, 32,
+    new java.awt.Color(255, 255, 255), true,
+    new Font("SansSerif", Font.BOLD, 11), "3. Integral (51 hs, Racional 1.0x) ⭐"
+) {
+    @Override
+    public void action() {
+        factorLatigoMain = 1.0;
+        escalaTurnoMain = 3.3;
+        domitecPlant.factorLatigo = 1.0;
+        domitecPlant.escalaTurno = 3.3;
+        lblEscenarioActual.setText("Escenario 2: Integral (51h, Racional)");
+        lblEscenarioActual.setColor(new java.awt.Color(40, 140, 40));
+        traceln(">>> [SELECCIÓN] Escenario 2 aplicado: Racional=1.0 | 51 hs (escala=3.3)");
+    }
+};
+presentation.add(btnEsc2);
+
+ShapeText notaCtrl = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    30, 185, 0, 0,
+    new java.awt.Color(108, 117, 125), "💡 Clickeá cualquier escenario antes o durante",
+    new Font("SansSerif", Font.ITALIC, 10), ALIGNMENT_LEFT
+);
+presentation.add(notaCtrl);
+
+ShapeText notaCtrl2 = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    30, 200, 0, 0,
+    new java.awt.Color(108, 117, 125), "   la simulación para comparar su impacto.",
+    new Font("SansSerif", Font.ITALIC, 10), ALIGNMENT_LEFT
+);
+presentation.add(notaCtrl2);
+
+// 2. Tarjetas de KPIs en Vivo
+// Tarjeta Fill Rate
+ShapeRectangle cardFR = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    350, 20, 0, 0,
+    new java.awt.Color(200, 200, 200), new java.awt.Color(255, 255, 255),
+    200, 95, 0, 1.0, LineStyle.SOLID
+);
+presentation.add(cardFR);
+
+ShapeText titFR = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    360, 40, 0, 0,
+    new java.awt.Color(108, 117, 125), "FILL RATE ACUMULADO",
+    new Font("SansSerif", Font.BOLD, 10), ALIGNMENT_LEFT
+);
+presentation.add(titFR);
+
+lblFillRate = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    360, 75, 0, 0,
+    new java.awt.Color(40, 140, 40), "--- %",
+    new Font("SansSerif", Font.BOLD, 26), ALIGNMENT_LEFT
+);
+presentation.add(lblFillRate);
+
+// Fondo de la barra de nivel (Gauge)
+ShapeRectangle fondoGauge = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    360, 85, 0, 0,
+    new java.awt.Color(220, 220, 220), new java.awt.Color(235, 235, 235),
+    180, 14, 0, 1.0, LineStyle.SOLID
+);
+presentation.add(fondoGauge);
+
+barraGaugeFillRate = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    360, 85, 0, 0,
+    null, new java.awt.Color(40, 167, 69),
+    0, 14, 0, 1.0, LineStyle.SOLID
+);
+presentation.add(barraGaugeFillRate);
+
+// Tarjeta Backlog
+ShapeRectangle cardBK = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    570, 20, 0, 0,
+    new java.awt.Color(200, 200, 200), new java.awt.Color(255, 255, 255),
+    200, 95, 0, 1.0, LineStyle.SOLID
+);
+presentation.add(cardBK);
+
+ShapeText titBK = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    580, 40, 0, 0,
+    new java.awt.Color(108, 117, 125), "PEDIDOS PENDIENTES (BACKLOG)",
+    new Font("SansSerif", Font.BOLD, 10), ALIGNMENT_LEFT
+);
+presentation.add(titBK);
+
+lblBacklog = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    580, 75, 0, 0,
+    new java.awt.Color(220, 53, 69), "0 cajas",
+    new Font("SansSerif", Font.BOLD, 22), ALIGNMENT_LEFT
+);
+presentation.add(lblBacklog);
+
+// Tarjeta Estado & Tiempo
+ShapeRectangle cardTiempo = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    790, 20, 0, 0,
+    new java.awt.Color(200, 200, 200), new java.awt.Color(255, 255, 255),
+    240, 95, 0, 1.0, LineStyle.SOLID
+);
+presentation.add(cardTiempo);
+
+ShapeText titTiempo = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    800, 40, 0, 0,
+    new java.awt.Color(108, 117, 125), "ESTADO DE LA PLANTA",
+    new Font("SansSerif", Font.BOLD, 10), ALIGNMENT_LEFT
+);
+presentation.add(titTiempo);
+
+lblSemana = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    800, 65, 0, 0,
+    new java.awt.Color(33, 37, 41), "Semana: 0.0 de 100",
+    new Font("SansSerif", Font.BOLD, 14), ALIGNMENT_LEFT
+);
+presentation.add(lblSemana);
+
+lblEscenarioActual = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    800, 92, 0, 0,
+    new java.awt.Color(180, 40, 40), "Escenario 0: As-Is (40h, Pánico)",
+    new Font("SansSerif", Font.BOLD, 11), ALIGNMENT_LEFT
+);
+presentation.add(lblEscenarioActual);
+]]></StartupCode>
 	<Generic>false</Generic>
 	<GenericParameter>
 		<Id>1787747219705</Id>
