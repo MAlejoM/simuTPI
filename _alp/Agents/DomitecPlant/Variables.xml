@@ -63,6 +63,28 @@
 			<Type><![CDATA[ProductType]]></Type>
 		</Properties>
 	</Variable>
+	<Variable Class="PlainVariable">
+		<Id>1793739999001</Id>
+		<Name><![CDATA[despachoTotalAcumulado]]></Name>
+		<X>80</X>
+		<Y>470</Y>
+		<Label>
+			<X>10</X>
+			<Y>0</Y>
+		</Label>
+		<PublicFlag>false</PublicFlag>
+		<PresentationFlag>true</PresentationFlag>
+		<ShowLabel>true</ShowLabel>
+		<Properties SaveInSnapshot="true"
+              Constant="false"
+              AccessType="public"
+              StaticVariable="false">
+			<Type><![CDATA[double]]></Type>
+			<InitialValue Class="CodeValue">
+				<Code><![CDATA[0.0]]></Code>
+			</InitialValue>
+		</Properties>
+	</Variable>
 	<Variable Class="Parameter">
 		<Id>1793663896434</Id>
 		<Name><![CDATA[factorLatigo]]></Name>
@@ -153,28 +175,6 @@
 			<CollectionClass>ArrayList</CollectionClass>
 			<ElementClass>ProductionLineState</ElementClass>
 			<ValueElementClass>String</ValueElementClass>
-		</Properties>
-	</Variable>
-	<Variable Class="PlainVariable">
-		<Id>1793739999001</Id>
-		<Name><![CDATA[despachoTotalAcumulado]]></Name>
-		<X>80</X>
-		<Y>470</Y>
-		<Label>
-			<X>10</X>
-			<Y>0</Y>
-		</Label>
-		<PublicFlag>false</PublicFlag>
-		<PresentationFlag>true</PresentationFlag>
-		<ShowLabel>true</ShowLabel>
-		<Properties SaveInSnapshot="true"
-              Constant="false"
-              AccessType="public"
-              StaticVariable="false">
-			<Type><![CDATA[double]]></Type>
-			<InitialValue Class="CodeValue">
-				<Code><![CDATA[0.0]]></Code>
-			</InitialValue>
 		</Properties>
 	</Variable>
 </Variables>
