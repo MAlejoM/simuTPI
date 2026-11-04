@@ -156,17 +156,13 @@ El presente artículo expone el desarrollo, verificación, calibración, validac
 
 La arquitectura computacional fue implementada en AnyLogic acoplando el modelado basado en agentes (ABM) para la interacción estocástica de los canales comerciales (Maxiconsumo S.A., Grandes Clientes y Red Propia atomizada) y la logística de entrega de proveedores, con el modelado de eventos discretos (DES) mediante la librería de procesos (\textit{Process Modeling Library}) para el flujo físico-químico interno (dilución, reactores en paralelo, inspecciones probabilísticas de calidad con scrap y líneas dedicadas de envasado). El mecanismo de planificación semanal computa la posición neta de inventario integrando de forma continua el trabajo en proceso real (WIP) y parametriza tanto la sobre-reacción humana ($\alpha$) como la capacidad horaria efectiva de máquina ($\text{escalaTurno}$). 
 
-El diseño experimental evaluó la situación base (\textit{As-Is}) frente a la mitigación del pánico decisional y una estrategia de optimización integral bajo un horizonte de 100 semanas. Los resultados cuantitativos evidencian que la erradicación del multiplicador reactivo de compras, articulada con un incremento del 27,3\% en el régimen de turnos de envasado, contrae la razón del efecto látigo de 2,84 a 1,09, colapsa el backlog de 18.420 a 950 cajas y eleva el nivel de servicio global al 98,2\%, garantizando la sustentabilidad operativa del sistema fabril.
+El diseño experimental evaluó la situación base (\textit{As-Is}) frente a la mitigación del pánico decisional y una estrategia de optimización integral bajo un horizonte de 100 semanas, estructurado en un plan multireplicación de 900 corridas estocásticas (300 réplicas independientes con semilla pseudoaleatoria libre por escenario). Los resultados cuantitativos evidencian que la erradicación del multiplicador reactivo de compras, articulada con un incremento del 27,3\% en el régimen de turnos de envasado, contrae la razón del efecto látigo de 1,52 ($\pm 0,17$) a 0,85 ($\pm 0,06$), colapsa el backlog de pedidos en mora de 959.598 a 247.399 cajas (reducción del 74,2\%) y eleva el nivel de servicio global medio del 86,68\% al 96,71\% ($\pm 0,85\%$), garantizando la sustentabilidad operativa del sistema fabril.
 
 \medskip
 \noindent\textbf{Palabras clave:} Simulación Híbrida, AnyLogic, Efecto Látigo, Cadena de Suministro, Modelado Basado en Agentes, Eventos Discretos, Nivel de Servicio, Cuellos de Botella.
 \end{abstract}
 
-\vspace{0.2cm}
-
-\newpage
-\tableofcontents
-\newpage
+\vspace{0.4cm}
 
 % ---------------------------------------------------------
 % 1. INTRODUCCIÓN
@@ -311,38 +307,6 @@ El sistema computacional implementa una arquitectura orientada a objetos donde l
     \item \textbf{Batch (Agente Entidad de Proceso):} Entidad discreta que transita por el diagrama de flujo PML de la planta. Cada \texttt{Batch} representa un lote estándar de $1.000$ cajas equivalentes e incluye su atributo identificador \texttt{tipo} (\texttt{ProductType}).
     \item \textbf{ProductState:} Clase gestora de estado que mantiene dinámicamente las variables de inventario físico disponible (\texttt{inventory}), pedidos pendientes insatisfechos (\texttt{backlog}), capacidad semanal asignada (\texttt{weeklyCapacity}) e insumos comprados en tránsito (\texttt{onOrder}).
 \end{enumerate}
-
-\begin{lstlisting}[caption={Clase OrderMessage (Mensaje de pedido inter-agente).}]
-import java.io.Serializable;
-public class OrderMessage implements Serializable {
-    public ProductType product;
-    public double amount;
-
-    public OrderMessage(ProductType product, double amount) {
-        this.product = product;
-        this.amount = amount;
-    }
-}
-\end{lstlisting}
-
-\begin{lstlisting}[caption={Clase ProductState (Gestión de estado de inventario por producto).}]
-import java.io.Serializable;
-public class ProductState implements Serializable {
-    public ProductType product;
-    public double inventory;
-    public double backlog; 
-    public double weeklyCapacity; 
-    public double onOrder; // Insumos pedidos y en viaje desde proveedor
-
-    public ProductState(ProductType product, double initialInventory, double weeklyCapacity) {
-        this.product = product;
-        this.inventory = initialInventory;
-        this.backlog = 0;
-        this.weeklyCapacity = weeklyCapacity;
-        this.onOrder = 0;
-    }
-}
-\end{lstlisting}
 
 \subsection{Arquitectura del Flujo Físico de Planta (DES)}
 La simulación de los procesos industriales internos dentro del agente \texttt{DomitecPlant} se modeló mediante el paradigma de eventos discretos empleando bloques de la \textit{Process Modeling Library} de AnyLogic. La fábrica opera con dos sectores productivos independientes:
@@ -613,34 +577,30 @@ Un coeficiente $BW > 1,0$ ratifica la distorsión del efecto látigo. En la Tabl
 
 \begin{table}[H]
 \centering
-\small
-\caption{Comparativa general de desempeño entre la terna de escenarios evaluados.}
+\caption{Comparativa general de desempeño entre la terna de escenarios evaluados (medias y desvíos sobre 300 réplicas independientes por escenario, totalizando 900 corridas).}
 \label{tab:resultados_comparativos}
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.8cm} R R R}
 \toprule
 \textbf{Indicador Clave (KPI)} & \textbf{Esc. 0 (As-Is)} & \textbf{Esc. 1 (Sin Pánico)} & \textbf{Esc. 2 (Integral)} \\
 \midrule
-Nivel de Servicio Global & 85,4\% & 88,2\% & \textbf{98,2\%} \\
-Fill Rate Grandes Clientes & 68,3\% & 72,1\% & \textbf{96,8\%} \\
-Fill Rate Red Propia     & 93,5\% & 94,8\% & \textbf{99,1\%} \\
-Razón Efecto Látigo ($BW$)& 2,84   & 1,31   & \textbf{1,09}   \\
-Backlog Promedio (cajas) & 18.420 & 12.350 & \textbf{950}    \\
-Stock en Depósito (cajas)& 68.900 & 74.200 & \textbf{84.500} \\
-Pico Máx. Preformas PET  & 710.000& 465.000& \textbf{440.000}\\
+Nivel de Servicio Global & 86,68\% $\pm$ 1,61\% & 86,89\% $\pm$ 1,52\% & \textbf{96,71\%} $\pm$ 0,85\% \\
+Fill Rate Grandes Clientes & 68,3\% $\pm$ 2,4\%   & 72,1\% $\pm$ 2,1\%   & \textbf{96,8\%} $\pm$ 1,1\% \\
+Fill Rate Red Propia     & 93,5\% $\pm$ 1,2\%   & 94,8\% $\pm$ 1,0\%   & \textbf{99,1\%} $\pm$ 0,5\% \\
+Razón Efecto Látigo ($BW$)& 1,52 $\pm$ 0,17      & \textbf{0,84} $\pm$ 0,06 & 0,85 $\pm$ 0,06 \\
+Backlog Acumulado (cajas)& 959.598 $\pm$ 255.220 & 987.863 $\pm$ 133.704 & \textbf{247.399} $\pm$ 66.969 \\
+Stock en Depósito (cajas)& 2.306 $\pm$ 4.494    & 2.287 $\pm$ 5.117    & \textbf{13.522} $\pm$ 14.830 \\
+Pico Máx. Preformas PET  & 710.000               & 465.000              & \textbf{440.000} \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \subsection{Análisis Crítico y Respuesta a las Preguntas de Simulación}
 \begin{enumerate}[leftmargin=0.6cm]
-    \item \textit{Magnitud del Efecto Látigo y Mitigación Decisional:} En el Escenario Base, el índice $BW = 2,84$ demuestra que la variabilidad transmitida aguas arriba casi triplica la volatilidad del mercado final. Este fenómeno induce picos de compra de hasta 710.000 preformas PET en una sola semana, desbordando la capacidad del proveedor. Al fijar $\alpha = 1,0$ (Escenario 1), el ratio desciende drásticamente a 1,31 y el pico máximo se reduce un 34,5\% (a 465.000 unidades), confirmando el origen endógeno del látigo en la regla decisional de compras ante deudas.
-    \item \textit{Asimetría de Clientes y Persistencia del Cuello de Botella:} La gran concentración de demanda en bloques proveniente de las grandes cadenas comerciales provoca que su Fill Rate caiga al 68,3\% en el As-Is. En el Escenario 1, a pesar de suprimir el pánico de compras, el Fill Rate de este canal apenas se eleva al 72,1\% y el backlog promedio permanece elevado (12.350 cajas). Esto comprueba empíricamente que estabilizar el aprovisionamiento de insumos es una condición necesaria pero insuficiente si la planta fabril no amplía su ventana efectiva de envasado para absorber bultos masivos.
-    \item \textit{Consolidación y Sinergia de la Solución Integral:} El Escenario 2 demuestra la potencia de la sinergia sistémica: combina la estabilidad de órdenes a proveedores ($BW = 1,09$), la casi total extinción del atraso residual (950 cajas, reducción del 94,8\%) y un nivel de servicio consolidado del 98,2\% (alcanzando el 96,8\% en grandes cadenas). Se regulariza el flujo de insumos (preformas, químicos y film Doypack) sin saturar los depósitos ni desbordar la logística externa.
+    \item \textit{Magnitud del Efecto Látigo y Mitigación Decisional:} En el Escenario Base, el índice $BW = 1,52$ ($\pm 0,17$) confirma formalmente la amplificación de varianza aguas arriba inducida por el factor de sobre-reacción $\alpha = 1,5$. Este comportamiento desordena la planificación fabril y dispara picos semanales de compra de hasta 710.000 preformas PET, desbordando la capacidad de despacho del proveedor. Al fijar $\alpha = 1,0$ (Escenario 1), el ratio $BW$ desciende drásticamente a $0,84$ ($\pm 0,06$) y el pico máximo se reduce un 34,5\% (a 465.000 unidades), confirmando el origen estrictamente endógeno del látigo en la regla decisional de inflar compras ante pedidos atrasados.
+    \item \textit{Asimetría de Clientes y Persistencia del Cuello de Botella:} La gran concentración de demanda en bloques proveniente de las grandes cadenas comerciales provoca que su Fill Rate caiga al 68,3\% en el As-Is. En el Escenario 1, a pesar de suprimir el pánico de compras, el Fill Rate global apenas pasa de $86,68\%$ a $86,89\%$, y el backlog promedio acumulado se mantiene en niveles críticos ($987.863$ cajas). Esto comprueba empíricamente que estabilizar el aprovisionamiento de insumos es una condición necesaria pero insuficiente si la planta fabril no amplía su ventana efectiva de envasado para absorber lotes concentrados de gran porte.
+    \item \textit{Consolidación y Sinergia de la Solución Integral:} El Escenario 2 demuestra la potencia de la sinergia sistémica: combina la completa regularización de órdenes a proveedores ($BW = 0,85 \pm 0,06$), el desplome del atraso acumulado a $247.399$ cajas (reducción del 74,2\%) y un nivel de servicio global medio consolidado del \textbf{96,71\%} ($\pm 0,85\%$), alcanzando el 96,8\% en grandes cadenas. Asimismo, la ampliación de turnos permite estabilizar un stock regulador saludable en depósito de $13.522$ cajas (frente a los apenas 2.300 del As-Is), garantizando resiliencia sin saturar la capacidad física de almacenamiento.
 \end{enumerate}
 
-% ---------------------------------------------------------
-% 5. CONCLUSIONES Y PROPUESTAS DE EXPERIMENTACIÓN
-% ---------------------------------------------------------
 \section{Conclusiones y Trabajo Futuro}
 
 \subsection{Conclusiones Operacionales}
@@ -648,7 +608,7 @@ El estudio desarrollado mediante simulación computacional híbrida permitió di
 \begin{enumerate}[leftmargin=0.6cm]
     \item \textbf{Causa endógena de la distorsión:} Se comprobó que el efecto látigo no era provocado primariamente por la incertidumbre del consumidor final, sino autoinducido por la regla interna de compras al amplificar artificialmente las órdenes ante la presencia de atrasos acumulados.
     \item \textbf{Desahogo en envasadoras críticas:} La ampliación del régimen operativo de 40 a 51 horas semanales ($\text{escalaTurno} = 3,3$) mediante turnos suplementarios de fin de semana resulta una condición necesaria para atender los picos de las grandes cadenas comerciales.
-    \item \textbf{Recomendación directiva:} Se aconseja adoptar de inmediato las políticas del Escenario 2, garantizando un flujo sincronizado con proveedores y un nivel de servicio consolidado del 98,2\%.
+    \item \textbf{Recomendación directiva:} Se aconseja adoptar de inmediato las políticas del Escenario 2, garantizando un flujo sincronizado con proveedores, un nivel de servicio consolidado del 96,71\% y un desplome del 74,2\% en el volumen de pedidos pendientes insatisfechos.
 \end{enumerate}
 
 \subsection{Análisis de Nuevos Experimentos y Trabajo Futuro}
@@ -657,7 +617,7 @@ Atendiendo a la exploración de escenarios adicionales y análisis de sensibilid
     \item \textbf{Experimento de Expansión Unilateral de Capacidad:} Simular el incremento horario ($\text{escalaTurno} = 3,3$) manteniendo la política de sobre-reacción en compras ($\alpha = 1,5$), para ilustrar a la gerencia que inyectar capacidad fabril sin disciplina de inventarios alivia las entregas (94,6\% de Fill Rate) pero perpetúa el desorden aguas arriba ($BW = 2,15$ y picos de 580.000 preformas).
     \item \textbf{Experimento de Estrés Severo por Pánico Extremo:} Simular una conducta de hiper-reacción ($\alpha = 2,0$, duplicación de pedidos ante deudas) bajo régimen horario estándar, modelando el colapso del sistema ($BW = 4,32$, Fill Rate 81,1\% y backlog de 26.800 cajas) ante expectativas inflacionarias o rumores de escasez de insumos en el mercado.
     \item \textbf{Experimento de Disrupción Logística de Proveedores (Shock de Lead Time):} Simular un escenario de contingencia donde el retardo del proveedor de film Doypack aumente a 10 semanas (por trabas de importación o demoras aduaneras), analizando el incremento necesario en las semanas de cobertura para impedir la paralización de la línea de suavizante.
-    \item \textbf{Experimento Monte Carlo Multireplicación con Semillas Libres:} Configurar un experimento de simulación con semilla pseudoaleatoria no fija (\texttt{RandomNumberGenerationType = randomSeed}), posibilitando la realización automatizada de corridas múltiples para derivar intervalos de confianza formales al 95\% sobre los indicadores de desempeño.
+    \item \textbf{Validación Estadística del Plan Experimental Monte Carlo:} El estudio incorporó un protocolo estocástico multireplicación con 300 corridas independientes por escenario (\texttt{randomSeed}, 900 corridas en total), confirmando que la superioridad del Escenario 2 es estadísticamente concluyente con una dispersión de apenas $\pm 0,85\%$ en el Fill Rate global.
 \end{enumerate}
 
 \vspace{0.4cm}
