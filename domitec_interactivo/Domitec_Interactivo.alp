@@ -33505,7 +33505,7 @@ public void observarSemana(){
 			<MaximumMemory>1024</MaximumMemory>
 			<RandomNumberGenerationType>customGenerator</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random(getCurrentReplication())</CustomGeneratorCode>
-			<AfterSimulationRunCode><![CDATA[ComparacionEscenarios.Resultado r=root.resultadoFinal(root.numeroEscenario); traceln("seed="+r.seed+",escenario="+r.escenario+",firma_demanda="+root.registro.firmaDemanda()+",fillRate="+r.fillRate+",backlog="+r.backlog+",bw="+r.bw);]]></AfterSimulationRunCode>
+			<AfterSimulationRunCode><![CDATA[ComparacionEscenarios.Resultado r=root.resultadoFinal(root.numeroEscenario); traceln("seed="+r.seed+",escenario="+r.escenario+",firma_demanda="+root.registro.firmaDemanda()+",fillRate="+r.fillRate+",backlog="+r.backlog+",bw="+r.bw+",stock="+r.stock);]]></AfterSimulationRunCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs/>
@@ -33561,7 +33561,7 @@ public void observarSemana(){
 			<MaximumMemory>1024</MaximumMemory>
 			<RandomNumberGenerationType>customGenerator</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random(getCurrentReplication())</CustomGeneratorCode>
-			<AfterSimulationRunCode><![CDATA[ComparacionEscenarios.Resultado r=root.resultadoFinal(root.numeroEscenario); traceln("seed="+r.seed+",escenario="+r.escenario+",firma_demanda="+root.registro.firmaDemanda()+",fillRate="+r.fillRate+",backlog="+r.backlog+",bw="+r.bw);]]></AfterSimulationRunCode>
+			<AfterSimulationRunCode><![CDATA[ComparacionEscenarios.Resultado r=root.resultadoFinal(root.numeroEscenario); traceln("seed="+r.seed+",escenario="+r.escenario+",firma_demanda="+root.registro.firmaDemanda()+",fillRate="+r.fillRate+",backlog="+r.backlog+",bw="+r.bw+",stock="+r.stock);]]></AfterSimulationRunCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs/>
@@ -33623,7 +33623,7 @@ public void observarSemana(){
 			<MaximumMemory>1024</MaximumMemory>
 			<RandomNumberGenerationType>customGenerator</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random(getCurrentReplication())</CustomGeneratorCode>
-			<AfterSimulationRunCode><![CDATA[ComparacionEscenarios.Resultado r=root.resultadoFinal(root.numeroEscenario); traceln("seed="+r.seed+",escenario="+r.escenario+",firma_demanda="+root.registro.firmaDemanda()+",fillRate="+r.fillRate+",backlog="+r.backlog+",bw="+r.bw);]]></AfterSimulationRunCode>
+			<AfterSimulationRunCode><![CDATA[ComparacionEscenarios.Resultado r=root.resultadoFinal(root.numeroEscenario); traceln("seed="+r.seed+",escenario="+r.escenario+",firma_demanda="+root.registro.firmaDemanda()+",fillRate="+r.fillRate+",backlog="+r.backlog+",bw="+r.bw+",stock="+r.stock);]]></AfterSimulationRunCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs/>
