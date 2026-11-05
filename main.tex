@@ -156,7 +156,7 @@ El presente artículo expone el desarrollo, verificación, calibración, validac
 
 La arquitectura computacional fue implementada en AnyLogic acoplando el modelado basado en agentes (ABM) para la interacción estocástica de los canales comerciales (Maxiconsumo S.A., Grandes Clientes y Red Propia atomizada) y la logística de entrega de proveedores, con el modelado de eventos discretos (DES) mediante la librería de procesos (\textit{Process Modeling Library}) para el flujo físico-químico interno (dilución, reactores en paralelo, inspecciones probabilísticas de calidad con scrap y líneas dedicadas de envasado). El mecanismo de planificación semanal computa la posición neta de inventario integrando de forma continua el trabajo en proceso real (WIP) y parametriza tanto la sobre-reacción humana ($\alpha$) como la capacidad horaria efectiva de máquina ($\text{escalaTurno}$). 
 
-El diseño experimental evaluó la situación base (\textit{As-Is}) frente a la mitigación del pánico decisional y una estrategia de optimización integral bajo un horizonte de 100 semanas, estructurado en un plan multireplicación de 100 corridas estocásticas pareadas por escenario mediante la técnica de números pseudoaleatorios comunes (CRN, con semilla compartida $S_r = r$ en cada réplica $r \in [1..100]$). Los resultados cuantitativos evidencian que la erradicación del multiplicador reactivo de compras, articulada con un incremento del 27,3\% en el régimen de turnos de envasado, contrae la razón del efecto látigo de 1,53 ($\pm 0,17$) a 0,84 ($\pm 0,06$), colapsa el backlog de pedidos en mora de 989.632 a 259.821 cajas (reducción del 73,7\%) y eleva el nivel de servicio global medio del 86,88\% al 96,56\% ($\pm 0,87\%$, con un intervalo de confianza al 95\% de $[96,39\% ; 96,73\%]$), garantizando la sustentabilidad operativa del sistema fabril.
+El documento conserva una tabla de resultados históricos reportados para tres escenarios y 100 registros por escenario. Los archivos disponibles identifican las corridas por número de réplica y permiten recalcular diferencias pareadas por ID, pero no incluyen la semilla usada en cada ejecución; por ello no demuestran que las corridas históricas compartieran demanda aleatoria. Se describe además una implementación experimental PLE-compatible basada en variación de parámetros, con demanda común indexada y verificable por firma. Esa implementación todavía requiere una corrida nativa completa de 300 ejecuciones y validación de sus series; los resultados históricos no se atribuyen a ella.
 
 \medskip
 \noindent\textbf{Palabras clave:} Simulación Híbrida, AnyLogic, Efecto Látigo, Cadena de Suministro, Modelado Basado en Agentes, Eventos Discretos, Nivel de Servicio, Cuellos de Botella.
@@ -237,10 +237,24 @@ El modelo de simulación híbrido fue diseñado para responder formalmente a cua
 \subsection{Recolección, tratamiento de datos y parámetros del sistema}
 A partir de la serie de datos históricos proporcionada por la empresa, la demanda semanal de cada canal y producto se modeló mediante distribuciones normales truncadas en cero ($D_i = \max(0, \mathcal{N}(\mu_i, \sigma_i))$) para reflejar fielmente la no-negatividad física de los pedidos comerciales. En la Tabla~\ref{tab:demanda_calibrada} se detallan las medias ($\mu$) y desvíos estándar ($\sigma$) semanales calibrados para cada uno de los tres agentes cliente.
 
+\subsection{Protocolo de comparación implementado y estado de validación}
+El protocolo nuevo se define con un experimento de \textit{Parameter Variation}, compatible con PLE, y no con un \textit{Custom Experiment}. El diseño prevé 100 iteraciones y tres réplicas por iteración: para la iteración $i\in[1,100]$, la semilla es $i$; para la subcorrida $r\in[1,3]$, el escenario es $r-1$. El horizonte de cada subcorrida es de 100 semanas. La disponibilidad de \textit{Parameter Variation} en PLE y su opción de fijar réplicas por iteración se documentan en la comparación oficial de ediciones y en la guía oficial de este experimento~\cite{anylogic-editions,anylogic-paramvariation}.
+
+La demanda común no depende de cuántas extracciones aleatorias haga cada escenario. Cada cantidad se obtiene de una función determinista indexada por semilla, canal, producto y semana; los helpers de aleatoriedad para lotes y etapas admiten claves separadas por producto, lote e índice de etapa. Por tanto, un mismo valor de semilla del generador global por sí solo no es el criterio de CRN. Para cada semilla se registra la demanda base por sus 1.800 claves canal--producto--semana (incluidas las entradas nulas) y se calcula una firma SHA-256 canónica. La terna se acepta únicamente si las tres firmas coinciden. La implementación deriva los IDs desde \texttt{getCurrentIteration()} (1--100) y \texttt{getCurrentReplication()-1} (0--2), configura el generador legado con \texttt{new Random(getCurrentIteration())} y valida las firmas antes de publicar el agregado.
+
+El modelo registra una observación al cierre de cada semana completa $k$, muestreada en $t=k+0{,}999999$ y etiquetada con $k$, para $k=0,\ldots,99$. Se conserva así una serie de 100 observaciones semanales por corrida; el registro no elimina semanas iniciales. El \textit{warm-up} se usa en el cálculo de KPIs de cohorte y comienza, de forma provisional y editable, en la semana 15. Este corte no constituye evidencia de estacionariedad ni un resultado de una prueba formal: las métricas siguen describiendo un horizonte finito y el análisis de sensibilidad al warm-up queda pendiente.
+
+Al completar las 100 ternas se calculan intervalos bilaterales t de Student pareados con $n=100$, $gl=99$ y $t_{0,975;99}=1{,}9842169515$, para las tres parejas de escenarios (0--1, 0--2 y 1--2) y cinco métricas (Fill Rate, backlog, stock, bullwhip y producción). La diferencia se define como escenario $a$ menos escenario $b$. El cálculo conserva un intervalo que incluya cero cuando corresponda; no se ajustan los resultados para forzar significancia. Las series semanales exportadas permiten examinar tendencias y el warm-up por separado.
+
+El diseño y los artefactos de código están preparados, pero al cierre de esta versión falta confirmar su integración en el archivo AnyLogic activo, compilarlo y completar una corrida nativa de 300 subcorridas y una verificación visual de la interfaz. En consecuencia, esta sección documenta el protocolo previsto; no aporta resultados nuevos.
+
+\subsection{Resultados históricos disponibles: snapshot anterior}
+La tabla siguiente transcribe el snapshot histórico disponible: ya contenía 100 registros por escenario y un bloque de IC pareados 2--0 en su CSV. No corresponde a la implementación descrita en la subsección anterior. Sus intervalos marginales son los publicados en ese CSV. Los registros históricos tienen IDs 1--100 por escenario; emparejarlos por ese ID permite reproducir cálculos pareados, pero la ausencia de semillas en logs y CSV impide afirmar que compartan la misma demanda aleatoria o identificar una corrida histórica concreta con el nuevo protocolo.
+
 \begin{table}[H]
 \centering
 \small
-\caption{Comparativa general de desempeño entre escenarios e intervalos de confianza al 95\% ($N=100$ réplicas pareadas con CRN).}
+\caption{Resultados históricos del snapshot anterior. Los IDs de réplica permiten emparejar filas; no prueban CRN.}
 \label{tab:resultados_comparativos}
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.6cm} R R R}
 \toprule
@@ -261,39 +275,38 @@ Pico Máx. Preformas PET  & 710.000               & 465.000              & \text
 \end{tabularx}
 \end{table}
 
-\subsection{Análisis crítico y respuesta a las preguntas de simulación}
+\subsection{Lectura crítica de los resultados históricos}
 \begin{enumerate}[leftmargin=0.6cm]
-    \item \textit{Magnitud del Efecto Látigo y Mitigación Decisional:} En el Escenario Base, el índice $BW = 1,53$ ($\pm 0,17$, con $IC_{95\%}: [1,50 ; 1,56]$) confirma formalmente la amplificación de varianza aguas arriba inducida por el factor de sobre-reacción $\alpha = 1,5$. Este comportamiento desordena la planificación fabril y dispara picos semanales de compra de hasta 710.000 preformas PET, desbordando la capacidad de despacho del proveedor. Al fijar $\alpha = 1,0$ (Escenario 1), el ratio $BW$ desciende drásticamente a $0,83$ ($\pm 0,06$) y el pico máximo se reduce un 34,5\% (a 465.000 unidades), confirmando el origen estrictamente endógeno del látigo en la regla decisional de inflar compras ante pedidos atrasados.
-    \item \textit{Asimetría de Clientes y Persistencia del Cuello de Botella:} A pesar de suprimir el pánico de compras en el Escenario 1, el Fill Rate global apenas pasa de $86,88\%$ a $86,80\%$, y el backlog promedio acumulado se mantiene en niveles críticos ($996.225$ cajas). La gran concentración de demanda en bloques proveniente de las grandes cadenas comerciales no puede ser absorbida por las líneas de envasado operando a 40 horas semanales, lo cual prueba empíricamente que estabilizar el aprovisionamiento de insumos es una condición necesaria pero insuficiente si la planta fabril no amplía su ventana efectiva de envasado para absorber lotes concentrados de gran porte.
-    \item \textit{Consolidación y Sinergia de la Solución Integral (Análisis Pareado CRN):} El Escenario 2 demuestra la potencia de la sinergia sistémica: combina la completa regularización de órdenes a proveedores ($BW = 0,84 \pm 0,06$), el desplome del atraso acumulado a $259.821$ cajas (reducción del 73,7\%) y un nivel de servicio global medio consolidado del \textbf{96,56\%} ($\pm 0,87\%$, $IC_{95\%}: [96,39\% ; 96,73\%]$), alcanzando el 96,8\% en grandes cadenas. Asimismo, la ampliación de turnos permite estabilizar un stock regulador saludable en depósito de $11.765$ cajas, garantizando resiliencia sin saturar los almacenes.
+    \item \textit{Magnitud del efecto látigo en el snapshot histórico:} Los archivos anteriores reportan $BW=1,53$ para el escenario base y $BW=0,83$ para el escenario 1. Son diferencias descriptivas del snapshot y no demuestran por sí solas causalidad ni una demanda aleatoria común entre las corridas.
+    \item \textit{Capacidad y nivel de servicio:} El snapshot informa $86,88\%$ de Fill Rate y 989.632 cajas de backlog para el escenario base, y $86,80\%$ y 996.225 cajas para el escenario 1. La comparación sugiere que eliminar el factor de pánico, manteniendo las demás condiciones reportadas, no redujo el backlog en esos datos. La diferencia no prueba que la capacidad sea la única causa.
+    \item \textit{Escenario integral histórico:} El CSV anterior informa $96,56\%$ de servicio, $BW=0,84$, 259.821 cajas de backlog y 11.765 cajas de stock. El cambio de backlog respecto del escenario base es de aproximadamente 73,7\% en esa tabla histórica. Estos valores no son resultados de la implementación nueva ni acreditan estabilidad de largo plazo.
     
-    Al evaluar la comparación pareada corrida a corrida entre el Escenario 2 y el Escenario Base bajo las mismas semillas estocásticas ($D_r = X_{2, r} - X_{0, r}$), la diferencia media pareada arroja una ganancia neta de $+9,69\%$ en el Fill Rate ($IC_{95\%}: [+9,32\% ; +10,06\%]$) y una contracción media de $-729.810$ cajas en el atraso ($IC_{95\%}: [-761.433 ; -698.188]$). Dado que el cero queda ampliamente excluido de los intervalos de confianza de las diferencias, se comprueba con significancia estadística formal ($p < 0,0001$) la superioridad indiscutible de la estrategia integral.
+    El CSV histórico incluye una comparación para escenario 2 menos escenario 0. Sus medias e intervalos se reproducen al emparejar por ID de réplica en los logs: $+9,69$ puntos de Fill Rate y $-729.810$ cajas de backlog con los intervalos publicados. Como ni los logs ni la columna denominada ``Semilla / Réplica'' almacenan la semilla efectiva, este emparejamiento es por etiqueta y no demuestra números aleatorios comunes. No se presenta un valor $p$ confirmatorio a partir de esa evidencia incompleta.
 \end{enumerate}
 
 \section{Conclusiones y trabajo futuro}
 
 \subsection{Conclusiones operacionales}
-El estudio desarrollado mediante simulación computacional híbrida permitió diagnosticar con rigor cuantitativo las causas de fondo del deterioro de servicio y la alta volatilidad en los pedidos de Domitec S.A.:
+El snapshot histórico permite describir diferencias entre sus escenarios, pero no acredita el origen causal ni la estacionariedad del sistema. La implementación nueva está instrumentada para producir demanda indexada, firmas y series semanales; todavía no cuenta con una corrida nativa completa de 300 subcorridas:
 \begin{enumerate}[leftmargin=0.6cm]
-    \item \textbf{Causa endógena de la distorsión:} Se comprobó que el efecto látigo no era provocado primariamente por la incertidumbre del consumidor final, sino autoinducido por la regla interna de compras al amplificar artificialmente las órdenes ante la presencia de atrasos acumulados.
-    \item \textbf{Desahogo en envasadoras críticas:} La ampliación del régimen operativo de 40 a 51 horas semanales ($\text{escalaTurno} = 3,3$) mediante turnos suplementarios de fin de semana resulta una condición necesaria para atender los picos de las grandes cadenas comerciales.
-    \item \textbf{Recomendación directiva:} Se aconseja adoptar de inmediato las políticas del Escenario 2, garantizando un flujo sincronizado con proveedores, un nivel de servicio consolidado del 96,71\% y un desplome del 74,2\% en el volumen de pedidos pendientes insatisfechos.
+    \item \textbf{Lectura del histórico:} Los KPIs que aparecen en la Tabla~\ref{tab:resultados_comparativos} deben citarse como resultados reportados en el snapshot anterior, no como una validación de las nuevas corridas.
+    \item \textbf{Capacidad del escenario base:} Si la capacidad As-Is limita producción y despacho, o la demanda usada queda censurada por ese límite, el backlog puede crecer durante el horizonte. Esta es una hipótesis estructural a investigar en las series nuevas, no una tendencia estadísticamente probada por una corrida nativa 100$\times$3.
+    \item \textbf{Uso de la estrategia integral:} Las cifras históricas pueden orientar una comparación posterior, pero no justifican aquí una garantía de servicio ni una recomendación basada en resultados nuevos. La decisión debe revisarse tras completar las corridas y diagnósticos pendientes.
 \end{enumerate}
 
 \subsection{Análisis de nuevos experimentos y trabajo futuro}
-Atendiendo a la exploración de escenarios adicionales y análisis de sensibilidad para robustecer el análisis de la cadena, se identifican las siguientes líneas de ampliación experimental:
+Atendiendo a la exploración de escenarios adicionales y al análisis de sensibilidad, se identifican las siguientes tareas pendientes:
 \begin{enumerate}[leftmargin=0.6cm]
-    \item \textbf{Experimento de Expansión Unilateral de Capacidad:} Simular el incremento horario ($\text{escalaTurno} = 3,3$) manteniendo la política de sobre-reacción en compras ($\alpha = 1,5$), para ilustrar a la gerencia que inyectar capacidad fabril sin disciplina de inventarios alivia las entregas (94,6\% de Fill Rate) pero perpetúa el desorden aguas arriba ($BW = 2,15$ y picos de 580.000 preformas).
-    \item \textbf{Experimento de Estrés Severo por Pánico Extremo:} Simular una conducta de hiper-reacción ($\alpha = 2,0$, duplicación de pedidos ante deudas) bajo régimen horario estándar, modelando el colapso del sistema ($BW = 4,32$, Fill Rate 81,1\% y backlog de 26.800 cajas) ante expectativas inflacionarias o rumores de escasez de insumos en el mercado.
-    \item \textbf{Experimento de Disrupción Logística de Proveedores (Shock de Lead Time):} Simular un escenario de contingencia donde el retardo del proveedor de film Doypack aumente a 10 semanas (por trabas de importación o demoras aduaneras), analizando el incremento necesario en las semanas de cobertura para impedir la paralización de la línea de suavizante.
-    \item \textbf{Validación Estadística del Plan Experimental Monte Carlo:} El estudio incorporó un protocolo estocástico multireplicación con 300 corridas independientes por escenario (\texttt{randomSeed}, 900 corridas en total), confirmando que la superioridad del Escenario 2 es estadísticamente concluyente con una dispersión de apenas $\pm 0,85\%$ en el Fill Rate global.
+    \item \textbf{Corrida y revisión visual:} Ejecutar las 100 iteraciones por tres subcorridas en AnyLogic PLE, verificar los 300 resultados, las firmas de demanda y la exportación de las series semanales y los intervalos pareados.
+    \item \textbf{Diagnóstico de estacionariedad y warm-up:} Examinar las series de demanda, producción, stock, backlog y WIP después del warm-up provisional de 15 semanas. El backlog del escenario base podría mantener una tendencia si la capacidad limita la atención de la demanda; hay que comprobarlo con las series y no asumir estado estacionario.
+    \item \textbf{Sensibilidad y disrupciones:} Repetir el protocolo para expansión unilateral de capacidad, pánico de compras extremo y demoras de proveedores. No se asignan resultados numéricos a estos escenarios hasta ejecutar y verificar sus datos.
 \end{enumerate}
 
 \vspace{0.4cm}
 \noindent\textbf{Recursos y Ejecución en AnyLogic:}
 \begin{itemize}[leftmargin=0.6cm]
     \item \textbf{Repositorio AnyLogic Cloud:} Acceso a la ejecución en la nube mediante \url{https://cloud.anylogic.com/}.
-    \item \textbf{Instrucciones de corrida:} Abrir el modelo en AnyLogic 8.9+, desplegar la carpeta de experimentos en la vista de proyectos (\texttt{Simulation\_Escenario0\_AsIs}, \texttt{Simulation\_Escenario1\_SinPanico} o \texttt{Simulation\_Escenario2\_Integral}), ejecutar mediante el botón de inicio (\textit{Run}) y observar la evolución temporal de los datasets en los tableros de control de \texttt{Main}.
+    \item \textbf{Comparación experimental nueva:} Configurar el experimento \textit{Parameter Variation} con 100 iteraciones y tres réplicas fijas por iteración; conservar el registro de semillas, escenarios, firmas y series semanales. La corrida completa, la revisión visual de la interfaz y las pruebas de integración todavía están pendientes.
 \end{itemize}
 
 % ---------------------------------------------------------
@@ -336,6 +349,14 @@ H.~L. Lee, V.~Padmanabhan y S.~Whang,
 I.~Grigoryev,
 \emph{AnyLogic 7 in Three Days: A Quick Course in Simulation Modeling},
 2da ed., CreateSpace Independent Publishing, 2015.
+
+\bibitem{anylogic-editions}
+The AnyLogic Company,
+``AnyLogic editions comparison,'' documentación oficial, \url{https://anylogic.help/anylogic/ui/editions.html}.
+
+\bibitem{anylogic-paramvariation}
+The AnyLogic Company,
+``Parameter variation experiment,'' documentación oficial, \url{https://anylogic.help/anylogic/experiments/parameter-variation.html}.
 
 \end{thebibliography}
 

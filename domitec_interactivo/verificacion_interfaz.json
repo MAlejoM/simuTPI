@@ -1,0 +1,9 @@
+{
+  "structure": "passed",
+  "java_action_compatibility": "passed",
+  "native_300_run": "not_performed",
+  "native_visual_validation": "pending_retest_after_layout_cleanup",
+  "delivery_speed_override": "removed",
+  "logic_element_presentation": "hidden",
+  "view_2d": "native_flow_diagram"
+}

@@ -1,0 +1,228 @@
+public ConfiguracionDomitec cfg = new ConfiguracionDomitec();
+public RegistroCorrida registro = new RegistroCorrida();
+public int vistaActiva = 1, escenarioActivo = 0, perfilCanal = 0, perfilProducto = 0;
+public int metricaIC = 0;
+public String mensajeUI = "Los cambios se aplican a los proximos pedidos y procesos.";
+public String carpetaResultados = java.nio.file.Paths.get(System.getProperty("user.dir"), "resultados_domitec").toAbsolutePath().toString();
+public double uiMedia=9379, uiDesvio=11162, uiLead=30, uiCobertura=5.5, uiRate=667;
+public double uiLatigo=1.5, uiHoras=40, uiMermaLav=3, uiMermaLiq=5, uiTiempo=1, uiCapacidad=1, uiWarmup=15;
+public int uiReactores=4, uiCola=20, uiTanque=3;
+private com.anylogic.engine.presentation.ShapeEmbeddedObjectPresentation vistaPlanta3D;
+public double[] demandaPorSemana=new double[100], ordenesPorSemana=new double[100], produccionPorSemana=new double[100];
+private Comparacion_100x3 experimentoEstudio;
+
+public void iniciarInterfaz() {
+    if(getModelElementsShape()!=null)getModelElementsShape().setVisible(false);
+    cfg = configuracionInicial == null ? new ConfiguracionDomitec() : configuracionInicial.copiarDeep();
+    if (numeroEscenario >= 0) cfg = cfg.escenario(numeroEscenario);
+    else { cfg.factLatigo = factorLatigoMain; cfg.horas = 168.0 / escalaTurnoMain; }
+    cfg.validar();
+    escenarioActivo = numeroEscenario >= 0 ? numeroEscenario : (cfg.horas > 45 ? 2 : (cfg.factLatigo <= 1 ? 1 : 0));
+    aplicarConfiguracion(cfg, false);
+    if (esComparacion) return;
+    vistaPlanta3D = new com.anylogic.engine.presentation.ShapeEmbeddedObjectPresentation(
+        this, SHAPE_DRAW_3D, false, 0, 0, 0, 0, false, false, domitecPlant);
+    vistaPlanta3D.setVisible(false);
+    presentation.add(vistaPlanta3D);
+    seleccionarPerfil(0, 0);
+    sincronizarControles();
+    mostrarVista(1);
+}
+
+public void mostrarVista(int vista) {
+    if (vista < 0 || vista > 3) throw new IllegalArgumentException("Vista inexistente");
+    vistaActiva = vista;
+    // Draw modes are fixed at construction in AnyLogic. Tabs only change visibility.
+    if (vistaPlanta3D != null) vistaPlanta3D.setVisible(vista == 1);
+}
+
+public double stockProducto(int producto) {
+    for (ProductState p : domitecPlant.inventorySystem)
+        if (ConfiguracionDomitec.indice(p.product.name()) == producto) return p.inventory;
+    return 0;
+}
+public double backlogProducto(int producto) {
+    for (ProductState p : domitecPlant.inventorySystem)
+        if (ConfiguracionDomitec.indice(p.product.name()) == producto) return p.backlog;
+    return 0;
+}
+public int lotesEtapa(int producto, int etapa) {
+    DomitecPlant p = (DomitecPlant) domitecPlant;
+    if (producto == 0) {
+        switch (etapa) {
+            case 0: return p.queueMateriaPrima.size();
+            case 1: return p.delayDilucion.size();
+            case 2: return p.delayQCLavandina.size();
+            case 3: return p.queueTanquePulmon.size();
+            case 4: return p.delayEnvasado.size();
+        }
+    }
+    com.anylogic.libraries.processmodeling.Queue<? extends com.anylogic.engine.Agent> tanque;
+    com.anylogic.libraries.processmodeling.Delay<? extends com.anylogic.engine.Agent> envasado;
+    switch(producto) {
+        case 1: tanque=p.tankDesinfectante; envasado=p.delayEnvasadoDesinfectante; break;
+        case 2: tanque=p.tankLavavajilla; envasado=p.delayEnvasadoLavavajilla; break;
+        case 3: tanque=p.tankLavarropa; envasado=p.delayEnvasadoLavarropa; break;
+        case 4: tanque=p.tankSuavizante; envasado=p.delayEnvasadoSuavizante; break;
+        case 5: tanque=p.tankDetergente; envasado=p.delayEnvasadoDetergente; break;
+        default: return 0;
+    }
+    if(etapa==3)return tanque.size();
+    if(etapa==4)return envasado.size();
+    int n=0;
+    if(etapa==0)for(int i=0;i<p.queueEsperaElaboracion.size();i++)if(ConfiguracionDomitec.indice(p.queueEsperaElaboracion.get(i).tipo.name())==producto)n++;
+    if(etapa==1)for(int i=0;i<p.delayReactoresLiquidos.size();i++)if(ConfiguracionDomitec.indice(p.delayReactoresLiquidos.get(i).tipo.name())==producto)n++;
+    if(etapa==2)for(int i=0;i<p.delayQCLiquidos.size();i++)if(ConfiguracionDomitec.indice(p.delayQCLiquidos.get(i).tipo.name())==producto)n++;
+    return n;
+}
+
+public void elegirEscenario(int escenario) {
+    try {
+        ConfiguracionDomitec nueva = cfg.escenario(escenario);
+        aplicarConfiguracion(nueva, true);
+        escenarioActivo = escenario;
+        sincronizarControles();
+        mensajeUI = "Escenario " + escenario + " aplicado. Los lotes en proceso conservan su tiempo ya sorteado.";
+    } catch (IllegalArgumentException error) { mensajeUI = error.getMessage(); }
+}
+
+public void aplicarConfiguracion(ConfiguracionDomitec nueva, boolean enVivo) {
+    nueva.validar();
+    DomitecPlant p = (DomitecPlant) domitecPlant;
+    if (enVivo && (nueva.reactores < p.delayReactoresLiquidos.size()
+            || nueva.cola < p.queueEsperaElaboracion.size()
+            || nueva.tanque < Math.max(p.queueTanquePulmon.size(),
+                Math.max(p.tankDesinfectante.size(), Math.max(p.tankLavavajilla.size(),
+                Math.max(p.tankLavarropa.size(), Math.max(p.tankSuavizante.size(),p.tankDetergente.size())))))))
+        throw new IllegalArgumentException("La capacidad nueva no puede ser menor que los lotes presentes.");
+    cfg = nueva.copiarDeep();
+    factorLatigoMain = cfg.factLatigo;
+    escalaTurnoMain = cfg.escalaTurno();
+    p.factorLatigo = factorLatigoMain;
+    p.escalaTurno = escalaTurnoMain;
+    p.delayReactoresLiquidos.set_capacity(cfg.reactores);
+    p.queueEsperaElaboracion.set_capacity(cfg.cola);
+    p.queueTanquePulmon.set_capacity(cfg.tanque);
+    p.tankDesinfectante.set_capacity(cfg.tanque);
+    p.tankLavavajilla.set_capacity(cfg.tanque);
+    p.tankLavarropa.set_capacity(cfg.tanque);
+    p.tankSuavizante.set_capacity(cfg.tanque);
+    p.tankDetergente.set_capacity(cfg.tanque);
+    double[] nominal = {26672,16217,9474,7036,4150,2564};
+    double[] rateBase = {667,405,237,176,104,64};
+    for (ProductState ps : p.inventorySystem) {
+        int i = ConfiguracionDomitec.indice(ps.product.name());
+        ps.weeklyCapacity = nominal[i] * cfg.capacidadFactor * cfg.rate[i] / rateBase[i];
+    }
+}
+
+public void seleccionarPerfil(int canal, int producto) {
+    perfilCanal=canal; perfilProducto=producto;
+    uiMedia=cfg.medias[canal][producto]; uiDesvio=cfg.desvios[canal][producto];
+    uiLead=cfg.leadDias[producto];uiCobertura=cfg.cobertura[producto];uiRate=cfg.rate[producto];
+    if (!esComparacion) {
+        campoMedia.setValueToDefault();campoDesvio.setValueToDefault();
+        campoLead.setValueToDefault();campoCobertura.setValueToDefault();campoRate.setValueToDefault();
+    }
+}
+
+public void sincronizarControles() {
+    uiLatigo=cfg.factLatigo;uiHoras=cfg.horas;uiMermaLav=cfg.mermaLav*100;uiMermaLiq=cfg.mermaLiq*100;
+    uiTiempo=cfg.tiemposFactor;uiCapacidad=cfg.capacidadFactor;uiWarmup=cfg.calentamiento;
+    uiReactores=cfg.reactores;uiCola=cfg.cola;uiTanque=cfg.tanque;
+    if (!esComparacion) {
+        campoLatigo.setValueToDefault();campoHoras.setValueToDefault();campoMermaLav.setValueToDefault();
+        campoMermaLiq.setValueToDefault();campoTiempo.setValueToDefault();campoCapacidad.setValueToDefault();
+        campoWarmup.setValueToDefault();campoReactores.setValueToDefault();campoCola.setValueToDefault();campoTanque.setValueToDefault();
+    }
+}
+
+public void guardarDemanda() {
+    try {
+        ConfiguracionDomitec nueva=cfg.copiarDeep();
+        nueva.medias[perfilCanal][perfilProducto]=uiMedia;
+        nueva.desvios[perfilCanal][perfilProducto]=uiDesvio;
+        aplicarConfiguracion(nueva,true);escenarioActivo=3;
+        mensajeUI="Media y desvio actualizados para "+nombreCanal(perfilCanal)+" / "+nombreProducto(perfilProducto)+".";
+    } catch(IllegalArgumentException error){mensajeUI=error.getMessage();}
+}
+
+public void guardarPlanta() {
+    try {
+        ConfiguracionDomitec nueva=cfg.copiarDeep();
+        nueva.factLatigo=uiLatigo;nueva.horas=uiHoras;
+        nueva.leadDias[perfilProducto]=uiLead;nueva.cobertura[perfilProducto]=uiCobertura;nueva.rate[perfilProducto]=uiRate;
+        nueva.capacidadFactor=uiCapacidad;nueva.tiemposFactor=uiTiempo;
+        nueva.mermaLav=uiMermaLav/100;nueva.mermaLiq=uiMermaLiq/100;
+        nueva.reactores=uiReactores;nueva.cola=uiCola;nueva.tanque=uiTanque;nueva.calentamiento=uiWarmup;
+        aplicarConfiguracion(nueva,true);escenarioActivo=3;
+        mensajeUI="Configuracion personalizada aplicada. Se conservan los procesos en curso.";
+    } catch(IllegalArgumentException error){mensajeUI=error.getMessage();}
+}
+
+public double demandaComun(String canal, ProductType producto) {
+    int c=canal.equals("Maxiconsumo")?0:canal.equals("Grandes Clientes")?1:2;
+    int p=ConfiguracionDomitec.indice(producto.name());
+    long semana=(long)Math.floor(time()+1e-8);
+    double q=cfg.medias[c][p]<=0?0:Math.round(Math.max(0,
+        ComparacionEscenarios.normal(semillaReplica,c,p,semana,cfg.medias[c][p],cfg.desvios[c][p])));
+    registro.entrada(c,p,semana,q);
+    if(semana>=0 && semana<100)demandaPorSemana[(int)semana]+=q;
+    return q;
+}
+
+public double stockActual(){double x=0;for(ProductState p:domitecPlant.inventorySystem)x+=p.inventory;return x;}
+public double backlogActual(){double x=0;for(ProductState p:domitecPlant.inventorySystem)x+=p.backlog;return x;}
+public double wipActual(){
+    DomitecPlant p=(DomitecPlant)domitecPlant;
+    return 1000.0*(p.queueMateriaPrima.size()+p.delayDilucion.size()+p.delayQCLavandina.size()+p.queueTanquePulmon.size()+p.delayEnvasado.size()
+        +p.queueEsperaElaboracion.size()+p.delayReactoresLiquidos.size()+p.delayQCLiquidos.size()
+        +p.tankDesinfectante.size()+p.tankLavavajilla.size()+p.tankLavarropa.size()+p.tankSuavizante.size()+p.tankDetergente.size()
+        +p.delayEnvasadoDesinfectante.size()+p.delayEnvasadoLavavajilla.size()+p.delayEnvasadoLavarropa.size()+p.delayEnvasadoSuavizante.size()+p.delayEnvasadoDetergente.size());
+}
+public ComparacionEscenarios.Resultado resultadoFinal(int escenario){
+    return new ComparacionEscenarios.Resultado(semillaReplica,escenario,100*registro.fillRate(cfg.calentamiento),
+        backlogActual(),stockActual(),registro.bw(cfg.calentamiento),registro.produccionTotal(cfg.calentamiento));
+}
+public String nombreProducto(int i){return new String[]{"Lavandina","Desinfectante","Lavavajilla","Lavarropa","Suavizante","Detergente"}[i];}
+public String nombreCanal(int i){return new String[]{"Maxiconsumo","Grandes clientes","Red propia"}[i];}
+public String numero(double x){return String.format(java.util.Locale.ROOT,"%,.0f",x);}
+public String escenarioTexto(){return escenarioActivo==3?"Personalizado":new String[]{"0 - As-Is","1 - Sin panico","2 - Integral"}[escenarioActivo];}
+public String perfilTexto(){return nombreCanal(perfilCanal)+" / "+nombreProducto(perfilProducto);}
+
+public void ejecutarComparacion() {
+    if(!SesionEstudio.iniciar()){mensajeUI="Ya hay una comparacion en curso.";return;}
+    try {
+        SesionEstudio.configuracionEnCurso=cfg.copiarDeep();
+        SesionEstudio.carpetaEnCurso=carpetaResultados;
+        experimentoEstudio=new Comparacion_100x3();
+        experimentoEstudio.run();
+        mensajeUI="Comparacion: 100 ternas, 300 corridas de 100 semanas. Ver avance en Estadisticas.";
+    } catch(RuntimeException error){SesionEstudio.finalizar(error.getMessage());mensajeUI=error.getMessage();}
+}
+public void cancelarComparacion(){if(experimentoEstudio!=null)experimentoEstudio.stop();SesionEstudio.finalizar("Cancelado por el usuario");}
+public String tablaIC(){
+    ComparacionEscenarios datos=SesionEstudio.ultimoResultado;
+    if(datos==null)return "Sin estudio completo.\nEjecutar las 100 ternas.\nLos IC se publican con 100 pares.\nNo se fuerza que excluyan el cero.";
+    String metrica=new String[]{"fillRate","backlog","bw","stock","produccion"}[metricaIC];
+    StringBuilder s=new StringBuilder("IC 95% PAREADOS | "+metrica+"\n\n");
+    for(int[] par:new int[][]{{0,1},{0,2},{1,2}}){
+        ComparacionEscenarios.PairCI95 c=datos.pairCI95(par[0],par[1],metrica);
+        s.append("Esc ").append(par[0]).append(" - ").append(par[1]).append(" | n=").append(c.n).append("\n");
+        s.append(String.format(java.util.Locale.ROOT,"Delta: %.3f\n[%.3f ; %.3f]\n",c.media,c.inferior,c.superior));
+        s.append(c.inferior>0||c.superior<0?"Excluye cero\n\n":"Incluye cero\n\n");
+    }return s.toString();
+}
+public void registrarPedido(ProductType tipo,double cantidad,double inmediato){
+    int p=ConfiguracionDomitec.indice(tipo.name());
+    if(inmediato>0)registro.pedido(p,time(),inmediato,true);
+    if(cantidad-inmediato>0)registro.pedido(p,time(),cantidad-inmediato,false);
+}
+public void registrarProduccion(ProductType tipo,double cantidad){
+    registro.produccion(time(),cantidad);int s=(int)Math.floor(time());
+    if(s>=0&&s<100)produccionPorSemana[s]+=cantidad;
+}
+public void observarSemana(){
+    int s=(int)Math.floor(time());
+    if(s>=0&&s<100)registro.semanal(s,demandaPorSemana[s],ordenesPorSemana[s],produccionPorSemana[s],stockActual(),backlogActual(),wipActual());
+}

@@ -1,0 +1,29 @@
+# Revisión de criterios del experimento Domitec
+
+## Alcance y estado
+
+Esta revisión separa el snapshot histórico de la implementación experimental nueva. Los logs `csv/esc0.txt`, `esc1.txt` y `esc2.txt` contienen 100 registros únicos por escenario, numerados del 1 al 100. El CSV histórico ya incluía intervalos marginales y un bloque de comparación pareada 2–0. Los identificadores de réplica permiten reproducir sus diferencias por ID, pero los logs y la columna “Semilla / Réplica” no guardan la semilla efectiva: ese snapshot no prueba que la demanda se haya compartido entre escenarios.
+
+El nuevo protocolo está instrumentado en los artefactos de modelo y helpers; todavía no se han ejecutado ni revisado de forma nativa las 300 subcorridas completas. Los valores históricos de `main.tex` no se atribuyen a esa implementación.
+
+## Matriz de criterios
+
+| Criterio | Código o evidencia disponible | Estado | Pendiente para cerrar |
+|---|---|---|---|
+| Diseño PLE: 100 iteraciones × 3 réplicas, semilla `i` y escenario `r-1` | Diseño de `Parameter Variation`; compatibilidad de la función en [ediciones de AnyLogic](https://anylogic.help/anylogic/ui/editions.html) y [guía de Parameter Variation](https://anylogic.help/anylogic/experiments/parameter-variation.html) | Protocolo especificado; integración en archivo activo y ejecución nativa aún no verificadas | Confirmar el mapeo de iteración/réplica en AnyLogic, compilar el proyecto y completar las 300 subcorridas en PLE. No utilizar `Custom Experiment`, que no está disponible en PLE. |
+| CRN de demanda común independiente del orden de sorteos | [ComparacionEscenarios.java](ComparacionEscenarios.java) genera valores indexados por semilla, canal, producto, semana y etapa/lote; [MainInterfaz.code.java.txt](MainInterfaz.code.java.txt) consulta la demanda por clave | Implementado en código | Comprobar la firma en las 100 ternas nativas y conservar las semillas en las salidas. El mismo seed del motor no basta para probar flujos comunes. |
+| Firma verificable de las 1.800 entradas | [RegistroCorrida.java](RegistroCorrida.java) registra canal/producto/semana y calcula SHA-256; [EstudioPareado.java](EstudioPareado.java) rechaza firmas distintas dentro de una terna | Implementado en código | Verificar 100 ternas con firmas iguales en los CSV reales. |
+| Horizonte y series semanales completas | `MainInterfaz.code.java.txt` limita las observaciones a semanas 0–99 y `RegistroCorrida.semanal` conserva demanda, órdenes, producción, stock, backlog y WIP | Instrumentación disponible | Confirmar 100 observaciones por corrida en la exportación real y revisar que el evento de muestreo ocurra en `k + 0,999999`. |
+| Fill Rate por cohortes y warm-up | `ConfiguracionDomitec.calentamiento` es editable; la UI propone 15 semanas; el cálculo filtra pedidos por tiempo de entrada | Warm-up de 15 semanas provisional | Ejecutar sensibilidad a otros cortes; no tratar 15 semanas como warm-up validado ni como evidencia de estado estacionario. |
+| IC pareados para tres parejas y cinco métricas | [ComparacionEscenarios.java](ComparacionEscenarios.java) calcula diferencias escenario A − B, IC t bilateral al 95% y conserva los intervalos que incluyen cero; [EstudioPareado.java](EstudioPareado.java) requiere 100 ternas | Implementado en código | Validar en AnyLogic el IC con `n=100`, `gl=99`, `t crítico=1,9842169515` para fill rate, backlog, stock, bullwhip y producción. |
+| Exportación auditable | [EstudioPareado.java](EstudioPareado.java) prepara resultados, series semanales, IC pareados y metadatos en carpeta de staging con publicación atómica | Implementado en helper | Verificar integridad, cantidad de filas, firmas y metadata después del primer lote nativo completo. |
+| Interfaz durante una comparación | [SesionEstudio.java](SesionEstudio.java) expone estado, progreso, cancelación y último resultado; [MainInterfaz.code.java.txt](MainInterfaz.code.java.txt) contiene el flujo y mensajes | Código disponible; revisión visual pendiente | Ejecutar la UI, verificar progreso, cancelación segura, errores, estado final, lectura de los IC y ausencia de dibujo de la planta durante el cálculo. |
+| Pruebas de integración y corrida 100×3 | Hay pruebas Java auxiliares para los helpers, pero no sustituyen la ejecución del modelo AnyLogic | Pendiente | Compilar el proyecto integrado y ejecutar las pruebas; completar las 300 subcorridas y cotejar CSV y UI. No se afirma una corrida nativa en este informe. |
+| Estacionariedad | [diagnosticar_estacionariedad.py](diagnosticar_estacionariedad.py) consume `series_semanales.csv`, promedia semillas por semana/escenario y produce tendencias OLS y suavizado visual Welch de cinco puntos | Diagnóstico preparado, sin datos de salida reales | Ejecutarlo solo después de generar series reales. Comparar mitades y pendientes; el suavizado y una pendiente descriptiva no son una prueba formal de estacionariedad. Estado: **no demostrado**. |
+
+## Observaciones de auditoría histórica
+
+- Los intervalos pareados 2–0 del CSV existente reproducen diferencias calculadas desde los logs por ID de réplica, dentro del redondeo publicado. Ese ajuste numérico valida el emparejamiento por etiqueta, no la igualdad de semillas o de la demanda histórica.
+- Los resultados de la tabla histórica en `main.tex` pertenecen al snapshot anterior. No son resultados de las nuevas firmas, del nuevo warm-up ni de la implementación PLE.
+- La configuración As-Is puede tener capacidad efectiva menor que la demanda atendida y producir backlog creciente; la censura de entregas también puede afectar los indicadores. Es una hipótesis a revisar en series semanales, no una tendencia probada estadísticamente ni un resultado de las 300 subcorridas.
+- No se descarta warm-up como estado estacionario validado: 15 semanas es un valor inicial editable. La evidencia de estacionariedad requiere los datos semanales nativos y análisis adicional.

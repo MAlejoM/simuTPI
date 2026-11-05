@@ -1,0 +1,27 @@
+public java.util.ArrayDeque<ProductType> tiposPendientes = new java.util.ArrayDeque<ProductType>();
+public long[] lotesCRN = new long[6];
+public Main controlador(){return (Main)get_Main();}
+public Batch crearLote(ProductType tipo){
+    Batch b=new Batch(tipo,1000);
+    int i=ConfiguracionDomitec.indice(tipo.name());b.indiceCRN=++lotesCRN[i];
+    return b;
+}
+public Batch crearLiquido(){
+    if(tiposPendientes.isEmpty())throw new IllegalStateException("SourceLiquidos sin producto de entrega asociado");
+    return crearLote(tiposPendientes.removeFirst());
+}
+public double tiempoProceso(Batch b,int etapa,double minimo,double moda,double maximo){
+    int p=ConfiguracionDomitec.indice(b.tipo.name());
+    return ComparacionEscenarios.triangular(controlador().semillaReplica,p,b.indiceCRN,etapa,minimo,moda,maximo)
+        *controlador().cfg.escalaTurno()*controlador().cfg.tiemposFactor;
+}
+public boolean calidadAceptada(Batch b,boolean lavandina){
+    int p=ConfiguracionDomitec.indice(b.tipo.name());
+    double merma=lavandina?controlador().cfg.mermaLav:controlador().cfg.mermaLiq;
+    return ComparacionEscenarios.uniforme(controlador().semillaReplica,4,p,b.indiceCRN,50)<1-merma;
+}
+public double tiempoEnvasado(Batch b){
+    int p=ConfiguracionDomitec.indice(b.tipo.name());
+    return 1000.0/(controlador().cfg.rate[p]*controlador().cfg.capacidadFactor)
+        *controlador().cfg.escalaTurno()*controlador().cfg.tiemposFactor;
+}
