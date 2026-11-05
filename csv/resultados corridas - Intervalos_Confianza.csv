@@ -1,0 +1,19 @@
+﻿ESCENARIO,VARIABLE (KPI),UNIDAD,MEDIA (X),DESVIO ESTANDAR (S),ERROR ESTANDAR (SEM),MARGEN ERROR (95%),LIMITE INFERIOR (95%),LIMITE SUPERIOR (95%),FORMULA EXCEL / GOOGLE SHEETS
+Escenario 0 (As-Is),Fill Rate Global,%,"86,88","1,63","0,16","0,32","86,55","87,20","=PROMEDIO(D2:D101) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(D2:D101); 100)"
+Escenario 0 (As-Is),Backlog Promedio,cajas,989632,143309,14331,28435,961196,1018067,"=PROMEDIO(E2:E101) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(E2:E101); 100)"
+Escenario 0 (As-Is),Razón Bullwhip (BW),ratio,"1,53","0,17","0,02","0,03","1,50","1,56","=PROMEDIO(F2:F101) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(F2:F101); 100)"
+Escenario 0 (As-Is),Stock en Depósito,cajas,3693,8398,840,1666,2026,5359,"=PROMEDIO(G2:G101) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(G2:G101); 100)"
+Escenario 1 (Sin Pánico),Fill Rate Global,%,"86,80","1,57","0,16","0,31","86,49","87,12","=PROMEDIO(D102:D201) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(D102:D201); 100)"
+Escenario 1 (Sin Pánico),Backlog Promedio,cajas,996225,138281,13828,27438,968787,1023662,"=PROMEDIO(E102:E201) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(E102:E201); 100)"
+Escenario 1 (Sin Pánico),Razón Bullwhip (BW),ratio,"0,83","0,06","0,01","0,01","0,82","0,85","=PROMEDIO(F102:F201) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(F102:F201); 100)"
+Escenario 1 (Sin Pánico),Stock en Depósito,cajas,2196,4113,411,816,1380,3012,"=PROMEDIO(G102:G201) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(G102:G201); 100)"
+Escenario 2 (Integral),Fill Rate Global,%,"96,56","0,87","0,09","0,17","96,39","96,73","=PROMEDIO(D202:D301) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(D202:D301); 100)"
+Escenario 2 (Integral),Backlog Promedio,cajas,259821,67698,6770,13433,246389,273254,"=PROMEDIO(E202:E301) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(E202:E301); 100)"
+Escenario 2 (Integral),Razón Bullwhip (BW),ratio,"0,84","0,06","0,01","0,01","0,83","0,85","=PROMEDIO(F202:F301) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(F202:F301); 100)"
+Escenario 2 (Integral),Stock en Depósito,cajas,11765,14870,1487,2950,8814,14715,"=PROMEDIO(G202:G301) +/- INTERVALO.CONFIANZA.T(0,05; DESVEST.M(G202:G301); 100)"
+
+COMPARACION PAREADA (CRN),DIFERENCIA (Escenario 2 - Escenario 0),UNIDAD,DIFERENCIA MEDIA (D),DESVIO DIFERENCIA (Sd),ERROR ESTANDAR (SEM),MARGEN ERROR (95%),LIMITE INFERIOR (95%),LIMITE SUPERIOR (95%),INTERPRETACION ESTADISTICA
+Escenario 2 vs Escenario 0,Delta Fill Rate Global,%,"9,69","1,86","0,19","0,37","9,32","10,06",Mejora estadísticamente significativa (p < 0.001) - El 0 no está en el IC
+Escenario 2 vs Escenario 0,Delta Backlog Promedio,cajas,-729810,159371,15937,31622,-761433,-698188,Mejora estadísticamente significativa (p < 0.001) - El 0 no está en el IC
+Escenario 2 vs Escenario 0,Delta Razón Bullwhip,ratio,"-0,69","0,17","0,02","0,03","-0,73","-0,66",Mejora estadísticamente significativa (p < 0.001) - El 0 no está en el IC
+Escenario 2 vs Escenario 0,Delta Stock en Depósito,cajas,8072,17188,1719,3411,4662,11483,Mejora estadísticamente significativa (p < 0.001) - El 0 no está en el IC

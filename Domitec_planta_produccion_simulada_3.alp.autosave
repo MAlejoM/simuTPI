@@ -2036,6 +2036,32 @@ m.dsBacklog.add(time(), totalBacklog);
 m.dsWip.add(time(), totalWip);
 m.dsProduccionSemanal.add(time(), m.produccionSemanalActual);
 
+// --- ACTUALIZACION EN TIEMPO REAL DEL DASHBOARD INTERACTIVO EN MAIN ---
+double frActual = (demandaTotalAcumulada > 0) ? (despachoInmediatoAcumulado / demandaTotalAcumulada) * 100.0 : 100.0;
+if (m.lblFillRate != null) {
+    m.lblFillRate.setText(String.format("%.1f%%", frActual));
+    if (frActual >= 95.0) {
+        m.lblFillRate.setColor(new java.awt.Color(40, 167, 69));
+        if (m.barraGaugeFillRate != null) m.barraGaugeFillRate.setFillColor(new java.awt.Color(40, 167, 69));
+    } else if (frActual >= 90.0) {
+        m.lblFillRate.setColor(new java.awt.Color(255, 193, 7));
+        if (m.barraGaugeFillRate != null) m.barraGaugeFillRate.setFillColor(new java.awt.Color(255, 193, 7));
+    } else {
+        m.lblFillRate.setColor(new java.awt.Color(220, 53, 69));
+        if (m.barraGaugeFillRate != null) m.barraGaugeFillRate.setFillColor(new java.awt.Color(220, 53, 69));
+    }
+}
+if (m.barraGaugeFillRate != null) {
+    m.barraGaugeFillRate.setWidth(Math.max(2.0, Math.min(180.0, 180.0 * (frActual / 100.0))));
+}
+if (m.lblBacklog != null) {
+    m.lblBacklog.setText(String.format("%,d cajas", Math.round(totalBacklog)));
+}
+if (m.lblSemana != null) {
+    m.lblSemana.setText(String.format("Semana: %.0f de 100", time()));
+}
+// ----------------------------------------------------------------------
+
 // Actualización dinámica de los indicadores en el plano visual de planta
 double wipLav = (queueMateriaPrima.size() + delayDilucion.size() + delayQCLavandina.size() + queueTanquePulmon.size() + delayEnvasado.size()) * 1000.0;
 double wipDes = (tankDesinfectante.size() + delayEnvasadoDesinfectante.size()) * 1000.0;
@@ -10083,6 +10109,242 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 		<ActiveObjectClass>
 			<Id>1787747219700</Id>
 			<Name><![CDATA[Main]]></Name>
+			<StartupCode><![CDATA[// === DASHBOARD INTERACTIVO Y SELECTOR DE ESCENARIOS (CARDS CLICKABLES) ===
+// 1. Panel Contenedor de Escenarios
+ShapeRectangle panelCtrl = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    20, 20, 0, 0,
+    new java.awt.Color(180, 190, 200), new java.awt.Color(245, 247, 250),
+    310, 210, 0, 1.5, LINE_STYLE_SOLID
+);
+presentation.add(panelCtrl);
+
+ShapeText titCtrl = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    35, 42, 0, 0,
+    new java.awt.Color(33, 37, 41), "CONFIGURACION DE ESCENARIO",
+    new Font("SansSerif", Font.BOLD, 12), ALIGNMENT_LEFT
+);
+presentation.add(titCtrl);
+
+// BOTON / TARJETA CLICKABLE: ESCENARIO 0
+ShapeRectangle btnCard0 = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    35, 55, 0, 0,
+    new java.awt.Color(220, 53, 69), new java.awt.Color(254, 242, 242),
+    280, 32, 0, 1.5, LINE_STYLE_SOLID
+) {
+    @Override
+    public boolean onClick(double clickx, double clicky) {
+        factorLatigoMain = 1.5;
+        escalaTurnoMain = 4.2;
+        domitecPlant.factorLatigo = 1.5;
+        domitecPlant.escalaTurno = 4.2;
+        lblEscenarioActual.setText("Escenario 0: As-Is (40h, Panico)");
+        lblEscenarioActual.setColor(new java.awt.Color(220, 53, 69));
+        traceln(">>> [SELECCION MANUAL] Escenario 0: Panico=1.5 | 40 hs (escala=4.2)");
+        return true;
+    }
+};
+presentation.add(btnCard0);
+
+ShapeText txtBtn0 = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    45, 75, 0, 0,
+    new java.awt.Color(185, 28, 28), "1. As-Is (40 hs, Panico 1.5x)",
+    new Font("SansSerif", Font.BOLD, 11), ALIGNMENT_LEFT
+) {
+    @Override
+    public boolean onClick(double clickx, double clicky) {
+        return btnCard0.onClick(clickx, clicky);
+    }
+};
+presentation.add(txtBtn0);
+
+// BOTON / TARJETA CLICKABLE: ESCENARIO 1
+ShapeRectangle btnCard1 = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    35, 95, 0, 0,
+    new java.awt.Color(217, 119, 6), new java.awt.Color(255, 251, 235),
+    280, 32, 0, 1.5, LINE_STYLE_SOLID
+) {
+    @Override
+    public boolean onClick(double clickx, double clicky) {
+        factorLatigoMain = 1.0;
+        escalaTurnoMain = 4.2;
+        domitecPlant.factorLatigo = 1.0;
+        domitecPlant.escalaTurno = 4.2;
+        lblEscenarioActual.setText("Escenario 1: Sin Panico (40h, Racional)");
+        lblEscenarioActual.setColor(new java.awt.Color(217, 119, 6));
+        traceln(">>> [SELECCION MANUAL] Escenario 1: Racional=1.0 | 40 hs (escala=4.2)");
+        return true;
+    }
+};
+presentation.add(btnCard1);
+
+ShapeText txtBtn1 = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    45, 115, 0, 0,
+    new java.awt.Color(180, 83, 9), "2. Sin Panico (40 hs, Racional 1.0x)",
+    new Font("SansSerif", Font.BOLD, 11), ALIGNMENT_LEFT
+) {
+    @Override
+    public boolean onClick(double clickx, double clicky) {
+        return btnCard1.onClick(clickx, clicky);
+    }
+};
+presentation.add(txtBtn1);
+
+// BOTON / TARJETA CLICKABLE: ESCENARIO 2
+ShapeRectangle btnCard2 = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    35, 135, 0, 0,
+    new java.awt.Color(22, 163, 74), new java.awt.Color(240, 253, 244),
+    280, 32, 0, 2.0, LINE_STYLE_SOLID
+) {
+    @Override
+    public boolean onClick(double clickx, double clicky) {
+        factorLatigoMain = 1.0;
+        escalaTurnoMain = 3.3;
+        domitecPlant.factorLatigo = 1.0;
+        domitecPlant.escalaTurno = 3.3;
+        lblEscenarioActual.setText("Escenario 2: Integral (51h, Racional)");
+        lblEscenarioActual.setColor(new java.awt.Color(22, 163, 74));
+        traceln(">>> [SELECCION MANUAL] Escenario 2: Racional=1.0 | 51 hs (escala=3.3)");
+        return true;
+    }
+};
+presentation.add(btnCard2);
+
+ShapeText txtBtn2 = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    45, 155, 0, 0,
+    new java.awt.Color(21, 128, 61), "3. Integral (51 hs, Racional 1.0x) [RECOMENDADO]",
+    new Font("SansSerif", Font.BOLD, 10), ALIGNMENT_LEFT
+) {
+    @Override
+    public boolean onClick(double clickx, double clicky) {
+        return btnCard2.onClick(clickx, clicky);
+    }
+};
+presentation.add(txtBtn2);
+
+ShapeText notaCtrl = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    35, 185, 0, 0,
+    new java.awt.Color(108, 117, 125), "Haz click en cualquiera de los 3 botones para",
+    new Font("SansSerif", Font.ITALIC, 10), ALIGNMENT_LEFT
+);
+presentation.add(notaCtrl);
+
+ShapeText notaCtrl2 = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    35, 202, 0, 0,
+    new java.awt.Color(108, 117, 125), "cambiar los parametros en tiempo real.",
+    new Font("SansSerif", Font.ITALIC, 10), ALIGNMENT_LEFT
+);
+presentation.add(notaCtrl2);
+
+// 2. Tarjetas de Indicadores (KPIs)
+// Tarjeta Fill Rate
+ShapeRectangle cardFR = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    350, 20, 0, 0,
+    new java.awt.Color(200, 200, 200), new java.awt.Color(255, 255, 255),
+    200, 95, 0, 1.0, LINE_STYLE_SOLID
+);
+presentation.add(cardFR);
+
+ShapeText titFR = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    360, 40, 0, 0,
+    new java.awt.Color(108, 117, 125), "FILL RATE ACUMULADO",
+    new Font("SansSerif", Font.BOLD, 10), ALIGNMENT_LEFT
+);
+presentation.add(titFR);
+
+lblFillRate = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    360, 75, 0, 0,
+    new java.awt.Color(40, 140, 40), "--- %",
+    new Font("SansSerif", Font.BOLD, 26), ALIGNMENT_LEFT
+);
+presentation.add(lblFillRate);
+
+ShapeRectangle fondoGauge = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    360, 85, 0, 0,
+    new java.awt.Color(220, 220, 220), new java.awt.Color(235, 235, 235),
+    180, 14, 0, 1.0, LINE_STYLE_SOLID
+);
+presentation.add(fondoGauge);
+
+barraGaugeFillRate = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    360, 85, 0, 0,
+    null, new java.awt.Color(40, 167, 69),
+    0, 14, 0, 1.0, LINE_STYLE_SOLID
+);
+presentation.add(barraGaugeFillRate);
+
+// Tarjeta Backlog
+ShapeRectangle cardBK = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    570, 20, 0, 0,
+    new java.awt.Color(200, 200, 200), new java.awt.Color(255, 255, 255),
+    200, 95, 0, 1.0, LINE_STYLE_SOLID
+);
+presentation.add(cardBK);
+
+ShapeText titBK = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    580, 40, 0, 0,
+    new java.awt.Color(108, 117, 125), "PEDIDOS PENDIENTES (BACKLOG)",
+    new Font("SansSerif", Font.BOLD, 10), ALIGNMENT_LEFT
+);
+presentation.add(titBK);
+
+lblBacklog = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    580, 75, 0, 0,
+    new java.awt.Color(220, 53, 69), "0 cajas",
+    new Font("SansSerif", Font.BOLD, 22), ALIGNMENT_LEFT
+);
+presentation.add(lblBacklog);
+
+// Tarjeta Estado & Tiempo
+ShapeRectangle cardTiempo = new ShapeRectangle(
+    SHAPE_DRAW_2D, true,
+    790, 20, 0, 0,
+    new java.awt.Color(200, 200, 200), new java.awt.Color(255, 255, 255),
+    240, 95, 0, 1.0, LINE_STYLE_SOLID
+);
+presentation.add(cardTiempo);
+
+ShapeText titTiempo = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    800, 40, 0, 0,
+    new java.awt.Color(108, 117, 125), "ESTADO DE LA PLANTA",
+    new Font("SansSerif", Font.BOLD, 10), ALIGNMENT_LEFT
+);
+presentation.add(titTiempo);
+
+lblSemana = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    800, 65, 0, 0,
+    new java.awt.Color(33, 37, 41), "Semana: 0.0 de 100",
+    new Font("SansSerif", Font.BOLD, 14), ALIGNMENT_LEFT
+);
+presentation.add(lblSemana);
+
+lblEscenarioActual = new ShapeText(
+    SHAPE_DRAW_2D, true,
+    800, 92, 0, 0,
+    new java.awt.Color(220, 53, 69), "Escenario 0: As-Is (40h, Panico)",
+    new Font("SansSerif", Font.BOLD, 11), ALIGNMENT_LEFT
+);
+presentation.add(lblEscenarioActual);
+]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1787747219705</Id>
@@ -10191,8 +10453,8 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 					<X>30</X><Y>170</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 					</Properties>
@@ -10203,8 +10465,8 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 					<X>30</X><Y>210</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 					</Properties>
@@ -10215,8 +10477,8 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 					<X>30</X><Y>250</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
@@ -10230,8 +10492,8 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 					<X>30</X><Y>290</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
@@ -10245,8 +10507,8 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 					<X>30</X><Y>320</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
@@ -10260,13 +10522,73 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 					<X>30</X><Y>350</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[0.0]]></Code>
 						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1795100000001</Id>
+					<Name><![CDATA[lblFillRate]]></Name>
+					<X>40</X><Y>620</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[ShapeText]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1795100000002</Id>
+					<Name><![CDATA[lblBacklog]]></Name>
+					<X>40</X><Y>650</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[ShapeText]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1795100000003</Id>
+					<Name><![CDATA[lblSemana]]></Name>
+					<X>40</X><Y>680</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[ShapeText]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1795100000004</Id>
+					<Name><![CDATA[lblEscenarioActual]]></Name>
+					<X>40</X><Y>710</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[ShapeText]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1795100000005</Id>
+					<Name><![CDATA[barraGaugeFillRate]]></Name>
+					<X>40</X><Y>740</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[ShapeRectangle]]></Type>        
 					</Properties>
 				</Variable>
 				<Variable Class="Parameter">
@@ -10275,8 +10597,8 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 					<X>40</X><Y>580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[double]]></Type>
 						<UnitType><![CDATA[NONE]]></UnitType>
@@ -10299,8 +10621,8 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 					<X>170</X><Y>580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[double]]></Type>
 						<UnitType><![CDATA[NONE]]></UnitType>
@@ -11398,7 +11720,7 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 			<Name><![CDATA[Simulation_Escenario0_AsIs]]></Name>
 			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
 			<MaximumMemory>512</MaximumMemory>
-			<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
@@ -11460,7 +11782,7 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 			<Name><![CDATA[Simulation_Escenario1_SinPanico]]></Name>
 			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
 			<MaximumMemory>512</MaximumMemory>
-			<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
@@ -11525,7 +11847,7 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 			<Name><![CDATA[Simulation_Escenario2_Integral]]></Name>
 			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
 			<MaximumMemory>512</MaximumMemory>
-			<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
@@ -11593,26 +11915,53 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 			<Name><![CDATA[ParametersVariation]]></Name>
 			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
 			<MaximumMemory>512</MaximumMemory>
-			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
-			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+			<RandomNumberGenerationType>customGenerator</RandomNumberGenerationType>
+			<CustomGeneratorCode>new Random(getCurrentReplication())</CustomGeneratorCode>
 			<AfterSimulationRunCode><![CDATA[double fr = (root.domitecPlant.demandaTotalAcumulada > 0) ? 
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
 
 double totBacklog = 0;
+double totStock = 0;
 for (ProductState ps : root.domitecPlant.inventorySystem) {
     totBacklog += ps.backlog;
+    totStock += ps.inventory;
 }
 
-traceln(">>> [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.format("%.2f%%", fr) + " | Backlog: " + Math.round(totBacklog) + " cajas");]]></AfterSimulationRunCode>
+// Calculo de Razon BW (Bullwhip Ratio = (Var_Ordenes / Mean_Ordenes) / (Var_Demanda / Mean_Demanda))
+double bwRatio = 1.0;
+int nDem = root.dsDemanda.size();
+int nOrd = root.dsOrdenes.size();
+if (nDem > 1 && nOrd > 1) {
+    double meanDem = root.dsDemanda.getYMean();
+    double meanOrd = root.dsOrdenes.getYMean();
+    double sumSqDem = 0;
+    double sumSqOrd = 0;
+    for (int i = 0; i < nDem; i++) {
+        double diffD = root.dsDemanda.getY(i) - meanDem;
+        sumSqDem += diffD * diffD;
+    }
+    for (int i = 0; i < nOrd; i++) {
+        double diffO = root.dsOrdenes.getY(i) - meanOrd;
+        sumSqOrd += diffO * diffO;
+    }
+    double varDem = sumSqDem / (nDem - 1);
+    double varOrd = sumSqOrd / (nOrd - 1);
+    if (meanDem > 0 && varDem > 0 && meanOrd > 0) {
+        bwRatio = (varOrd / meanOrd) / (varDem / meanDem);
+    }
+}
+
+traceln(String.format(">>> [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %,d cajas | Razon BW: %.2f | Stock Deposito: %,d cajas",
+    getCurrentReplication(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));]]></AfterSimulationRunCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs><![CDATA[]]></VmArgs>
 			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
 
 
-			<AllowParallelEvaluations>true</AllowParallelEvaluations>
+			<AllowParallelEvaluations>false</AllowParallelEvaluations>
 			<UseFreeformParameters>true</UseFreeformParameters>
-			<NumberOfRuns>10</NumberOfRuns>
+			<NumberOfRuns>1</NumberOfRuns>
 			<FreeformParamValue>	
 				<Id>1793663800123</Id>
 			</FreeformParamValue>
@@ -11643,7 +11992,7 @@ traceln(">>> [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.for
 			<ReplicationsProperties>
 				<UseReplication>true</UseReplication>
 				<FixedReplicationsNumber>true</FixedReplicationsNumber>
-				<ReplicationPerIteration>30</ReplicationPerIteration>
+				<ReplicationPerIteration>100</ReplicationPerIteration>
 				<MinimumReplication>2</MinimumReplication>
 				<MaximumReplication>10</MaximumReplication>
 				<ConfidenceLevel>LEVEL_80</ConfidenceLevel>
@@ -11657,26 +12006,53 @@ traceln(">>> [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.for
 			<Name><![CDATA[ParametersVariation1]]></Name>
 			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
 			<MaximumMemory>512</MaximumMemory>
-			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
-			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+			<RandomNumberGenerationType>customGenerator</RandomNumberGenerationType>
+			<CustomGeneratorCode>new Random(getCurrentReplication())</CustomGeneratorCode>
 			<AfterSimulationRunCode><![CDATA[double fr = (root.domitecPlant.demandaTotalAcumulada > 0) ? 
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
 
 double totBacklog = 0;
+double totStock = 0;
 for (ProductState ps : root.domitecPlant.inventorySystem) {
     totBacklog += ps.backlog;
+    totStock += ps.inventory;
 }
 
-traceln(">>> [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.format("%.2f%%", fr) + " | Backlog: " + Math.round(totBacklog) + " cajas");]]></AfterSimulationRunCode>
+// Calculo de Razon BW (Bullwhip Ratio = (Var_Ordenes / Mean_Ordenes) / (Var_Demanda / Mean_Demanda))
+double bwRatio = 1.0;
+int nDem = root.dsDemanda.size();
+int nOrd = root.dsOrdenes.size();
+if (nDem > 1 && nOrd > 1) {
+    double meanDem = root.dsDemanda.getYMean();
+    double meanOrd = root.dsOrdenes.getYMean();
+    double sumSqDem = 0;
+    double sumSqOrd = 0;
+    for (int i = 0; i < nDem; i++) {
+        double diffD = root.dsDemanda.getY(i) - meanDem;
+        sumSqDem += diffD * diffD;
+    }
+    for (int i = 0; i < nOrd; i++) {
+        double diffO = root.dsOrdenes.getY(i) - meanOrd;
+        sumSqOrd += diffO * diffO;
+    }
+    double varDem = sumSqDem / (nDem - 1);
+    double varOrd = sumSqOrd / (nOrd - 1);
+    if (meanDem > 0 && varDem > 0 && meanOrd > 0) {
+        bwRatio = (varOrd / meanOrd) / (varDem / meanDem);
+    }
+}
+
+traceln(String.format(">>> [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %,d cajas | Razon BW: %.2f | Stock Deposito: %,d cajas",
+    getCurrentReplication(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));]]></AfterSimulationRunCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs><![CDATA[]]></VmArgs>
 			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
 
 
-			<AllowParallelEvaluations>true</AllowParallelEvaluations>
+			<AllowParallelEvaluations>false</AllowParallelEvaluations>
 			<UseFreeformParameters>true</UseFreeformParameters>
-			<NumberOfRuns>10</NumberOfRuns>
+			<NumberOfRuns>1</NumberOfRuns>
 			<FreeformParamValue>	
 				<Id>1793663800123</Id>
 				<Expression Class="CodeValue">
@@ -11713,7 +12089,7 @@ traceln(">>> [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.for
 			<ReplicationsProperties>
 				<UseReplication>true</UseReplication>
 				<FixedReplicationsNumber>true</FixedReplicationsNumber>
-				<ReplicationPerIteration>30</ReplicationPerIteration>
+				<ReplicationPerIteration>100</ReplicationPerIteration>
 				<MinimumReplication>2</MinimumReplication>
 				<MaximumReplication>10</MaximumReplication>
 				<ConfidenceLevel>LEVEL_80</ConfidenceLevel>
@@ -11727,26 +12103,53 @@ traceln(">>> [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.for
 			<Name><![CDATA[ParametersVariation2]]></Name>
 			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
 			<MaximumMemory>512</MaximumMemory>
-			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
-			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+			<RandomNumberGenerationType>customGenerator</RandomNumberGenerationType>
+			<CustomGeneratorCode>new Random(getCurrentReplication())</CustomGeneratorCode>
 			<AfterSimulationRunCode><![CDATA[double fr = (root.domitecPlant.demandaTotalAcumulada > 0) ? 
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
 
 double totBacklog = 0;
+double totStock = 0;
 for (ProductState ps : root.domitecPlant.inventorySystem) {
     totBacklog += ps.backlog;
+    totStock += ps.inventory;
 }
 
-traceln(">>> [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.format("%.2f%%", fr) + " | Backlog: " + Math.round(totBacklog) + " cajas");]]></AfterSimulationRunCode>
+// Calculo de Razon BW (Bullwhip Ratio = (Var_Ordenes / Mean_Ordenes) / (Var_Demanda / Mean_Demanda))
+double bwRatio = 1.0;
+int nDem = root.dsDemanda.size();
+int nOrd = root.dsOrdenes.size();
+if (nDem > 1 && nOrd > 1) {
+    double meanDem = root.dsDemanda.getYMean();
+    double meanOrd = root.dsOrdenes.getYMean();
+    double sumSqDem = 0;
+    double sumSqOrd = 0;
+    for (int i = 0; i < nDem; i++) {
+        double diffD = root.dsDemanda.getY(i) - meanDem;
+        sumSqDem += diffD * diffD;
+    }
+    for (int i = 0; i < nOrd; i++) {
+        double diffO = root.dsOrdenes.getY(i) - meanOrd;
+        sumSqOrd += diffO * diffO;
+    }
+    double varDem = sumSqDem / (nDem - 1);
+    double varOrd = sumSqOrd / (nOrd - 1);
+    if (meanDem > 0 && varDem > 0 && meanOrd > 0) {
+        bwRatio = (varOrd / meanOrd) / (varDem / meanDem);
+    }
+}
+
+traceln(String.format(">>> [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %,d cajas | Razon BW: %.2f | Stock Deposito: %,d cajas",
+    getCurrentReplication(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));]]></AfterSimulationRunCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs><![CDATA[]]></VmArgs>
 			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
 
 
-			<AllowParallelEvaluations>true</AllowParallelEvaluations>
+			<AllowParallelEvaluations>false</AllowParallelEvaluations>
 			<UseFreeformParameters>true</UseFreeformParameters>
-			<NumberOfRuns>10</NumberOfRuns>
+			<NumberOfRuns>1</NumberOfRuns>
 			<FreeformParamValue>	
 				<Id>1793663800123</Id>
 				<Expression Class="CodeValue">
@@ -11783,7 +12186,7 @@ traceln(">>> [RÉPLICA #" + getCurrentIteration() + "] Fill Rate: " + String.for
 			<ReplicationsProperties>
 				<UseReplication>true</UseReplication>
 				<FixedReplicationsNumber>true</FixedReplicationsNumber>
-				<ReplicationPerIteration>30</ReplicationPerIteration>
+				<ReplicationPerIteration>100</ReplicationPerIteration>
 				<MinimumReplication>2</MinimumReplication>
 				<MaximumReplication>10</MaximumReplication>
 				<ConfidenceLevel>LEVEL_80</ConfidenceLevel>

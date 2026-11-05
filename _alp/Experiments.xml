@@ -5,8 +5,8 @@
 		<Name><![CDATA[ParametersVariation]]></Name>
 		<CommandLineArguments/>
 		<MaximumMemory>512</MaximumMemory>
-		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
-		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+		<RandomNumberGenerationType>customGenerator</RandomNumberGenerationType>
+		<CustomGeneratorCode>new Random(getCurrentReplication())</CustomGeneratorCode>
 		<AfterSimulationRunCode>double fr = (root.domitecPlant.demandaTotalAcumulada &gt; 0) ? 
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
 
@@ -93,8 +93,8 @@ traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %
 		<Name><![CDATA[ParametersVariation1]]></Name>
 		<CommandLineArguments/>
 		<MaximumMemory>512</MaximumMemory>
-		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
-		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+		<RandomNumberGenerationType>customGenerator</RandomNumberGenerationType>
+		<CustomGeneratorCode>new Random(getCurrentReplication())</CustomGeneratorCode>
 		<AfterSimulationRunCode>double fr = (root.domitecPlant.demandaTotalAcumulada &gt; 0) ? 
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
 
@@ -187,8 +187,8 @@ traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %
 		<Name><![CDATA[ParametersVariation2]]></Name>
 		<CommandLineArguments/>
 		<MaximumMemory>512</MaximumMemory>
-		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
-		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+		<RandomNumberGenerationType>customGenerator</RandomNumberGenerationType>
+		<CustomGeneratorCode>new Random(getCurrentReplication())</CustomGeneratorCode>
 		<AfterSimulationRunCode>double fr = (root.domitecPlant.demandaTotalAcumulada &gt; 0) ? 
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
 
@@ -281,7 +281,7 @@ traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %
 		<Name><![CDATA[Simulation_Escenario0_AsIs]]></Name>
 		<CommandLineArguments/>
 		<MaximumMemory>512</MaximumMemory>
-		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+		<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 		<SeedValue>1</SeedValue>
 		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
@@ -344,7 +344,7 @@ traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %
 		<Name><![CDATA[Simulation_Escenario1_SinPanico]]></Name>
 		<CommandLineArguments/>
 		<MaximumMemory>512</MaximumMemory>
-		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+		<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 		<SeedValue>1</SeedValue>
 		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
@@ -410,7 +410,7 @@ traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %
 		<Name><![CDATA[Simulation_Escenario2_Integral]]></Name>
 		<CommandLineArguments/>
 		<MaximumMemory>512</MaximumMemory>
-		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+		<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 		<SeedValue>1</SeedValue>
 		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
