@@ -1,0 +1,21 @@
+# AnyLogic editor recovery files and database locks
+*.alp.autosave
+*.alpx.autosave
+*.lck
+*.tmp
+
+# Generated AnyLogic/Eclipse workspaces and builds
+**/*_BUILD/
+**/.metadata/
+/tools/_workspace_*/
+
+# Python caches used by local development helpers
+__pycache__/
+*.py[cod]
+
+# JVM crash reports
+hs_err_pid*.log
+replay_pid*.log
+
+# Keep database snapshots together: db.data, db.script, db.properties,
+# db.backup and db.log may all be required by an unclean HSQL shutdown.
