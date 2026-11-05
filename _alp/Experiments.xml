@@ -5,7 +5,7 @@
 		<Name><![CDATA[ParametersVariation]]></Name>
 		<CommandLineArguments/>
 		<MaximumMemory>512</MaximumMemory>
-		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+		<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 		<AfterSimulationRunCode>double fr = (root.domitecPlant.demandaTotalAcumulada &gt; 0) ? 
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
@@ -42,14 +42,14 @@ if (nDem &gt; 1 &amp;&amp; nOrd &gt; 1) {
 }
 
 traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %,d cajas | Razon BW: %.2f | Stock Deposito: %,d cajas",
-    getCurrentReplication(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));</AfterSimulationRunCode>
+    getCurrentIteration(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));</AfterSimulationRunCode>
 		<SeedValue>1</SeedValue>
 		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 		<VmArgs/>
 		<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
-		<AllowParallelEvaluations>false</AllowParallelEvaluations>
+		<AllowParallelEvaluations>true</AllowParallelEvaluations>
 		<UseFreeformParameters>true</UseFreeformParameters>
-		<NumberOfRuns>1</NumberOfRuns>
+		<NumberOfRuns>10</NumberOfRuns>
 		<FreeformParamValue>
 			<Id>1793663800123</Id>
 		</FreeformParamValue>
@@ -80,7 +80,7 @@ traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %
 		<ReplicationsProperties>
 			<UseReplication>true</UseReplication>
 			<FixedReplicationsNumber>true</FixedReplicationsNumber>
-			<ReplicationPerIteration>100</ReplicationPerIteration>
+			<ReplicationPerIteration>30</ReplicationPerIteration>
 			<MinimumReplication>2</MinimumReplication>
 			<MaximumReplication>10</MaximumReplication>
 			<ConfidenceLevel>LEVEL_80</ConfidenceLevel>
@@ -93,7 +93,7 @@ traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %
 		<Name><![CDATA[ParametersVariation1]]></Name>
 		<CommandLineArguments/>
 		<MaximumMemory>512</MaximumMemory>
-		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+		<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 		<AfterSimulationRunCode>double fr = (root.domitecPlant.demandaTotalAcumulada &gt; 0) ? 
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
@@ -130,14 +130,14 @@ if (nDem &gt; 1 &amp;&amp; nOrd &gt; 1) {
 }
 
 traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %,d cajas | Razon BW: %.2f | Stock Deposito: %,d cajas",
-    getCurrentReplication(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));</AfterSimulationRunCode>
+    getCurrentIteration(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));</AfterSimulationRunCode>
 		<SeedValue>1</SeedValue>
 		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 		<VmArgs/>
 		<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
-		<AllowParallelEvaluations>false</AllowParallelEvaluations>
+		<AllowParallelEvaluations>true</AllowParallelEvaluations>
 		<UseFreeformParameters>true</UseFreeformParameters>
-		<NumberOfRuns>1</NumberOfRuns>
+		<NumberOfRuns>10</NumberOfRuns>
 		<FreeformParamValue>
 			<Id>1793663800123</Id>
 			<Expression Class="CodeValue">
@@ -174,7 +174,7 @@ traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %
 		<ReplicationsProperties>
 			<UseReplication>true</UseReplication>
 			<FixedReplicationsNumber>true</FixedReplicationsNumber>
-			<ReplicationPerIteration>100</ReplicationPerIteration>
+			<ReplicationPerIteration>30</ReplicationPerIteration>
 			<MinimumReplication>2</MinimumReplication>
 			<MaximumReplication>10</MaximumReplication>
 			<ConfidenceLevel>LEVEL_80</ConfidenceLevel>
@@ -187,7 +187,7 @@ traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %
 		<Name><![CDATA[ParametersVariation2]]></Name>
 		<CommandLineArguments/>
 		<MaximumMemory>512</MaximumMemory>
-		<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+		<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 		<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 		<AfterSimulationRunCode>double fr = (root.domitecPlant.demandaTotalAcumulada &gt; 0) ? 
     (root.domitecPlant.despachoTotalAcumulado / root.domitecPlant.demandaTotalAcumulada) * 100.0 : 0.0;
@@ -224,14 +224,14 @@ if (nDem &gt; 1 &amp;&amp; nOrd &gt; 1) {
 }
 
 traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %,d cajas | Razon BW: %.2f | Stock Deposito: %,d cajas",
-    getCurrentReplication(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));</AfterSimulationRunCode>
+    getCurrentIteration(), fr, Math.round(totBacklog), bwRatio, Math.round(totStock)));</AfterSimulationRunCode>
 		<SeedValue>1</SeedValue>
 		<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 		<VmArgs/>
 		<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
-		<AllowParallelEvaluations>false</AllowParallelEvaluations>
+		<AllowParallelEvaluations>true</AllowParallelEvaluations>
 		<UseFreeformParameters>true</UseFreeformParameters>
-		<NumberOfRuns>1</NumberOfRuns>
+		<NumberOfRuns>10</NumberOfRuns>
 		<FreeformParamValue>
 			<Id>1793663800123</Id>
 			<Expression Class="CodeValue">
@@ -268,7 +268,7 @@ traceln(String.format("&gt;&gt;&gt; [REPLICA #%d] Fill Rate: %.2f%% | Backlog: %
 		<ReplicationsProperties>
 			<UseReplication>true</UseReplication>
 			<FixedReplicationsNumber>true</FixedReplicationsNumber>
-			<ReplicationPerIteration>100</ReplicationPerIteration>
+			<ReplicationPerIteration>30</ReplicationPerIteration>
 			<MinimumReplication>2</MinimumReplication>
 			<MaximumReplication>10</MaximumReplication>
 			<ConfidenceLevel>LEVEL_80</ConfidenceLevel>
