@@ -1,0 +1,16 @@
+{
+  "package": "domitec_interactivo\\resultados_domitec\\comparacion_20261106_002510_679",
+  "result_rows": 300,
+  "weekly_rows": 30000,
+  "seed_week_demand_triplets_equal": 10000,
+  "paired_intervals": 15,
+  "hashes_sha256": {
+    "COMPLETO": "27585aa917d00404cbc786cc16a9cda791a6b7038f8745ae8d3cf1f67387ab9a",
+    "ic_pareados.csv": "c01611dc214ffa4dcbb981dd67dff41e7ad21e506e22cf56335f2fb8e3bf1818",
+    "metadata.txt": "06e1cc2c5a1618b2e9e9ba9c0abafc7f7d8264231d0c0777a30b983961e630c5",
+    "resultados.csv": "f32a47afe58217e1fa9840a1611ea89fa531e802bca55b256a024aabb479197a",
+    "series_semanales.csv": "e53bdd93a2f9db346c478d9c6318a56cbd871373699fafb9613e56f99455dcbe"
+  },
+  "native_export": "verified",
+  "stationarity": "not_formally_demonstrated"
+}

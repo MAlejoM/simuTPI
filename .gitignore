@@ -19,3 +19,7 @@ __pycache__/
 # JVM crash reports
 hs_err_pid*.log
 replay_pid*.log
+
+# Prepared local experiment inputs and generated comparison packages
+/domitec_interactivo/domitec_estudio.properties
+/domitec_interactivo/resultados_domitec/

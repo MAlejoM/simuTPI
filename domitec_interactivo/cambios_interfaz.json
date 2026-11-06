@@ -5,7 +5,7 @@
   "replicas_per_scenario": 100,
   "batch_order": "seed1:[0,1,2], seed2:[0,1,2], ..., seed100:[0,1,2]",
   "warmup_default": 15,
-  "new_weekly_observation_time": ".999999 + k weeks",
+  "new_weekly_observation_time": ".9999 + k weeks",
   "sampling": "keyed CRN by replication/channel/product/week and lot/stage",
   "ui_tabs": [
     "2D",

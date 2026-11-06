@@ -1,0 +1,92 @@
+[
+  {
+    "nombre": "Recepción Parque",
+    "descripcion": "Materias primas e insumos\npara la línea de lavandina.\nLos lotes recibidos esperan\nantes de la dilución.",
+    "area": [
+      380,
+      285,
+      210,
+      285
+    ]
+  },
+  {
+    "nombre": "Dilución y calidad",
+    "descripcion": "Se diluye la lavandina y se\ncontrola su calidad. Los lotes\naprobados pasan al pulmón;\nlos rechazados son merma.",
+    "area": [
+      605,
+      285,
+      205,
+      285
+    ]
+  },
+  {
+    "nombre": "Envasado Parque",
+    "descripcion": "Envases, llenado y cierre\nhasta obtener cajas. Los\nequipos representan la línea\nde envasado de lavandina.",
+    "area": [
+      825,
+      285,
+      375,
+      285
+    ]
+  },
+  {
+    "nombre": "Depósito Parque",
+    "descripcion": "Almacena lavandina terminada.\nEl stock se usa para despachar.\nLo que no puede atenderse\nqueda como pedido pendiente.",
+    "area": [
+      1215,
+      285,
+      245,
+      285
+    ]
+  },
+  {
+    "nombre": "Recepción Vicentin",
+    "descripcion": "Insumos de los líquidos:\nbases, tensoactivos, esencias\ny materiales de envase. Los\nlotes esperan elaboración.",
+    "area": [
+      380,
+      635,
+      210,
+      360
+    ]
+  },
+  {
+    "nombre": "Reactores y calidad",
+    "descripcion": "Elaboración de los líquidos\nen reactores compartidos.\nDespués se controla la calidad\ny se separa la merma.",
+    "area": [
+      605,
+      635,
+      235,
+      150
+    ]
+  },
+  {
+    "nombre": "Tanques pulmón",
+    "descripcion": "Guardan semielaborado\naprobado, separado por\nproducto, mientras espera\nsu turno de envasado.",
+    "area": [
+      605,
+      795,
+      235,
+      185
+    ]
+  },
+  {
+    "nombre": "Envasado Vicentin",
+    "descripcion": "Cinco líneas: desinfectante,\nlavavajilla, lavarropa,\nsuavizante y detergente.\nTransforman los lotes en cajas.",
+    "area": [
+      850,
+      635,
+      350,
+      360
+    ]
+  },
+  {
+    "nombre": "Depósito Vicentin",
+    "descripcion": "Almacena las cajas terminadas\nde los cinco líquidos. El\ndespacho reduce stock y se\nregistra la demanda pendiente.",
+    "area": [
+      1215,
+      635,
+      245,
+      360
+    ]
+  }
+]

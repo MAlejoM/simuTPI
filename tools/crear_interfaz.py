@@ -137,7 +137,7 @@ for(String nombre:ConfiguracionDomitec.PRODUCTOS){
     code(weekly,'Action',action)
     # Observe complete weeks just before the next week's demand. Exactly 100 samples.
     sampler=event.cloneNode(True);fresh(sampler);put(sampler,'Name','observarSemana');code(sampler,'Action','observarSemana();')
-    prop=children(sampler,'Properties')[0];code(children(prop,'OccurrenceTime')[0],'Code','0.999999')
+    prop=children(sampler,'Properties')[0];code(children(prop,'OccurrenceTime')[0],'Code','0.9999')
     events=children(mainA,'Events')
     if not events:e=d.createElement('Events');mainA.appendChild(e)
     else:e=events[0]
@@ -328,7 +328,7 @@ estudio.agregar(root.resultadoFinal(root.numeroEscenario),root.registro.firmaDem
             target=OUT/path;target.parent.mkdir(exist_ok=True,parents=True)
             if not target.exists():target.write_bytes(subprocess.check_output(['git','show','main:'+path],cwd=ROOT))
     OUTPUT.write_bytes(d.toxml(encoding='UTF-8'))
-    (OUT/'cambios_interfaz.json').write_text(json.dumps({'source':str(source),'model_time':'Week','horizon':100,'replicas_per_scenario':100,'batch_order':'seed1:[0,1,2], seed2:[0,1,2], ..., seed100:[0,1,2]','warmup_default':15,'new_weekly_observation_time':'.999999 + k weeks','sampling':'keyed CRN by replication/channel/product/week and lot/stage','ui_tabs':['2D','3D','Estadisticas','Logica']},indent=2),encoding='utf8')
+    (OUT/'cambios_interfaz.json').write_text(json.dumps({'source':str(source),'model_time':'Week','horizon':100,'replicas_per_scenario':100,'batch_order':'seed1:[0,1,2], seed2:[0,1,2], ..., seed100:[0,1,2]','warmup_default':15,'new_weekly_observation_time':'.9999 + k weeks','sampling':'keyed CRN by replication/channel/product/week and lot/stage','ui_tabs':['2D','3D','Estadisticas','Logica']},indent=2),encoding='utf8')
     print(OUTPUT)
 
 if __name__=='__main__':main()

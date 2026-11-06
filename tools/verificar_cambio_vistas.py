@@ -18,12 +18,13 @@ def main():
     method = body[body.index('public void mostrarVista('):body.index('public void elegirEscenario(')]
     assert '.setDrawMode(' not in method
     # Read the actual constructor statements and transforms from the model too.
-    setup = body[body.index('    vistaPlanta3D = new '):body.index('    seleccionarPerfil(0, 0);')]
+    setup = body[body.index('    nivelPlanta3D = new '):body.index('    seleccionarPerfil(0, 0);')]
     java = '''import com.anylogic.engine.*;
 import com.anylogic.engine.presentation.*;
 public class TestVistasFijas extends Agent {
     ShapeTopLevelPresentationGroup presentation=new ShapeTopLevelPresentationGroup(this,true,0,0,0,0);
     ShapeEmbeddedObjectPresentation vistaPlanta3D;
+    com.anylogic.engine.markup.Level nivelPlanta3D;
     TestVistasFijas domitecPlant;
     int vistaActiva;
     public ShapeTopLevelPresentationGroup getPresentationShape(){return presentation;}
@@ -32,6 +33,11 @@ public class TestVistasFijas extends Agent {
         TestVistasFijas main=new TestVistasFijas();
         main.domitecPlant=new TestVistasFijas();
         main.crearVistas();
+        if(main.vistaPlanta3D.getLevel()!=main.nivelPlanta3D)
+            throw new AssertionError("La planta debe estar registrada en un nivel 3D");
+        if(!main.nivelPlanta3D.getShapes().contains(main.vistaPlanta3D)
+            || !main.presentation.getShapes().contains(main.vistaPlanta3D))
+            throw new AssertionError("La planta debe pertenecer al nivel y a la presentacion");
         for(int j=0;j<10;j++) for(int i=0;i<4;i++){
             main.mostrarVista(i);
             if(main.vistaPlanta3D.getDrawMode()!=SHAPE_DRAW_3D)

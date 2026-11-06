@@ -1,20 +1,17 @@
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
 /** Acumula 100 ternas por semilla y publica el paquete estadístico sin depender de AnyLogic. */
 public final class EstudioPareado {
     private static final int N = 100;
     private static final int ESCENARIOS = 3;
-    private static final String VERSION_MODELO = "Domitec_Main_3D; AnyLogic 8.9.10";
+    private static final String VERSION_MODELO = "Domitec_Interactivo; AnyLogic 8.9.10";
     private static final DateTimeFormatter FORMATO_UTC =
             DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS").withZone(ZoneOffset.UTC);
 
@@ -30,6 +27,7 @@ public final class EstudioPareado {
     private boolean terminado = false;
     private String salida = "";
     private Double warmupEstudio = null;
+    private ConfiguracionDomitec configuracionEstudio = null;
 
     /**
      * Agrega una corrida ya finalizada por el experimento de variación de parámetros.
@@ -83,6 +81,25 @@ public final class EstudioPareado {
     public synchronized int getCount() { return comparacion.getCount(); }
     public synchronized boolean isTerminado() { return terminado; }
     public synchronized String getSalida() { return salida; }
+    /** Estado compartido, incluyendo errores de publicación recuperables. */
+    public synchronized String getEstado() { return SesionEstudio.estado; }
+
+    /** Reintenta solo la exportación de los 300 resultados retenidos; no ejecuta corridas. */
+    public synchronized void reintentarExportacion(String destino) {
+        if (terminado) throw new IllegalStateException("El estudio ya fue publicado: " + salida);
+        if (registros != N * ESCENARIOS || comparacion.getCount() != N * ESCENARIOS)
+            throw new IllegalStateException("Se requieren 300 resultados retenidos para reintentar la exportación");
+        try {
+            finalizarExitoso(configuracionEstudio, destino);
+        } catch (Throwable error) {
+            String mensaje = mensajeError(error);
+            if (SesionEstudio.ejecutando) SesionEstudio.finalizar(mensaje);
+            else SesionEstudio.estado = "Error: " + mensaje;
+            if (error instanceof Error) throw (Error) error;
+            if (error instanceof RuntimeException) throw (RuntimeException) error;
+            throw new RuntimeException(error);
+        }
+    }
 
     private void validarSiguiente(ComparacionEscenarios.Resultado r, String firma, String seriesCsv,
                                   double warmup, ConfiguracionDomitec cfg) {
@@ -116,6 +133,7 @@ public final class EstudioPareado {
         }
         if (SesionEstudio.configuracionEnCurso == null)
             SesionEstudio.configuracionEnCurso = cfg.copiarDeep();
+        if (configuracionEstudio == null) configuracionEstudio = cfg.copiarDeep();
         if (destino != null && !destino.trim().isEmpty()) SesionEstudio.carpetaEnCurso = destino;
     }
 
@@ -143,7 +161,7 @@ public final class EstudioPareado {
                 ? cfg : SesionEstudio.configuracionEnCurso;
         String metadata = metadata(stamp, configMetadata);
         String csvIC = construirIC();
-        Path carpeta = publicarAtomico(destino, stamp, resultadosCsv.toString(), seriesCsv.toString(), csvIC, metadata);
+        Path carpeta = publicar(destino, stamp, resultadosCsv.toString(), seriesCsv.toString(), csvIC, metadata);
         salida = carpeta.toString();
         terminado = true;
         SesionEstudio.progreso = 300;
@@ -196,39 +214,32 @@ public final class EstudioPareado {
         b.append('\n');
     }
 
-    private Path publicarAtomico(String destino, String stamp, String datos, String series,
+    private Path publicar(String destino, String stamp, String datos, String series,
                                  String ic, String metadata) throws IOException {
         String baseText = destino == null || destino.trim().isEmpty()
                 ? SesionEstudio.carpetaEnCurso : destino;
         Path base = Paths.get(baseText).toAbsolutePath().normalize();
         Files.createDirectories(base);
-        Path staging = Files.createTempDirectory(base, ".estudio-" + stamp + "-");
-        boolean publicado = false;
-        try {
-            escribir(staging.resolve("resultados.csv"), datos);
-            escribir(staging.resolve("series_semanales.csv"), series);
-            escribir(staging.resolve("ic_pareados.csv"), ic);
-            escribir(staging.resolve("metadata.txt"), metadata);
-            Path finalDir = base.resolve("comparacion_" + stamp);
-            if (Files.exists(finalDir)) finalDir = base.resolve("comparacion_" + stamp + "_" + UUID.randomUUID());
-            try { Files.move(staging, finalDir, StandardCopyOption.ATOMIC_MOVE); }
-            catch (AtomicMoveNotSupportedException e) { Files.move(staging, finalDir); }
-            publicado = true;
-            return finalDir;
-        } finally {
-            if (!publicado && Files.exists(staging)) borrarTemporal(staging);
+        Path finalDir = base.resolve("comparacion_" + stamp);
+        int sufijo = 1;
+        while (true) {
+            try { Files.createDirectory(finalDir); break; }
+            catch (java.nio.file.FileAlreadyExistsException ocupado) {
+                finalDir = base.resolve("comparacion_" + stamp + "_" + sufijo++);
+            }
         }
+        // Los consumidores reconocen el paquete solo con COMPLETO, escrito al final.
+        salida = finalDir.toString();
+        escribir(finalDir.resolve("resultados.csv"), datos);
+        escribir(finalDir.resolve("series_semanales.csv"), series);
+        escribir(finalDir.resolve("ic_pareados.csv"), ic);
+        escribir(finalDir.resolve("metadata.txt"), metadata);
+        escribir(finalDir.resolve("COMPLETO"), "run_id=" + stamp + "\n");
+        return finalDir;
     }
 
     private void escribir(Path p, String s) throws IOException {
         Files.write(p, s.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private void borrarTemporal(Path dir) throws IOException {
-        java.util.stream.Stream<Path> paths = Files.walk(dir);
-        try { paths.sorted(java.util.Comparator.reverseOrder()).forEach(p -> {
-            try { Files.deleteIfExists(p); } catch (IOException e) { throw new RuntimeException(e); }
-        }); } finally { paths.close(); }
     }
 
     private String mensajeError(Throwable e) {

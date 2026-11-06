@@ -4,7 +4,7 @@ This checks code generation, unlike the separate action compatibility harness.
 It never changes the generated project or the running editor.
 """
 from pathlib import Path
-import hashlib, json, os, shutil, subprocess, xml.etree.ElementTree as E
+import hashlib, json, os, re, shutil, subprocess, xml.etree.ElementTree as E
 from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +15,13 @@ INSTALL = Path(r'D:\AnyLogic 8.9 Personal Learning Edition')
 def main():
     source = BUILD/'src.generated'
     assert source.is_dir(), source
+    native_plant=(source/'domitec_interactivo/DomitecPlant.java').read_text(encoding='utf8')
+    assert re.search(r'piso_planta\s*=\s*new ShapeRectangle\(\s*SHAPE_DRAW_3D,\s*true',native_plant), \
+        'AnyLogic must regenerate the floor as a public 3D shape, not a 2D icon'
+    icon_line=next(line for line in native_plant.splitlines() if 'icon = new ShapeModelElementsGroup' in line)
+    assert 'piso_planta' not in icon_line, 'The floor must belong to the scene, not the model icon'
+    assert re.search(r'_origin_VA\s*=\s*new ViewArea\(\s*this,\s*"\[Origin\]",\s*-1400(?:\.0)?,',native_plant), \
+        'AnyLogic must regenerate DomitecPlant origin at the restored 2D plan'
     target = WORK/'src'
     target.mkdir(parents=True, exist_ok=True)
     files = []

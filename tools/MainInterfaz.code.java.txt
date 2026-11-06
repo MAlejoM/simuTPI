@@ -8,8 +8,8 @@ public double uiMedia=9379, uiDesvio=11162, uiLead=30, uiCobertura=5.5, uiRate=6
 public double uiLatigo=1.5, uiHoras=40, uiMermaLav=3, uiMermaLiq=5, uiTiempo=1, uiCapacidad=1, uiWarmup=15;
 public int uiReactores=4, uiCola=20, uiTanque=3;
 private com.anylogic.engine.presentation.ShapeEmbeddedObjectPresentation vistaPlanta3D;
+private com.anylogic.engine.markup.Level nivelPlanta3D;
 public double[] demandaPorSemana=new double[100], ordenesPorSemana=new double[100], produccionPorSemana=new double[100];
-private Comparacion_100x3 experimentoEstudio;
 
 public void iniciarInterfaz() {
     if(getModelElementsShape()!=null)getModelElementsShape().setVisible(false);
@@ -19,14 +19,18 @@ public void iniciarInterfaz() {
     cfg.validar();
     escenarioActivo = numeroEscenario >= 0 ? numeroEscenario : (cfg.horas > 45 ? 2 : (cfg.factLatigo <= 1 ? 1 : 0));
     aplicarConfiguracion(cfg, false);
-    if (esComparacion) return;
+    if (esComparacion) { muestrearWip.reset(); return; }
+    nivelPlanta3D = new com.anylogic.engine.markup.Level(this, "planta3D", SHAPE_DRAW_3D, 0);
     vistaPlanta3D = new com.anylogic.engine.presentation.ShapeEmbeddedObjectPresentation(
-        this, SHAPE_DRAW_3D, false, 0, 0, 0, 0, false, false, domitecPlant);
+        this, SHAPE_DRAW_3D, true, 0, 0, 0, 0, false, false, domitecPlant);
     vistaPlanta3D.setVisible(false);
-    presentation.add(vistaPlanta3D);
+    nivelPlanta3D.add(vistaPlanta3D);
+    nivelPlanta3D.initialize();
+    presentation.add(nivelPlanta3D);
     seleccionarPerfil(0, 0);
     sincronizarControles();
     mostrarVista(1);
+    restablecerCamara();
 }
 
 public void mostrarVista(int vista) {
@@ -191,16 +195,26 @@ public String escenarioTexto(){return escenarioActivo==3?"Personalizado":new Str
 public String perfilTexto(){return nombreCanal(perfilCanal)+" / "+nombreProducto(perfilProducto);}
 
 public void ejecutarComparacion() {
-    if(!SesionEstudio.iniciar()){mensajeUI="Ya hay una comparacion en curso.";return;}
     try {
-        SesionEstudio.configuracionEnCurso=cfg.copiarDeep();
-        SesionEstudio.carpetaEnCurso=carpetaResultados;
-        experimentoEstudio=new Comparacion_100x3();
-        experimentoEstudio.run();
-        mensajeUI="Comparacion: 100 ternas, 300 corridas de 100 semanas. Ver avance en Estadisticas.";
-    } catch(RuntimeException error){SesionEstudio.finalizar(error.getMessage());mensajeUI=error.getMessage();}
+        SesionEstudio.preparar(cfg,carpetaResultados);
+        mensajeUI="Configuracion guardada. Ejecutar Comparacion_100x3 desde el menu Run de AnyLogic.";
+        getExperiment().getExperimentHost().showMessageDialog(
+            "Parametros personalizados guardados.\n\n1. Cerra esta ejecucion.\n2. Abri Comparacion_100x3 y pulsa Usar guardados y ejecutar.\n3. Al terminar, volve a Estadisticas y pulsa Leer ultimos IC.\n\nPara comparar los escenarios predeterminados podes abrir Comparacion_100x3 directamente, sin preparar nada.");
+    } catch(RuntimeException error){mensajeUI=error.getMessage();}
 }
-public void cancelarComparacion(){if(experimentoEstudio!=null)experimentoEstudio.stop();SesionEstudio.finalizar("Cancelado por el usuario");}
+public void cargarUltimosIC(){
+    try{SesionEstudio.leerUltimoEstudio(carpetaResultados);mensajeUI=SesionEstudio.estado;}
+    catch(RuntimeException error){mensajeUI=error.getMessage();}
+}
+public void restablecerCamara(){
+    double altura=1300;
+    double inclinacion=Math.toRadians(55);
+    ventanaPlanta3D.setCamera(new com.anylogic.engine.presentation.Camera3D(
+        920,605+altura/Math.tan(inclinacion),altura,inclinacion,-Math.PI/2),false,0L);
+}
+public void vistaSuperior(){
+    ventanaPlanta3D.setCamera(new com.anylogic.engine.presentation.Camera3D(920,605,1300,Math.PI/2,0),false,0L);
+}
 public String tablaIC(){
     ComparacionEscenarios datos=SesionEstudio.ultimoResultado;
     if(datos==null)return "Sin estudio completo.\nEjecutar las 100 ternas.\nLos IC se publican con 100 pares.\nNo se fuerza que excluyan el cero.";
@@ -225,4 +239,9 @@ public void registrarProduccion(ProductType tipo,double cantidad){
 public void observarSemana(){
     int s=(int)Math.floor(time());
     if(s>=0&&s<100)registro.semanal(s,demandaPorSemana[s],ordenesPorSemana[s],produccionPorSemana[s],stockActual(),backlogActual(),wipActual());
+}
+public void actualizarWipGrafico(){if(!esComparacion)dsWip.add(time(),wipActual());}
+public void validarCorridaCompleta(){
+    if(time()<99.99999 || registro.numeroSemanas()!=100 || registro.numeroEntradas()!=1800)
+        throw new IllegalStateException("Corrida incompleta: tiempo="+time()+", semanas="+registro.numeroSemanas()+"/100, entradas="+registro.numeroEntradas()+"/1800, semilla="+semillaReplica+", escenario="+numeroEscenario+". Ejecutar Comparacion_100x3 desde el menu Run de AnyLogic y dejarlo terminar.");
 }

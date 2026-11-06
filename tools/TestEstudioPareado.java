@@ -14,6 +14,7 @@ public final class TestEstudioPareado {
         Path temp = Files.createTempDirectory("fixture-sintetica-estudio-pareado-");
         try {
             probarPublicacionCompleta(temp);
+            probarReintentoExportacion(temp);
             probarRechazos(temp);
             System.out.println("OK: " + checks + " comprobaciones de EstudioPareado; fixture sintética en " + temp);
         } finally {
@@ -49,6 +50,7 @@ public final class TestEstudioPareado {
 
         Path paquete = Paths.get(estudio.getSalida());
         requiere(Files.isDirectory(paquete), "paquete publicado en directorio final");
+        requiere(Files.isRegularFile(paquete.resolve("COMPLETO")), "marcador COMPLETO se publica al final");
         List<String> resultados = Files.readAllLines(paquete.resolve("resultados.csv"), StandardCharsets.UTF_8);
         List<String> series = Files.readAllLines(paquete.resolve("series_semanales.csv"), StandardCharsets.UTF_8);
         List<String> ics = Files.readAllLines(paquete.resolve("ic_pareados.csv"), StandardCharsets.UTF_8);
@@ -57,6 +59,46 @@ public final class TestEstudioPareado {
         requiere(ics.size() == 16, "CSV IC: 16 filas con encabezado");
         for (int i = 1; i < ics.size(); i++)
             requiere(ics.get(i).split(",", -1)[3].equals("100"), "cada IC publicado tiene n=100");
+        SesionEstudio.ultimoResultado=null;
+        SesionEstudio.leerUltimoEstudio(destino.toString());
+        requiere(SesionEstudio.ultimoResultado.getCount()==300,"lee los CSV publicados en otra sesion");
+        requiere(SesionEstudio.ultimoResultado.pairCI95(0,1,"bw").n==100,"IC recargado conserva 100 pares");
+        Path parcial=Files.createDirectory(destino.resolve("comparacion_99999999_incompleta"));
+        Files.copy(paquete.resolve("resultados.csv"),parcial.resolve("resultados.csv"));
+        SesionEstudio.leerUltimoEstudio(destino.toString());
+        requiere(!SesionEstudio.estado.contains("99999999_incompleta"),"ignora paquetes sin marcador COMPLETO");
+    }
+
+    private static void probarReintentoExportacion(Path temp) throws Exception {
+        ConfiguracionDomitec cfg = new ConfiguracionDomitec();
+        cfg.validar();
+        EstudioPareado estudio = new EstudioPareado();
+        Path destinoValido = Files.createDirectory(temp.resolve("reintento-correcto"));
+        Path destinoInvalido = Files.write(temp.resolve("destino-archivo"), new byte[] {1});
+        try { cargarFixtures(estudio, cfg, destinoValido.toString(), destinoInvalido.toString()); }
+        catch (RuntimeException esperado) { checks++; }
+        requiere(estudio.getCount() == 300 && !estudio.isTerminado(), "fallo de publicación retiene las 300 corridas");
+        requiere(estudio.getEstado().startsWith("Error:"), "fallo expone estado recuperable");
+        estudio.reintentarExportacion(destinoValido.toString());
+        requiere(estudio.isTerminado() && estudio.getCount() == 300, "reintento publica sin recomputar");
+        Path paquete = Paths.get(estudio.getSalida());
+        requiere(Files.isRegularFile(paquete.resolve("resultados.csv")), "reintento conserva resultados.csv");
+        requiere(Files.isRegularFile(paquete.resolve("series_semanales.csv")), "reintento conserva series.csv");
+        requiere(Files.isRegularFile(paquete.resolve("ic_pareados.csv")), "reintento conserva IC");
+        requiere(Files.isRegularFile(paquete.resolve("metadata.txt")), "reintento conserva configuración y warmup");
+        requiere(Files.isRegularFile(paquete.resolve("COMPLETO")), "reintento publica marcador final");
+    }
+
+    private static void cargarFixtures(EstudioPareado estudio, ConfiguracionDomitec cfg,
+                                       String destino, String destinoFinal) {
+        for (int seed = 1; seed <= 100; seed++) for (int escenario = 0; escenario < 3; escenario++) {
+            ComparacionEscenarios.Resultado r = new ComparacionEscenarios.Resultado(seed, escenario,
+                    seed + escenario * 0.1, seed * 2.0 + escenario, seed * 3.0 + escenario,
+                    0.5 + escenario, seed * 10.0 + escenario);
+            RegistroCorrida registro = serieSintetica(seed, escenario);
+            estudio.agregar(r, repetir('a', 64), registro.seriesCsv(seed, escenario),
+                    cfg.calentamiento, cfg, seed == 100 && escenario == 2 ? destinoFinal : destino);
+        }
     }
 
     private static void probarRechazos(Path temp) throws Exception {
