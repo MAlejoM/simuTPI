@@ -1,100 +1,100 @@
->>> [REPLICA #1] Fill Rate: 97.73% | Backlog: 173,363 cajas | Razon BW: 0.91 | Stock Deposito: 37,104 cajas
->>> [REPLICA #2] Fill Rate: 97.55% | Backlog: 181,442 cajas | Razon BW: 0.86 | Stock Deposito: 570 cajas
->>> [REPLICA #3] Fill Rate: 97.25% | Backlog: 208,289 cajas | Razon BW: 0.82 | Stock Deposito: 20,743 cajas
->>> [REPLICA #4] Fill Rate: 96.14% | Backlog: 289,379 cajas | Razon BW: 0.81 | Stock Deposito: 0 cajas
->>> [REPLICA #5] Fill Rate: 96.40% | Backlog: 264,273 cajas | Razon BW: 0.89 | Stock Deposito: 10,974 cajas
->>> [REPLICA #6] Fill Rate: 96.04% | Backlog: 292,127 cajas | Razon BW: 0.76 | Stock Deposito: 4,054 cajas
->>> [REPLICA #7] Fill Rate: 96.79% | Backlog: 243,407 cajas | Razon BW: 0.92 | Stock Deposito: 11,860 cajas
->>> [REPLICA #8] Fill Rate: 96.82% | Backlog: 237,076 cajas | Razon BW: 0.88 | Stock Deposito: 2,190 cajas
->>> [REPLICA #9] Fill Rate: 94.76% | Backlog: 396,250 cajas | Razon BW: 0.83 | Stock Deposito: 0 cajas
->>> [REPLICA #10] Fill Rate: 96.92% | Backlog: 232,510 cajas | Razon BW: 0.78 | Stock Deposito: 38,429 cajas
->>> [REPLICA #11] Fill Rate: 98.49% | Backlog: 109,900 cajas | Razon BW: 0.84 | Stock Deposito: 49,429 cajas
->>> [REPLICA #12] Fill Rate: 97.19% | Backlog: 217,108 cajas | Razon BW: 0.84 | Stock Deposito: 14,454 cajas
->>> [REPLICA #13] Fill Rate: 97.43% | Backlog: 194,481 cajas | Razon BW: 0.75 | Stock Deposito: 1,217 cajas
->>> [REPLICA #14] Fill Rate: 96.25% | Backlog: 274,346 cajas | Razon BW: 0.85 | Stock Deposito: 49,771 cajas
->>> [REPLICA #15] Fill Rate: 96.54% | Backlog: 253,549 cajas | Razon BW: 0.77 | Stock Deposito: 51,916 cajas
->>> [REPLICA #16] Fill Rate: 97.19% | Backlog: 205,355 cajas | Razon BW: 0.96 | Stock Deposito: 5,920 cajas
->>> [REPLICA #17] Fill Rate: 96.84% | Backlog: 238,556 cajas | Razon BW: 0.76 | Stock Deposito: 22,419 cajas
->>> [REPLICA #18] Fill Rate: 96.26% | Backlog: 287,791 cajas | Razon BW: 0.80 | Stock Deposito: 0 cajas
->>> [REPLICA #19] Fill Rate: 98.49% | Backlog: 113,016 cajas | Razon BW: 0.89 | Stock Deposito: 5,628 cajas
->>> [REPLICA #20] Fill Rate: 95.88% | Backlog: 317,642 cajas | Razon BW: 0.84 | Stock Deposito: 1,417 cajas
->>> [REPLICA #21] Fill Rate: 96.19% | Backlog: 287,070 cajas | Razon BW: 0.86 | Stock Deposito: 0 cajas
->>> [REPLICA #22] Fill Rate: 95.90% | Backlog: 319,666 cajas | Razon BW: 0.72 | Stock Deposito: 0 cajas
->>> [REPLICA #23] Fill Rate: 94.82% | Backlog: 390,752 cajas | Razon BW: 0.83 | Stock Deposito: 224 cajas
->>> [REPLICA #24] Fill Rate: 97.33% | Backlog: 197,442 cajas | Razon BW: 0.78 | Stock Deposito: 12,674 cajas
->>> [REPLICA #25] Fill Rate: 96.52% | Backlog: 251,121 cajas | Razon BW: 0.77 | Stock Deposito: 11,862 cajas
->>> [REPLICA #26] Fill Rate: 96.27% | Backlog: 273,227 cajas | Razon BW: 0.83 | Stock Deposito: 8,617 cajas
->>> [REPLICA #27] Fill Rate: 96.70% | Backlog: 249,386 cajas | Razon BW: 0.77 | Stock Deposito: 21,131 cajas
->>> [REPLICA #28] Fill Rate: 95.70% | Backlog: 325,911 cajas | Razon BW: 0.89 | Stock Deposito: 524 cajas
->>> [REPLICA #29] Fill Rate: 96.67% | Backlog: 252,695 cajas | Razon BW: 0.80 | Stock Deposito: 16,157 cajas
->>> [REPLICA #30] Fill Rate: 97.28% | Backlog: 191,587 cajas | Razon BW: 0.91 | Stock Deposito: 22,164 cajas
->>> [REPLICA #31] Fill Rate: 96.53% | Backlog: 262,211 cajas | Razon BW: 0.82 | Stock Deposito: 2,049 cajas
->>> [REPLICA #32] Fill Rate: 96.41% | Backlog: 275,570 cajas | Razon BW: 0.81 | Stock Deposito: 1,872 cajas
->>> [REPLICA #33] Fill Rate: 96.32% | Backlog: 275,946 cajas | Razon BW: 0.85 | Stock Deposito: 4,753 cajas
->>> [REPLICA #34] Fill Rate: 95.43% | Backlog: 355,207 cajas | Razon BW: 0.79 | Stock Deposito: 10,314 cajas
->>> [REPLICA #35] Fill Rate: 95.20% | Backlog: 368,291 cajas | Razon BW: 0.76 | Stock Deposito: 10,132 cajas
->>> [REPLICA #36] Fill Rate: 95.90% | Backlog: 310,469 cajas | Razon BW: 0.84 | Stock Deposito: 0 cajas
->>> [REPLICA #37] Fill Rate: 99.08% | Backlog: 68,295 cajas | Razon BW: 0.82 | Stock Deposito: 17,313 cajas
->>> [REPLICA #38] Fill Rate: 95.71% | Backlog: 329,929 cajas | Razon BW: 0.76 | Stock Deposito: 512 cajas
->>> [REPLICA #39] Fill Rate: 95.81% | Backlog: 325,416 cajas | Razon BW: 0.86 | Stock Deposito: 0 cajas
->>> [REPLICA #40] Fill Rate: 96.45% | Backlog: 263,202 cajas | Razon BW: 0.93 | Stock Deposito: 39,007 cajas
->>> [REPLICA #41] Fill Rate: 95.31% | Backlog: 358,772 cajas | Razon BW: 0.84 | Stock Deposito: 1,163 cajas
->>> [REPLICA #42] Fill Rate: 96.44% | Backlog: 268,435 cajas | Razon BW: 0.88 | Stock Deposito: 2,756 cajas
->>> [REPLICA #43] Fill Rate: 96.71% | Backlog: 243,222 cajas | Razon BW: 0.89 | Stock Deposito: 21,826 cajas
->>> [REPLICA #44] Fill Rate: 96.37% | Backlog: 278,785 cajas | Razon BW: 0.80 | Stock Deposito: 22,810 cajas
->>> [REPLICA #45] Fill Rate: 97.50% | Backlog: 180,554 cajas | Razon BW: 0.89 | Stock Deposito: 9,380 cajas
->>> [REPLICA #46] Fill Rate: 96.39% | Backlog: 265,652 cajas | Razon BW: 0.88 | Stock Deposito: 7,037 cajas
->>> [REPLICA #47] Fill Rate: 96.10% | Backlog: 310,835 cajas | Razon BW: 0.82 | Stock Deposito: 0 cajas
->>> [REPLICA #48] Fill Rate: 95.38% | Backlog: 344,394 cajas | Razon BW: 0.82 | Stock Deposito: 2,166 cajas
->>> [REPLICA #49] Fill Rate: 96.80% | Backlog: 250,333 cajas | Razon BW: 0.85 | Stock Deposito: 2,813 cajas
->>> [REPLICA #50] Fill Rate: 95.83% | Backlog: 312,284 cajas | Razon BW: 0.91 | Stock Deposito: 13,340 cajas
->>> [REPLICA #51] Fill Rate: 96.29% | Backlog: 282,800 cajas | Razon BW: 0.88 | Stock Deposito: 19,860 cajas
->>> [REPLICA #52] Fill Rate: 96.64% | Backlog: 255,138 cajas | Razon BW: 0.75 | Stock Deposito: 46,488 cajas
->>> [REPLICA #53] Fill Rate: 96.70% | Backlog: 239,761 cajas | Razon BW: 0.89 | Stock Deposito: 1,763 cajas
->>> [REPLICA #54] Fill Rate: 96.27% | Backlog: 294,391 cajas | Razon BW: 0.77 | Stock Deposito: 17,806 cajas
->>> [REPLICA #55] Fill Rate: 97.16% | Backlog: 213,858 cajas | Razon BW: 0.89 | Stock Deposito: 43,208 cajas
->>> [REPLICA #56] Fill Rate: 97.16% | Backlog: 208,906 cajas | Razon BW: 0.89 | Stock Deposito: 0 cajas
->>> [REPLICA #57] Fill Rate: 95.96% | Backlog: 307,325 cajas | Razon BW: 0.75 | Stock Deposito: 33,360 cajas
->>> [REPLICA #58] Fill Rate: 96.52% | Backlog: 251,475 cajas | Razon BW: 0.99 | Stock Deposito: 3,505 cajas
->>> [REPLICA #59] Fill Rate: 97.67% | Backlog: 172,735 cajas | Razon BW: 0.89 | Stock Deposito: 12,997 cajas
->>> [REPLICA #60] Fill Rate: 98.01% | Backlog: 149,914 cajas | Razon BW: 0.80 | Stock Deposito: 0 cajas
->>> [REPLICA #61] Fill Rate: 96.88% | Backlog: 233,593 cajas | Razon BW: 0.95 | Stock Deposito: 5,341 cajas
->>> [REPLICA #62] Fill Rate: 97.40% | Backlog: 196,506 cajas | Razon BW: 0.81 | Stock Deposito: 4,736 cajas
->>> [REPLICA #63] Fill Rate: 97.11% | Backlog: 223,981 cajas | Razon BW: 0.89 | Stock Deposito: 6,257 cajas
->>> [REPLICA #64] Fill Rate: 96.66% | Backlog: 249,043 cajas | Razon BW: 0.89 | Stock Deposito: 0 cajas
->>> [REPLICA #65] Fill Rate: 95.57% | Backlog: 331,930 cajas | Razon BW: 0.94 | Stock Deposito: 2,512 cajas
->>> [REPLICA #66] Fill Rate: 96.00% | Backlog: 308,065 cajas | Razon BW: 0.78 | Stock Deposito: 0 cajas
->>> [REPLICA #67] Fill Rate: 95.81% | Backlog: 324,679 cajas | Razon BW: 0.81 | Stock Deposito: 0 cajas
->>> [REPLICA #68] Fill Rate: 97.99% | Backlog: 150,532 cajas | Razon BW: 0.85 | Stock Deposito: 5,450 cajas
->>> [REPLICA #69] Fill Rate: 95.50% | Backlog: 346,840 cajas | Razon BW: 0.93 | Stock Deposito: 23,127 cajas
->>> [REPLICA #70] Fill Rate: 96.86% | Backlog: 227,992 cajas | Razon BW: 0.77 | Stock Deposito: 4,262 cajas
->>> [REPLICA #71] Fill Rate: 95.56% | Backlog: 342,408 cajas | Razon BW: 0.95 | Stock Deposito: 401 cajas
->>> [REPLICA #72] Fill Rate: 97.02% | Backlog: 221,571 cajas | Razon BW: 0.88 | Stock Deposito: 0 cajas
->>> [REPLICA #73] Fill Rate: 96.20% | Backlog: 289,489 cajas | Razon BW: 0.76 | Stock Deposito: 8,872 cajas
->>> [REPLICA #74] Fill Rate: 97.29% | Backlog: 207,218 cajas | Razon BW: 0.84 | Stock Deposito: 12,016 cajas
->>> [REPLICA #75] Fill Rate: 97.04% | Backlog: 222,635 cajas | Razon BW: 0.93 | Stock Deposito: 19,816 cajas
->>> [REPLICA #76] Fill Rate: 95.52% | Backlog: 342,671 cajas | Razon BW: 0.79 | Stock Deposito: 233 cajas
->>> [REPLICA #77] Fill Rate: 96.65% | Backlog: 250,706 cajas | Razon BW: 0.86 | Stock Deposito: 39,063 cajas
->>> [REPLICA #78] Fill Rate: 97.47% | Backlog: 191,926 cajas | Razon BW: 0.80 | Stock Deposito: 0 cajas
->>> [REPLICA #79] Fill Rate: 94.62% | Backlog: 413,584 cajas | Razon BW: 0.86 | Stock Deposito: 4,724 cajas
->>> [REPLICA #80] Fill Rate: 96.58% | Backlog: 259,707 cajas | Razon BW: 0.94 | Stock Deposito: 453 cajas
->>> [REPLICA #81] Fill Rate: 98.07% | Backlog: 148,276 cajas | Razon BW: 0.83 | Stock Deposito: 1,650 cajas
->>> [REPLICA #82] Fill Rate: 94.61% | Backlog: 420,877 cajas | Razon BW: 0.74 | Stock Deposito: 1,074 cajas
->>> [REPLICA #83] Fill Rate: 97.46% | Backlog: 189,808 cajas | Razon BW: 0.82 | Stock Deposito: 6,495 cajas
->>> [REPLICA #84] Fill Rate: 95.86% | Backlog: 307,005 cajas | Razon BW: 0.71 | Stock Deposito: 27,544 cajas
->>> [REPLICA #85] Fill Rate: 96.19% | Backlog: 281,330 cajas | Razon BW: 0.73 | Stock Deposito: 0 cajas
->>> [REPLICA #86] Fill Rate: 97.80% | Backlog: 158,602 cajas | Razon BW: 0.84 | Stock Deposito: 1,743 cajas
->>> [REPLICA #87] Fill Rate: 96.22% | Backlog: 291,510 cajas | Razon BW: 0.76 | Stock Deposito: 10,694 cajas
->>> [REPLICA #88] Fill Rate: 95.60% | Backlog: 334,251 cajas | Razon BW: 0.83 | Stock Deposito: 4,888 cajas
->>> [REPLICA #89] Fill Rate: 96.44% | Backlog: 273,480 cajas | Razon BW: 0.81 | Stock Deposito: 0 cajas
->>> [REPLICA #90] Fill Rate: 97.00% | Backlog: 224,053 cajas | Razon BW: 0.86 | Stock Deposito: 2,033 cajas
->>> [REPLICA #91] Fill Rate: 96.86% | Backlog: 236,199 cajas | Razon BW: 0.76 | Stock Deposito: 5,205 cajas
->>> [REPLICA #92] Fill Rate: 96.64% | Backlog: 257,739 cajas | Razon BW: 0.85 | Stock Deposito: 27,360 cajas
->>> [REPLICA #93] Fill Rate: 96.32% | Backlog: 273,492 cajas | Razon BW: 0.84 | Stock Deposito: 58,472 cajas
->>> [REPLICA #94] Fill Rate: 98.42% | Backlog: 117,160 cajas | Razon BW: 0.83 | Stock Deposito: 5,650 cajas
->>> [REPLICA #95] Fill Rate: 96.10% | Backlog: 296,784 cajas | Razon BW: 0.90 | Stock Deposito: 1,398 cajas
->>> [REPLICA #96] Fill Rate: 96.89% | Backlog: 231,776 cajas | Razon BW: 0.77 | Stock Deposito: 43,438 cajas
->>> [REPLICA #97] Fill Rate: 97.59% | Backlog: 184,223 cajas | Razon BW: 0.91 | Stock Deposito: 16,991 cajas
->>> [REPLICA #98] Fill Rate: 95.16% | Backlog: 377,999 cajas | Razon BW: 0.75 | Stock Deposito: 0 cajas
->>> [REPLICA #99] Fill Rate: 96.53% | Backlog: 269,586 cajas | Razon BW: 0.89 | Stock Deposito: 4,478 cajas
->>> [REPLICA #100] Fill Rate: 96.20% | Backlog: 280,086 cajas | Razon BW: 0.90 | Stock Deposito: 50,439 cajas
+seed=1,escenario=2,firma_demanda=ec74083466cd3dbf542c2d56823dd72e1300d86451b1c5efff3a595724ef5fe1,fillRate=95.98591905663389,backlog=247488.0,bw=0.9324472235185964,stock=48670.0
+seed=2,escenario=2,firma_demanda=670f5b28de03811bed597058cf87b79f08159686054bfaffb608ae8e979ffc7b,fillRate=96.09295081188688,backlog=243522.0,bw=0.916474631133048,stock=65241.0
+seed=3,escenario=2,firma_demanda=36d8b654f8bb5fbf0d7c0ae438feb72684f9581fc139a5573852f23b5742aeb5,fillRate=89.628116479498,backlog=726270.0,bw=0.8684703753752503,stock=51126.0
+seed=4,escenario=2,firma_demanda=7cffeaa0aa6dbb6b90657e8e7b14035b1770043331f51127f336bd282a6c3efe,fillRate=98.24850832939521,backlog=110966.0,bw=0.9341812330461091,stock=30133.0
+seed=5,escenario=2,firma_demanda=5bf2e227adc42f9752fb990b004d5d70d9fb7f18931ae6583e3cbc2ee2ca9ccf,fillRate=95.53803078622506,backlog=280653.0,bw=0.881187870050367,stock=41323.0
+seed=6,escenario=2,firma_demanda=17bdcbe2b866e531527906630d946bf5107d1318a75698430c2ccc78bc28a6e9,fillRate=57.788408938465416,backlog=2909972.0,bw=0.5084112235408729,stock=40774.0
+seed=7,escenario=2,firma_demanda=fff9e11204c777263dc5b529ac757636ffdc0c74746bf6a593816bee008298d3,fillRate=95.97944831886204,backlog=260127.0,bw=0.8326474184874533,stock=38509.0
+seed=8,escenario=2,firma_demanda=1c848068c3836693f437b0493c9cc5b4f1c0def76dcfa5f4191c5bbf9da5ece0,fillRate=97.5043920330031,backlog=154568.0,bw=0.9208969329830318,stock=54788.0
+seed=9,escenario=2,firma_demanda=442d4cb5498521a8cad231430ccce3b3594c88e6353368d49c8fd0de83c33c30,fillRate=96.90382514500922,backlog=197454.0,bw=0.8931699120037216,stock=54462.0
+seed=10,escenario=2,firma_demanda=a93e2d5ff3b951a33562bf6b0a4df2e4f6db897f09b610081b8c372ec30c7df3,fillRate=97.05581491960874,backlog=180578.0,bw=0.898802605381148,stock=50716.0
+seed=11,escenario=2,firma_demanda=7f9de03b8c9d60ad13ba490ebeda226be89c3d65d2d49dc7d331852cf8b81850,fillRate=96.60237063008852,backlog=215126.0,bw=0.7686898921400375,stock=41387.0
+seed=12,escenario=2,firma_demanda=d08a9bbb49bb406ce4e197f8152e1612be60b248bcd4565d0cb04e200edeb211,fillRate=97.64413182739145,backlog=147832.0,bw=0.8875358192631849,stock=37870.0
+seed=13,escenario=2,firma_demanda=f8b97fedf2e307cb5ee4395f9cef4b1339eee824385550f81bffcb11e2a4ac0a,fillRate=92.18653900974748,backlog=551701.0,bw=0.955265483714215,stock=51904.0
+seed=14,escenario=2,firma_demanda=3521301c4c409b33a08f3641ff67882f1ed208cee54739e12d13b3e41d6bbb1b,fillRate=95.35382365226403,backlog=304675.0,bw=0.9098898821883982,stock=34543.0
+seed=15,escenario=2,firma_demanda=8c5f09959c615f60c7b849bf44207ac2b4d21e88269f7ff26f2acf26dd34e0c3,fillRate=96.46325347780075,backlog=219300.0,bw=0.9164985166861046,stock=109280.0
+seed=16,escenario=2,firma_demanda=0abe808271356b155e01e2f61aa89d82b6dcb960e16c4f52251e7e467faff243,fillRate=95.57092209403199,backlog=288818.0,bw=0.8622988555281178,stock=53142.0
+seed=17,escenario=2,firma_demanda=4225ba0ae66e52a06cbd7352823bc212c86dd17f850b88ea1b4ab08781a2c2a6,fillRate=97.6650492980186,backlog=145604.0,bw=0.9399998053162576,stock=54133.0
+seed=18,escenario=2,firma_demanda=571a9ad3f634258e74658a43d5b0ea9b92ab0493de766994c3a98e062e0aea33,fillRate=97.91054480769695,backlog=133296.0,bw=0.8370567053461457,stock=85056.0
+seed=19,escenario=2,firma_demanda=eb827f5d75199094bc62df59882b633bb758e884832a296b8dee10745a608fc2,fillRate=95.4924111937904,backlog=286170.0,bw=0.9614073648949267,stock=109422.0
+seed=20,escenario=2,firma_demanda=be525d22cdb0d228b0b06e588fe5a20ec634878d23303e1f62eaaa9adba0247a,fillRate=95.74998606619167,backlog=272988.0,bw=0.7999158061190984,stock=10894.0
+seed=21,escenario=2,firma_demanda=5b944204a4da198fa1fcadf04329bfd68f47bbe0e038b17e32130440983a0681,fillRate=73.54569603811937,backlog=1953388.0,bw=0.6908001243070034,stock=44452.0
+seed=22,escenario=2,firma_demanda=05088600b5bb5c88d71dbe496a4139ab77ed6704cf75ec4aa74231b4391ae130,fillRate=97.46169371615416,backlog=155570.0,bw=0.7642852629204671,stock=96396.0
+seed=23,escenario=2,firma_demanda=97329d153727940d987409b01d633cd8ec02b18bd2017cb605dcbc8bbd186fe0,fillRate=96.07100849200695,backlog=244146.0,bw=0.9827464956141303,stock=64580.0
+seed=24,escenario=2,firma_demanda=179300dce2c3b1dbb3ca7ad592721534c3a0d0e7d3c95007049bc7eef8108d3c,fillRate=96.45054169923783,backlog=232481.0,bw=0.9266209729138811,stock=13065.0
+seed=25,escenario=2,firma_demanda=89b9d17ad059d2a8337c48672837ce43c4f204286b65b3364ac79f108ac712f1,fillRate=96.9997107407325,backlog=191473.0,bw=0.879444509713575,stock=33227.0
+seed=26,escenario=2,firma_demanda=8b4f596305402643916c28f6e9646b8ec4daf4ea6cdf06d9d433821963a30494,fillRate=97.55020182903938,backlog=158249.0,bw=0.8638665782362226,stock=13009.0
+seed=27,escenario=2,firma_demanda=23c5d973384e32a19e109aed2fd2ac60c9009b747fbd349522af0a4a058e7691,fillRate=89.9855567212384,backlog=678231.0,bw=0.8533922751402623,stock=38911.0
+seed=28,escenario=2,firma_demanda=bb3eaa668a9f4d0f5ca85a4e0a04b6feb0b4e5466b3c6a3694aa8487918ef0d6,fillRate=97.11492260173739,backlog=178931.0,bw=0.867998708351732,stock=35996.0
+seed=29,escenario=2,firma_demanda=93a2e0fbb4b14ec6b36e81de3a52c62bdb9b01e70166c68234eb4681e761d1c0,fillRate=58.8962672266791,backlog=2871588.0,bw=0.3212191986736338,stock=12388.0
+seed=30,escenario=2,firma_demanda=a7fde16341e7c883e10e87cde8bdd0a2eac3bdcbc00d1bbd47895e1e1f3376c3,fillRate=97.39882259334574,backlog=164540.0,bw=0.9123883796765561,stock=38861.0
+seed=31,escenario=2,firma_demanda=08a5113409c311e8f2da3e280a495219de2ab792e62f027a19621742bc97ca5e,fillRate=98.11430000305346,backlog=114249.0,bw=0.8686192705735295,stock=31755.0
+seed=32,escenario=2,firma_demanda=8e843dda1364bc3995a5a1b90cf9364da8d4a236cb4f37e2f116a56814916f05,fillRate=97.28765218793629,backlog=166844.0,bw=0.8165760766170532,stock=30980.0
+seed=33,escenario=2,firma_demanda=43f2b3efd26e0cd33c6e7d8bb85a68bf2284429e7180c03d2bb93e04c5a4da82,fillRate=96.70148692761893,backlog=213085.0,bw=0.8617285979734159,stock=10315.0
+seed=34,escenario=2,firma_demanda=ab6df9f85625d2d7fd5ef04a573b0005601527fef8d17229bb15414f70028c0c,fillRate=93.26353915773997,backlog=454214.0,bw=0.9829785702525677,stock=29573.0
+seed=35,escenario=2,firma_demanda=236e1d9e0cc5958cc0f97f8a17ef24f6f75e3d297bf0897c8af7f5a7c3178486,fillRate=72.94260920301525,backlog=1938987.0,bw=0.7718141860685269,stock=60441.0
+seed=36,escenario=2,firma_demanda=08acab36d19b9ec330359e3862a65f39188000342a761faf5696956138bb5d37,fillRate=97.01347540806246,backlog=187158.0,bw=0.8886392644732138,stock=85405.0
+seed=37,escenario=2,firma_demanda=b90ec27aaa4cefd22e3acbabd22db7126a78b2aba14f8e95afeadb9d088809ac,fillRate=96.90076604572216,backlog=188601.0,bw=0.9680672658448757,stock=69648.0
+seed=38,escenario=2,firma_demanda=a5e46dd3267d82817e2f3b340fc5b51903c3ca5d560bbaa3c64c2c6cd8b01fc8,fillRate=94.96361855335593,backlog=328127.0,bw=0.762457248557418,stock=19122.0
+seed=39,escenario=2,firma_demanda=3f4f66cb8da43df3cb2f4569b8d5a33da9d6537c538992c025e18da3e197e5d1,fillRate=86.54709376133336,backlog=944371.0,bw=0.8756002972223671,stock=57764.0
+seed=40,escenario=2,firma_demanda=1ed55e01b9ae79c69d5999223808b5af95a176b38ca52c63352d2554b689f1fe,fillRate=97.4807703665795,backlog=159099.0,bw=0.9401930504460752,stock=41774.0
+seed=41,escenario=2,firma_demanda=953752a49bd0daa00339ad0580832ce31e9f2560bd20a7f180de5d258b5bf68c,fillRate=97.44486190741868,backlog=160245.0,bw=0.9012889868619118,stock=54275.0
+seed=42,escenario=2,firma_demanda=f51f807932c6157f7a3a875bfdc2ce97153d18a9a8b15f8c6df38ddbec059a49,fillRate=95.84170149057776,backlog=265417.0,bw=0.8629909632424315,stock=9292.0
+seed=43,escenario=2,firma_demanda=6ef4657f5af76432f97892012cadf73a73423ea3b6c8824d55ff57d8a8ab6256,fillRate=95.9657331909389,backlog=253927.0,bw=0.881248929298603,stock=39179.0
+seed=44,escenario=2,firma_demanda=2d8439ef4d5f83b05cfb919490b783d9229fb8a76df6f305d39145b50745d69c,fillRate=69.69950676671449,backlog=2136568.0,bw=0.47815364438861135,stock=57669.0
+seed=45,escenario=2,firma_demanda=22bb03bb3b3946c27186adac443839a515069cfa9f33d24bc110d2ec310e43b8,fillRate=97.71768830264388,backlog=143017.0,bw=0.8016526878020918,stock=52711.0
+seed=46,escenario=2,firma_demanda=a0a2c1dfdfac772a9ef30c789f3b5e9d7dfdecabf289d7ab8c03b58d18885527,fillRate=96.36050285983852,backlog=225897.0,bw=0.9633011117315611,stock=38503.0
+seed=47,escenario=2,firma_demanda=3063c6f94c4cd3a5331a27fb864d57423e8269925c5995111d2ffcfd804c0611,fillRate=96.87773502813828,backlog=197173.0,bw=0.9345294542385255,stock=47000.0
+seed=48,escenario=2,firma_demanda=fb603907f25a1737d7ee0cb8f4e493c8b0dee0da7a314b66c0dc35ad2446e398,fillRate=89.88798972166839,backlog=658563.0,bw=1.0416204349019347,stock=9818.0
+seed=49,escenario=2,firma_demanda=62a8d236047f253d246b676bdd57b49ca79c02948396ec8e70429c138647d69d,fillRate=79.50686163880519,backlog=1469237.0,bw=0.8554254537529055,stock=36523.0
+seed=50,escenario=2,firma_demanda=66b71ef8cf276edc57e9e174a87c3e34bfc7587c3f494259979c989cb2614ffe,fillRate=96.59686833869195,backlog=215831.0,bw=0.9710619131079171,stock=4049.0
+seed=51,escenario=2,firma_demanda=a6a8eac00a251b55e27b6e804c8fa920c87d183c058753846f67b1843de66e4b,fillRate=71.72639444687488,backlog=2110278.0,bw=0.6923255769108896,stock=5041.0
+seed=52,escenario=2,firma_demanda=6e23db5e05918178a976f6bdbea3979ba3aeb4eef88619f640a47b619ba2a0c6,fillRate=89.61418412900342,backlog=735630.0,bw=0.9239338961340461,stock=35417.0
+seed=53,escenario=2,firma_demanda=2491853a2235acbacd96d2e1d0d9b9d0524b618dcb3126beb01a64549e79edbb,fillRate=98.19194525507694,backlog=115536.0,bw=0.8990697022881871,stock=29071.0
+seed=54,escenario=2,firma_demanda=60d618d17f48968559b08c49db1d7b668d7aafa8ff762406b98b48cdd291ea32,fillRate=88.51357909624154,backlog=830863.0,bw=0.833965918955589,stock=5132.0
+seed=55,escenario=2,firma_demanda=3b690e3b743ebef3fa0a73f25f1ab5c808ea1dcfec379109e88ac2191f45e06e,fillRate=97.11035078062649,backlog=182011.0,bw=0.9878342142359938,stock=41402.0
+seed=56,escenario=2,firma_demanda=96470c5a9b7b8070dddaa1100692fd19c0ff77c9ea117f274d12dec824f753e0,fillRate=71.3614530284426,backlog=2050542.0,bw=0.6388787864325817,stock=44936.0
+seed=57,escenario=2,firma_demanda=8a72adfce3255f3edcdaf55c468caf7c841bbe1d66e04782cf87adf165af529b,fillRate=97.46929991477833,backlog=160326.0,bw=0.8315819662871676,stock=58589.0
+seed=58,escenario=2,firma_demanda=1cfb4d37a45cb08da10a7eaf824022e625fca56af78ca4b7bd160af18bdc0429,fillRate=44.13031898765449,backlog=3948697.0,bw=0.35440073442899217,stock=15865.0
+seed=59,escenario=2,firma_demanda=23fa32fcb53f0d3dd178fd4d3c952a9834cca630116e71f9a579b5efaaa4dc2a,fillRate=97.16774186929503,backlog=182205.0,bw=0.9508784643268355,stock=21137.0
+seed=60,escenario=2,firma_demanda=9b9becfef0600bda4fb4cedf699624694c45d3d56b68f28d29086492cbbf4f90,fillRate=97.22516541630517,backlog=171720.0,bw=0.9448008353793459,stock=44270.0
+seed=61,escenario=2,firma_demanda=8651bda9d480c745cc4cc8f27cedebc6a412415f23f19c4946e2ded39f179175,fillRate=99.62443486729556,backlog=23670.0,bw=0.927541206845954,stock=43247.0
+seed=62,escenario=2,firma_demanda=7c6203480eaa1785261553073f35ff597c1123aaf99fd333d2555d5137de0bac,fillRate=96.84134135013643,backlog=204914.0,bw=0.8769227528634443,stock=2634.0
+seed=63,escenario=2,firma_demanda=d28640212cb45f653c4f6e939c597b999263d97608e3b4e31e2203b961ec6fd7,fillRate=97.1288723018676,backlog=181388.0,bw=0.8836710948505851,stock=15718.0
+seed=64,escenario=2,firma_demanda=43a5b03eeab0856a8e71db1725d55cdf113f0a10b0ee02c80be8ab018cf7cc1c,fillRate=95.82819295584852,backlog=268936.0,bw=0.8735532010956107,stock=55161.0
+seed=65,escenario=2,firma_demanda=c1142b2d62ae39b736c36e785cc2d2e1c7fe1cd48d982945a7af1dd3f533a826,fillRate=90.9583886462602,backlog=602196.0,bw=0.8593406570040669,stock=100870.0
+seed=66,escenario=2,firma_demanda=e1b006ac620334b213be6c80bccdad695ee775789b693518626b0718c7cdbee2,fillRate=96.70734467423951,backlog=215312.0,bw=0.8598389319715276,stock=67443.0
+seed=67,escenario=2,firma_demanda=f258bad1f5f88d3c8fa948ec1acbb81f5ef09cbd2c96f797e79b7ec8e53004fe,fillRate=97.72535413844197,backlog=147632.0,bw=0.8663833741991491,stock=42029.0
+seed=68,escenario=2,firma_demanda=7e0fbd2b22505a3061f3f9ac8aad7c3dcb440971f9adfe96948540301c8223b3,fillRate=97.37317618323095,backlog=165275.0,bw=0.8448651368175385,stock=15658.0
+seed=69,escenario=2,firma_demanda=bc751ffa7d28fc1e82997cc10d2859bd42c0e42843ac857df567599990acc2a3,fillRate=96.31821676370643,backlog=230542.0,bw=0.8645823916835577,stock=56233.0
+seed=70,escenario=2,firma_demanda=0d717d1f8358b6e7b467e123c268c8042ddbf6b392b2d4989ed09ee89b0749fe,fillRate=96.46690262960034,backlog=214325.0,bw=0.8658741595867261,stock=44303.0
+seed=71,escenario=2,firma_demanda=45ed4e7eb7ecbb13eb7b696269bd4cf50b715dff647764cc72a22770a5f2dbd3,fillRate=96.84673776976145,backlog=201188.0,bw=0.9075001338443849,stock=23351.0
+seed=72,escenario=2,firma_demanda=b504c3b476cbbddb9f8dafab6530a16476582673a22783327c5d5ffc9c8d0f2f,fillRate=55.873864442504875,backlog=3243361.0,bw=0.557865928860327,stock=72451.0
+seed=73,escenario=2,firma_demanda=f82801dc954cc302805258e444f63fe1feef942908151a2089a083b9ac8e9b5d,fillRate=97.30276690225097,backlog=166745.0,bw=0.8214633506854028,stock=13277.0
+seed=74,escenario=2,firma_demanda=de09d0b58298b298c3048ac0541e3f31e647ceb6949d2d051fcca1267cf91bdc,fillRate=78.42380301193452,backlog=1533870.0,bw=0.660779605120316,stock=52109.0
+seed=75,escenario=2,firma_demanda=7125e940d5f8971b47e882fbd0fcdf4b42ecba023b2b3cf0af0b796567f16036,fillRate=97.29159788130774,backlog=166194.0,bw=0.8533790653860812,stock=17015.0
+seed=76,escenario=2,firma_demanda=957f1a680ce84d9cf96d51968de9738aad182e0bd814b0957bcf9d8ec1b4daf1,fillRate=88.37269348788361,backlog=802070.0,bw=0.8070624458208635,stock=36349.0
+seed=77,escenario=2,firma_demanda=64ff51b1c1a1183eee61e050ad19967d68fc1d3ec5841202f0465db72b237c43,fillRate=96.31556633763181,backlog=232733.0,bw=0.8094125549154045,stock=18997.0
+seed=78,escenario=2,firma_demanda=44ca388e8272b575fdcc836a79c57c968c2896052ab54abc59268f2f564226f1,fillRate=96.7145394360747,backlog=215232.0,bw=0.9917067053708002,stock=14253.0
+seed=79,escenario=2,firma_demanda=3618a13be73c46ad5466ecf0946f0d726dd98797dce94917dcc2dda6f38e76c1,fillRate=95.61811150339788,backlog=291751.0,bw=0.8532966490116437,stock=3352.0
+seed=80,escenario=2,firma_demanda=4142bd7b5c9133afa7b984e8a5602d532a7179f7b7d936031783d899a7b046c1,fillRate=97.18203697498758,backlog=184014.0,bw=0.9680983919213443,stock=22305.0
+seed=81,escenario=2,firma_demanda=e19cad4111c12824f7b886f7660566eb2c46bfd5078219a35f93a436fe4e479a,fillRate=98.29781941875495,backlog=106347.0,bw=0.8484052864802044,stock=59505.0
+seed=82,escenario=2,firma_demanda=d434894b24963289810cd7fa70944c9dd2fe85189274bb276a4123c48d4ff43a,fillRate=89.44645766096839,backlog=724866.0,bw=0.8437212250749334,stock=57106.0
+seed=83,escenario=2,firma_demanda=8b6992e243507c7762a3cc17df1a4ee79869241c8e1e02517a0182d57550b8ed,fillRate=97.72905662077991,backlog=145125.0,bw=0.7537552035886677,stock=19318.0
+seed=84,escenario=2,firma_demanda=4841e4a6540eabff1d86301f743c1ae290e135a28f6f459005fea148743aa91f,fillRate=88.15994603673329,backlog=793459.0,bw=0.8313978478288792,stock=12391.0
+seed=85,escenario=2,firma_demanda=c74c27344ff619fb0276f4fe971d2406d256ff3fed69e380a639da7cdf4ebc8d,fillRate=90.03547762169971,backlog=675009.0,bw=0.8916345256500992,stock=106457.0
+seed=86,escenario=2,firma_demanda=1da9de909fa922947077abe302b11fdbfd1be29692a60052ca251c41e57fd0ce,fillRate=96.72129302080688,backlog=203876.0,bw=0.9487313905170076,stock=1871.0
+seed=87,escenario=2,firma_demanda=a4a41ea4c5f12db19704777add56fa6fafed9f1e4a57867cd67a0a91cc7f5e61,fillRate=99.11844522012343,backlog=53837.0,bw=0.8667116128782799,stock=63614.0
+seed=88,escenario=2,firma_demanda=8dc4ba00e1d2ff70e5603f0ff9786b22d4fbde083ae51d4688a9b0af04b15834,fillRate=98.02993888667244,backlog=119203.0,bw=0.9235692819764445,stock=54822.0
+seed=89,escenario=2,firma_demanda=8d1bfb16c3ef5cf52ba4a36273082f6a29a4d8dc1e9fb762dfc95ca3bc1082be,fillRate=96.53304057237105,backlog=229393.0,bw=0.782754898653616,stock=14234.0
+seed=90,escenario=2,firma_demanda=35bf7669f6d9356a37353934cdff252e15c0ad339014fa7f439c17cd9d39c313,fillRate=97.53888393438034,backlog=152638.0,bw=0.8109563424174805,stock=54005.0
+seed=91,escenario=2,firma_demanda=9d3fb252c977d410bc5c28c768852a58bf5264add9bef6e074c83fc25eb239d6,fillRate=98.65282535660955,backlog=83587.0,bw=0.8757872416070547,stock=43614.0
+seed=92,escenario=2,firma_demanda=40c0cceae44e9f112fd90d7c825557f3d82d2c2cf280a1d79ce8f5384e34dcb7,fillRate=98.94945675141736,backlog=66795.0,bw=0.7997780707865156,stock=64020.0
+seed=93,escenario=2,firma_demanda=0ab51472abc01d9e3762a0169a78a51a3444bf94df100f393a69fa60227410b7,fillRate=90.00358559866316,backlog=701493.0,bw=0.8127634040032735,stock=11472.0
+seed=94,escenario=2,firma_demanda=47f1d9126b285d8d444003af7b81a9fbdcffa4b9b59fefe48c197021fdaad5af,fillRate=98.0359312111467,backlog=122845.0,bw=0.9578910022627313,stock=65202.0
+seed=95,escenario=2,firma_demanda=379205cb4d68f953e453691e2ce5ffdba40983f8148783a929675b9c8479f8bc,fillRate=90.72713179737045,backlog=610999.0,bw=0.8615185293320986,stock=57871.0
+seed=96,escenario=2,firma_demanda=a880ef9dda2dd9d8c8bf80ae1d8d83464d059ba5a21f9d431ca7e955424f4c0a,fillRate=97.5021953894172,backlog=155502.0,bw=0.8385999814245312,stock=8062.0
+seed=97,escenario=2,firma_demanda=a10718afc75716b45a434a3a1bd872104b7dc9f43cd9e7112a169492fb46fd55,fillRate=79.7679082196208,backlog=1512619.0,bw=0.6759232259850086,stock=73896.0
+seed=98,escenario=2,firma_demanda=21a5bb2320ea41db5a8e152a861e7201a4cbbd5ce1b7eb83d33bb34cc4aac4e7,fillRate=97.69532773107078,backlog=143098.0,bw=0.9643153363469814,stock=27761.0
+seed=99,escenario=2,firma_demanda=16d39bdacb889a137acc00fa364a9adf184a7de32dc4711e1e801d4d42de3827,fillRate=95.81945097151963,backlog=277903.0,bw=0.8992766738789393,stock=7376.0
+seed=100,escenario=2,firma_demanda=bf9fb51afe5d3768b7cdc139da18fdd1d4a6a1fe40068d0a64e694cdc6cc516c,fillRate=96.27976710113792,backlog=245035.0,bw=0.8542519473653924,stock=39610.0

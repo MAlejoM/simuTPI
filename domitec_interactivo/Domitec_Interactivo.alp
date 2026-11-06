@@ -2770,7 +2770,7 @@ animacionLavandina.entrar(agent, 0, time(), null);]]></Code>
 							<Name><![CDATA[delayTime]]></Name>
 							<Value Class="CodeUnitValue">
 								<Code><![CDATA[tiempoProceso(agent,1,50,70,90)]]></Code>
-								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+								<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -3044,7 +3044,7 @@ controlador().registrarProduccion(ProductType.LAVANDINA,agent.cajasEquivalentes)
 							<Name><![CDATA[delayTime]]></Name>
 							<Value Class="CodeUnitValue">
 								<Code><![CDATA[tiempoEnvasado(agent)]]></Code>
-								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+								<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -3442,7 +3442,7 @@ if (agent.tipo != null && animacionesLiquidos.containsKey(agent.tipo.name())) an
 							<Name><![CDATA[delayTime]]></Name>
 							<Value Class="CodeUnitValue">
 								<Code><![CDATA[tiempoProceso(agent,3,45,60,80)]]></Code>
-								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+								<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -4206,7 +4206,7 @@ if (agent.tipo != null && animacionesLiquidos.containsKey(agent.tipo.name())) an
 							<Name><![CDATA[delayTime]]></Name>
 							<Value Class="CodeUnitValue">
 								<Code><![CDATA[tiempoEnvasado(agent)]]></Code>
-								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+								<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -4299,7 +4299,7 @@ if (agent.tipo != null && animacionesLiquidos.containsKey(agent.tipo.name())) an
 							<Name><![CDATA[delayTime]]></Name>
 							<Value Class="CodeUnitValue">
 								<Code><![CDATA[tiempoEnvasado(agent)]]></Code>
-								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+								<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -4392,7 +4392,7 @@ if (agent.tipo != null && animacionesLiquidos.containsKey(agent.tipo.name())) an
 							<Name><![CDATA[delayTime]]></Name>
 							<Value Class="CodeUnitValue">
 								<Code><![CDATA[tiempoEnvasado(agent)]]></Code>
-								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+								<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -4485,7 +4485,7 @@ if (agent.tipo != null && animacionesLiquidos.containsKey(agent.tipo.name())) an
 							<Name><![CDATA[delayTime]]></Name>
 							<Value Class="CodeUnitValue">
 								<Code><![CDATA[tiempoEnvasado(agent)]]></Code>
-								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+								<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -4578,7 +4578,7 @@ if (agent.tipo != null && animacionesLiquidos.containsKey(agent.tipo.name())) an
 							<Name><![CDATA[delayTime]]></Name>
 							<Value Class="CodeUnitValue">
 								<Code><![CDATA[tiempoEnvasado(agent)]]></Code>
-								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+								<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -4751,7 +4751,7 @@ controlador().registrarProduccion(agent.tipo,agent.cajasEquivalentes);]]></Code>
 							<Name><![CDATA[delayTime]]></Name>
 							<Value Class="CodeUnitValue">
 								<Code><![CDATA[tiempoProceso(agent,2,10,15,25)]]></Code>
-								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+								<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -4985,7 +4985,7 @@ animacionLavandina.terminar(agent, time(), true);]]></Code>
 							<Name><![CDATA[delayTime]]></Name>
 							<Value Class="CodeUnitValue">
 								<Code><![CDATA[tiempoProceso(agent,4,15,20,35)]]></Code>
-								<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+								<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 							</Value>
 						</Parameter>
 						<Parameter>
