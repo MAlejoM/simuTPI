@@ -278,6 +278,44 @@ El contraste estadístico de los experimentos arroja conclusiones determinantes 
     \item \textbf{Efectividad de la estrategia integral (Escenario 2):} Al articular la eliminación del pánico con la expansión del 27,3\% en el régimen de turnos de envasado ($\text{escalaTurno} = 3{,}3$, elevando la jornada semanal a 51 horas efectivas), el sistema supera la restricción de flujo y entra en verdadero estado estacionario. El nivel de servicio global se eleva al 92,42\% ($\pm 2,03\%$, IC 95\%: $[90,39\% ; 94,46\%]$), mientras que el backlog medio se contrae drásticamente a 520.291 cajas. La comparación pareada ($\Delta = \text{Escenario 2} - \text{Escenario 0}$) arroja una mejora neta media en el Fill Rate de $+10,89$ puntos porcentuales (con un error estándar de apenas $0,21\%$ gracias al pareamiento CRN, e IC 95\%: $[+10,47\% ; +11,30\%]$) y una reducción del backlog de 690.503 cajas (IC 95\%: $[-718.112 ; -662.894]$ cajas, caída del 57,0\%). Asimismo, el stock operativo en depósito se estabiliza en 40.999 cajas, amortiguando eficazmente la variabilidad de la demanda. Ninguno de los intervalos de confianza pareados contiene al cero, lo que ratifica con una significancia estadística superior al 99,9\% ($p < 0{,}001$) la superioridad indiscutible de la política combinada.
 \end{enumerate}
 
+\subsection{Evaluación económica y análisis de costos por escenario}
+Dado que los registros históricos suministrados por Domitec S.A. se encuentran expresados en volúmenes físicos (cajas solicitadas, despachadas, pendientes y canceladas) sin desagregación contable confidencial, para evaluar la viabilidad económico-financiera de las alternativas se parametrizó la función de Costo Operativo Relevante Semanal ($CT$) de la teoría clásica de inventarios~\cite{lawkelton,sterman}. Se adoptó como base de referencia el valor mayorista promedio de salida de fábrica de una caja de limpieza ($\text{USD } 15/\text{caja}$ de 12 a 15 envases), a partir del cual se definieron los cuatro componentes de costo en compromiso (\textit{trade-off}) aplicados sobre los indicadores físicos simulados en la Tabla~\ref{tab:resultados_comparativos}:
+\begin{equation}
+    CT = c_h \cdot \overline{I} + c_b \cdot \overline{B} + C_{\text{turnos}}(H) + c_{bw} \cdot \max(0, BW - 1)
+\end{equation}
+donde el origen y fundamento de cada parámetro unitario es el siguiente:
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Costo de penalización por mora y quiebre ($c_b = \text{USD } 1{,}50 / \text{caja-semana}$):} Fundamentado empíricamente en la auditoría de los 23.689 registros históricos de la empresa, donde sobre $5.853.595$ cajas pedidas un total de $589.511$ cajas resultaron canceladas ($10{,}07\%$ de pérdida directa de venta por mora), sumado a las multas de nivel de servicio en grandes cadenas comerciales. Aplicando dicho $10\%$ de pérdida sobre el valor mayorista de $\text{USD } 15/\text{caja}$ se obtiene exactamente $\text{USD } 1{,}50/\text{caja}$ sobre el backlog medio semanal ($\overline{B} = \text{Backlog Acumulado} / 85\text{ sem}$: $14.244{,}6$, $14.248{,}5$ y $6.121{,}1\text{ cajas/sem}$ en los Escenarios 0, 1 y 2 respectivamente).
+    \item \textbf{Costo de mantenimiento de inventario ($c_h = \text{USD } 0{,}15 / \text{caja-semana}$):} Siguiendo la proporción canónica $c_b / c_h = 10:1$ de los modelos de simulación de inventarios de Law y Kelton~\cite{lawkelton}, representa el $1\%$ semanal del valor de la caja ($\text{USD } 15$) en concepto de costo financiero del capital inmovilizado, seguro, deterioro de envases y espacio de racks en los depósitos Parque y Vicentin, aplicado sobre el stock medio ($\overline{I}$).
+    \item \textbf{Costo de operación fabril y mano de obra ($C_{\text{turnos}}(H)$):} Estimado a partir del costo operativo industrial (dotación de operarios de dilución, reactores, control de calidad, líneas de envasado, autoelevadores y consumo energético) de $\text{USD } 120/\text{hora de planta}$ para el régimen ordinario de $H = 40\text{ hs/sem}$ ($\text{USD } 4.800/\text{sem}$ en los Escenarios 0 y 1). Para el régimen extendido de $H = 51\text{ hs/sem}$ (Escenario 2), las $11\text{ hs/sem}$ suplementarias incorporan el recargo legal del $50\%$ por horas extra ($\text{USD } 180/\text{hora extra}$, sumando $+\text{USD } 1.980/\text{sem}$ hasta totalizar $\text{USD } 6.780/\text{sem}$).
+    \item \textbf{Sobrecosto logístico por efecto látigo ($c_{bw} = \text{USD } 2.500 / \text{semana por unidad de exceso } BW > 1$):} Basado en la literatura de distorsión en cadenas de suministro~\cite{lee,sterman}, cuantifica los sobrecostos de compras \textit{spot} de preformas PET y precursores químicos sin descuento por volumen, fletes urgentes y horas improductivas de recepción cuando la planta amplifica la variabilidad aguas arriba ($BW > 1$). Cuando el flujo se estabiliza ($BW \le 1$), dicho sobrecosto se anula.
+\end{itemize}
+
+En la Tabla~\ref{tab:analisis_costos} se expone la valorización económica semanal media y proyectada sobre las 85 semanas operativas posteriores al calentamiento para los tres escenarios.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Evaluación económica comparativa entre escenarios (en USD constantes).}
+\label{tab:analisis_costos}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.8cm} R R R}
+\toprule
+\textbf{Rubro de Costo Operativo} & \textbf{Esc. 0 (As-Is)} & \textbf{Esc. 1 (Sin Pánico)} & \textbf{Esc. 2 (Integral)} \\
+\midrule
+1. Mantenimiento de Stock ($c_h \cdot \overline{I}$) & USD 975 & USD 948 & USD 6.150 \\
+2. Penalización por Backlog ($c_b \cdot \overline{B}$) & USD 21.367 & USD 21.373 & \textbf{USD 9.182} \\
+3. Operación y Turnos ($C_{\text{turnos}}$) & USD 4.800 & USD 4.800 & USD 6.780 \\
+4. Ineficiencia por Látigo ($c_{bw}$) & USD 1.425 & \textbf{USD 0} & \textbf{USD 0} \\
+\midrule
+\textbf{Costo Total Semanal Medio} & \textbf{USD 28.567} & \textbf{USD 27.121} & \textbf{USD 22.112} \\
+\textbf{Costo Total Ciclo (85 sem.)} & \textbf{USD 2.428.195} & \textbf{USD 2.305.285} & \textbf{USD 1.879.520} \\
+\textbf{Ahorro Neto vs. Escenario 0} & \textit{Línea Base} & \textbf{$-$USD 122.910 ($-5{,}1\%$)} & \textbf{$-$USD 548.675 ($-22{,}6\%$)} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+El análisis económico revela que la eliminación del pánico en el Escenario 1 genera por sí sola un ahorro directo de $\text{USD } 122.910$ ($-5{,}1\%$) sin inversión adicional, al erradicar la penalización logística del efecto látigo ($BW = 0{,}85 \le 1$). Por su parte, al pasar al Escenario 2 (Estrategia Integral), si bien la empresa asume un incremento de $\text{USD } 1.980/\text{sem}$ en horas extra y de $\text{USD } 5.202/\text{sem}$ en mantenimiento de mayor stock de seguridad ($+\text{USD } 7.182/\text{sem}$ en costos operativos directos), la drástica caída del backlog en un $57{,}0\%$ produce un ahorro en costos de quiebre y mora de $-\text{USD } 12.191/\text{sem}$. En consecuencia, el beneficio marginal supera en una relación de $1{,}7\text{ a }1$ al costo incremental de capacidad e inventario, consolidando un ahorro neto global de $\text{USD } 548.675$ (reducción del $22{,}6\%$ en el costo total relevante).
+
 \section{Conclusiones y trabajo futuro}
 
 \subsection{Conclusiones operacionales}
