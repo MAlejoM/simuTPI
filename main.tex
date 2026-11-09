@@ -238,6 +238,39 @@ El modelo de simulación híbrido fue diseñado para responder formalmente a cua
 \subsection{Recolección, tratamiento de datos y parámetros del sistema}
 A partir de la serie de datos históricos proporcionada por la empresa, la demanda semanal de cada canal y producto se modeló mediante distribuciones normales truncadas en cero ($D_i = \max(0, \mathcal{N}(\mu_i, \sigma_i))$) para reflejar fielmente la no-negatividad física de los pedidos comerciales. En la Tabla~\ref{tab:demanda_calibrada} se detallan las medias ($\mu$) y desvíos estándar ($\sigma$) semanales calibrados para cada uno de los tres agentes cliente.
 
+\begin{table}[H]
+\centering
+\small
+\caption{Parámetros de demanda semanal calibrada por canal comercial y familia de producto (cajas).}
+\label{tab:demanda_calibrada}
+\begin{tabularx}{\textwidth}{l l R R}
+\toprule
+\textbf{Canal de Cliente} & \textbf{Familia de Producto} & \textbf{Media Semanal ($\mu$)} & \textbf{Desvío Semanal ($\sigma$)} \\
+\midrule
+Maxiconsumo S.A.        & Lavandina              & 9.379  & 11.162 \\
+(Mayorista núcleo, 34\%) & Líquido desinfectante  & 6.171  & 8.216  \\
+                         & Lavavajilla            & 5.104  & 6.055  \\
+                         & Líquido lavar ropa     & 2.184  & 3.587  \\
+                         & Suavizante             & 1.765  & 2.348  \\
+                         & Detergente concentrado & 1.046  & 1.825  \\
+\midrule
+Grandes Clientes        & Lavandina              & 3.073  & 2.665  \\
+(Makro, Treoland,        & Líquido desinfectante  & 4.568  & 5.515  \\
+Carrefour, 15\%)         & Lavavajilla            & 2.081  & 2.215  \\
+                         & Líquido lavar ropa     & 312    & 482    \\
+                         & Suavizante             & 516    & 809    \\
+                         & Detergente concentrado & 0      & 0      \\
+\midrule
+Red Propia              & Lavandina              & 13.829 & 6.751  \\
+(428 distribuidores,     & Líquido desinfectante  & 6.780  & 3.723  \\
+51\%)                    & Lavavajilla            & 5.575  & 2.569  \\
+                         & Líquido lavar ropa     & 2.931  & 2.206  \\
+                         & Suavizante             & 2.222  & 1.238  \\
+                         & Detergente concentrado & 1.169  & 1.082  \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
 \subsection{Diseño experimental, números pseudoaleatorios comunes (CRN) y período de calentamiento}
 El protocolo experimental fue estructurado mediante un diseño multireplicación pareado implementado en AnyLogic PLE a través de un experimento de \textit{Parameter Variation}~\cite{anylogic-editions,anylogic-paramvariation}. Para garantizar la comparabilidad rigurosa y minimizar la varianza muestral entre alternativas, se adoptó la técnica de números pseudoaleatorios comunes (\textit{Common Random Numbers}, CRN). El diseño contempló un plan de 100 iteraciones con 3 réplicas pareadas por iteración ($100 \times 3 = 300$ simulaciones en total), evaluando los tres escenarios bajo un horizonte longitudinal de 100 semanas operativas.
 
