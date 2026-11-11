@@ -1,0 +1,29 @@
+caducarPedidos();
+if(msg instanceof OrderMessage){
+    OrderMessage pedido=(OrderMessage)msg;
+    demandaTotalAcumulada+=pedido.amount;
+    for(ProductState ps:inventorySystem){
+        if(ps.product!=pedido.product)continue;
+        double entregado=Math.min(ps.inventory,pedido.amount);
+        ps.inventory-=entregado;
+        ps.backlog+=pedido.amount-entregado;
+        despachoInmediatoAcumulado+=entregado;despachoTotalAcumulado+=entregado;
+        controlador().registrarPedido(ps.product,pedido.amount,entregado);
+        break;
+    }
+    // Zero patience means a lost sale at arrival, still counted in demand.
+    caducarPedidos();
+}
+if(msg instanceof DeliveryMessage){
+    DeliveryMessage entrega=(DeliveryMessage)msg;
+    for(ProductState ps:inventorySystem){
+        if(ps.product!=entrega.product)continue;
+        ps.onOrder=Math.max(0,ps.onOrder-entrega.amount);
+        materiales.recibir(ConfiguracionDomitec.indice(ps.product.name()),entrega.amount);
+        break;
+    }
+    if(entrega.product==ProductType.LAVANDINA)animacionLavandina.recibir(time(),entrega.amount);
+    else if(entrega.product!=null&&animacionesLiquidos.containsKey(entrega.product.name()))
+        animacionesLiquidos.get(entrega.product.name()).recibir(time(),entrega.amount);
+    operarPlanta();
+}

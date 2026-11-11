@@ -1,13 +1,14 @@
 {
   "structure": "passed",
   "java_action_compatibility": "passed",
-  "native_300_run": "completed_in_recorded_package",
-  "native_visual_validation": "pending_reload_for_side_perspective_and_quiet_workers",
+  "model_version": "operacion-24x7-v2",
+  "native_300_run": "pending_new_operating_model",
+  "native_visual_validation": "pending_reload_of_24x7_model",
   "delivery_speed_override": "removed",
   "logic_element_presentation": "hidden",
   "view_2d": "native_flow_diagram",
   "batch_launch": "direct_defaults_or_optional_saved_parameters",
-  "last_native_results_audit": {
+  "previous_model_native_results_audit": {
     "package": "domitec_interactivo\\resultados_domitec\\comparacion_20261106_002510_679",
     "result_rows": 300,
     "weekly_rows": 30000,
@@ -22,8 +23,5 @@
     },
     "native_export": "verified",
     "stationarity": "not_formally_demonstrated"
-  },
-  "default_camera": "centered_side_perspective_same_height_as_top_view",
-  "worker_animation": "quarter_distance_walks_3_57_percent_of_time",
-  "apply_button_layout": "separate_row_below_inventory_and_process_cards"
+  }
 }

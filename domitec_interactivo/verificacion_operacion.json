@@ -1,0 +1,25 @@
+{
+  "model_version": "operacion-24x7-v2",
+  "model_sha256": "d201f323e4de0153beabb835fee83273d9e287344a0f05d36b1b6815a7c8b756",
+  "checked_utc": "2026-11-11T19:22:22.417459+00:00",
+  "structure": "passed",
+  "java_tests": [
+    "TestCalendarioPlanta",
+    "TestBalanceMateriales",
+    "TestCancelacionPedidos",
+    "TestDatosOperativos",
+    "TestRegistroConfiguracion",
+    "TestComparacionEscenarios",
+    "TestPreparacionEstudio",
+    "TestEstudioPareado"
+  ],
+  "native_simulation": "pending_AnyLogic_run",
+  "statistical_calibration": "provisional",
+  "unidentified_inputs": [
+    "customer_patience_days",
+    "physical_WIP_release_limit",
+    "production_year",
+    "intramonth_demand_variability"
+  ],
+  "simulation_experiment_startup": "passed: explicit 0/1/2 identifiers and exact Main selection; scenario 2 throughput 1.275"
+}

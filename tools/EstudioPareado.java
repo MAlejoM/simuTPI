@@ -11,13 +11,13 @@ import java.time.format.DateTimeFormatter;
 public final class EstudioPareado {
     private static final int N = 100;
     private static final int ESCENARIOS = 3;
-    private static final String VERSION_MODELO = "Domitec_Interactivo; AnyLogic 8.9.10";
+    private static final String VERSION_MODELO = "Domitec operativo 24x7; AnyLogic 8.9.10; escenarios hipoteticos no validados en planta";
     private static final DateTimeFormatter FORMATO_UTC =
             DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS").withZone(ZoneOffset.UTC);
 
     private final ComparacionEscenarios comparacion = new ComparacionEscenarios();
     private final StringBuilder resultadosCsv = new StringBuilder(
-            "seed,escenario,firma_demanda,warmup_semanas,fillRate,backlog,stock,bw,produccion\n");
+            "seed,escenario,firma_demanda,warmup_semanas,fillRate,backlog,stock,bw,produccion,canceladas,wip_max,insumos_final\n");
     private final StringBuilder seriesCsv = new StringBuilder(
             "seed,escenario,semana,demanda,ordenes,produccion,stock,backlog,wip\n");
     private final ComparacionEscenarios.Resultado[] terna = new ComparacionEscenarios.Resultado[ESCENARIOS];
@@ -61,7 +61,8 @@ public final class EstudioPareado {
                     ComparacionEscenarios.Resultado r = terna[s];
                     resultadosCsv.append(seed).append(',').append(s).append(',').append(firmas[s]).append(',')
                             .append(warmupSemanas).append(',').append(r.fillRate).append(',').append(r.backlog).append(',')
-                            .append(r.stock).append(',').append(r.bw).append(',').append(r.produccion).append('\n');
+                            .append(r.stock).append(',').append(r.bw).append(',').append(r.produccion).append(',')
+                            .append(r.canceladas).append(',').append(r.wipMax).append(',').append(r.insumosFinal).append('\n');
                     seriesCsv.append(series[s]);
                 }
                 SesionEstudio.ultimoResumen = "Semilla " + seed + ": 3 escenarios, demanda base verificada; "
@@ -129,7 +130,7 @@ public final class EstudioPareado {
             if (registros != 0 || !SesionEstudio.iniciar())
                 throw new IllegalStateException("No se pudo iniciar la sesión de estudio");
             SesionEstudio.configuracionEnCurso = cfg.copiarDeep();
-            SesionEstudio.carpetaEnCurso = Paths.get(System.getProperty("user.dir"), "resultados_domitec").toString();
+            SesionEstudio.carpetaEnCurso = Paths.get(System.getProperty("user.dir"), "resultados_operativos_v2").toString();
         }
         if (SesionEstudio.configuracionEnCurso == null)
             SesionEstudio.configuracionEnCurso = cfg.copiarDeep();
@@ -197,6 +198,12 @@ public final class EstudioPareado {
                 .append("common_demand=equal firmaDemanda SHA-256 within each seed\n")
                 .append("paired_ci=two-sided Student t 95%, matched by seed, scenario_a minus scenario_b\n")
                 .append("\n[configuracion_domitec]\n");
+        b.append("versionModelo=").append(ConfiguracionDomitec.VERSION_MODELO).append('\n')
+                .append("demanda=bootstrap_mensual_2025_bloques_4_semanas\ncalendario=24x7\n")
+                .append("interpretacion=escenarios y mejoras son supuestos de modelo; no constituyen validacion real en planta\n")
+                .append("esperaPedidoDias_supuesto=").append(cfg.esperaPedidoDias).append('\n')
+                .append("maxLotesEnProceso_provisional=").append(cfg.maxLotesEnProceso).append('\n')
+                .append("mejoraEscenario_hipotesis=").append(cfg.mejoraEscenario).append('\n');
         b.append("mermaLav=").append(cfg.mermaLav).append('\n').append("mermaLiq=").append(cfg.mermaLiq).append('\n')
                 .append("tiemposFactor=").append(cfg.tiemposFactor).append('\n').append("capacidadFactor=").append(cfg.capacidadFactor).append('\n')
                 .append("factLatigo=").append(cfg.factLatigo).append('\n').append("horas=").append(cfg.horas).append('\n')

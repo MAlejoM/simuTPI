@@ -9,25 +9,25 @@ public final class ConfiguracionDomitec implements Serializable {
         "LIQUIDO_LAVAR_ROPA", "SUAVIZANTE", "DETERGENTE_CONCENTRADO"
     };
 
-    public double[][] medias = {
-        {9379,6171,5104,2184,1765,1046},
-        {3073,4568,2081,312,516,0},
-        {13829,6780,5575,2931,2222,1169}
-    };
-    public double[][] desvios = {
-        {11162,8216,6055,3587,2348,1825},
-        {2665,5515,2215,482,809,0},
-        {6751,3723,2569,2206,1238,1082}
-    };
+    public static final String VERSION_MODELO = "operacion-24x7-v2";
+    public double[][] medias = DatosOperativos.medias();
+    public double[][] desvios = DatosOperativos.desvios();
     public double[] leadDias = {30,21,21,21,45,21};
     public double[] cobertura = {5.5,4.5,4,4,7.5,4};
-    public double[] rate = {667,405,237,176,104,64};
-    public double mermaLav = 0.03;
-    public double mermaLiq = 0.05;
+    // Observed good boxes per opening hour (24x7), including historical allocation.
+    public double[] rate = DatosOperativos.rates();
+    // Additional experimental scrap only. Observed effective output already includes losses.
+    public double mermaLav = 0.0;
+    public double mermaLiq = 0.0;
     public double tiemposFactor = 1.0;
     public double capacidadFactor = 1.0;
+    public double mejoraEscenario = 1.0;
     public double factLatigo = 1.5;
-    public double horas = 40.0;
+    public double horas = 168.0;
+    /** Scenario assumption, NOT estimated from monthly cancellation totals. */
+    public double esperaPedidoDias = 30.0;
+    /** Provisional release cards, 6 per line at the default tank setting. */
+    public int maxLotesEnProceso = 36;
     public double calentamiento = 15.0;
     public int reactores = 4;
     public int cola = 20;
@@ -50,7 +50,9 @@ public final class ConfiguracionDomitec implements Serializable {
         c.rate = copiar(rate);
         c.mermaLav = mermaLav; c.mermaLiq = mermaLiq;
         c.tiemposFactor = tiemposFactor; c.capacidadFactor = capacidadFactor;
+        c.mejoraEscenario = mejoraEscenario;
         c.factLatigo = factLatigo; c.horas = horas; c.calentamiento = calentamiento;
+        c.esperaPedidoDias = esperaPedidoDias; c.maxLotesEnProceso = maxLotesEnProceso;
         c.reactores = reactores; c.cola = cola; c.tanque = tanque;
         return c;
     }
@@ -68,8 +70,11 @@ public final class ConfiguracionDomitec implements Serializable {
         if (mermaLav < 0.0 || mermaLav > 1.0 || mermaLiq < 0.0 || mermaLiq > 1.0)
             throw new IllegalArgumentException("mermas deben estar entre 0 y 1");
         positivo("tiemposFactor", tiemposFactor); positivo("capacidadFactor", capacidadFactor);
+        positivo("mejoraEscenario", mejoraEscenario);
         positivo("factLatigo", factLatigo); positivo("horas", horas);
-        if (horas > 168.0) throw new IllegalArgumentException("horas no puede superar 168 por semana");
+        if (horas > 168.0) throw new IllegalArgumentException("Calendario 24x7: maximo 168 horas por semana");
+        noNegativo("esperaPedidoDias", esperaPedidoDias);
+        if (maxLotesEnProceso < 1) throw new IllegalArgumentException("maxLotesEnProceso debe ser >= 1");
         noNegativo("calentamiento", calentamiento);
         if (calentamiento >= 100.0) throw new IllegalArgumentException("calentamiento debe ser < 100 semanas");
         if (reactores < 1 || cola < 1 || tanque < 1)
@@ -77,14 +82,20 @@ public final class ConfiguracionDomitec implements Serializable {
         return this;
     }
 
-    /** Variante de capacidad/turno utilizada por cada escenario. */
+    /** Scenario policy and throughput hypothesis; the real opening calendar is preserved. */
     public ConfiguracionDomitec escenario(int escenario) {
         if (escenario < 0 || escenario > 2)
             throw new IllegalArgumentException("escenario debe ser 0, 1 o 2");
         ConfiguracionDomitec c = copiarDeep();
-        if (escenario == 0) { c.factLatigo = 1.5; c.horas = 40.0; }
-        else if (escenario == 1) { c.factLatigo = 1.0; c.horas = 40.0; }
-        else { c.factLatigo = 1.0; c.horas = 51.0; }
+        c.mejoraEscenario = 1.0;
+        if (escenario == 0) c.factLatigo = 1.5;
+        else if (escenario == 1) c.factLatigo = 1.0;
+        else {
+            c.factLatigo = 1.0;
+            // Keep the former 51/40 experimental improvement as a throughput
+            // hypothesis; never invent additional hours in a 168-hour week.
+            c.mejoraEscenario = 51.0 / 40.0;
+        }
         return c;
     }
 

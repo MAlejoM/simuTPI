@@ -16,6 +16,10 @@ def main():
     source = BUILD/'src.generated'
     assert source.is_dir(), source
     native_plant=(source/'domitec_interactivo/DomitecPlant.java').read_text(encoding='utf8')
+    assert 'finalizarLote' in native_plant and 'BalanceMateriales' in native_plant, \
+        'AnyLogic must regenerate the corrected 24x7 operating model before compilation'
+    native_config=(source/'domitec_interactivo/ConfiguracionDomitec.java').read_text(encoding='utf8')
+    assert 'operacion-24x7-v2' in native_config, 'Stale native configuration: reload the updated ALP in AnyLogic'
     assert re.search(r'piso_planta\s*=\s*new ShapeRectangle\(\s*SHAPE_DRAW_3D,\s*true',native_plant), \
         'AnyLogic must regenerate the floor as a public 3D shape, not a 2D icon'
     icon_line=next(line for line in native_plant.splitlines() if 'icon = new ShapeModelElementsGroup' in line)

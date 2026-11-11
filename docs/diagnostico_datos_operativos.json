@@ -1,0 +1,1462 @@
+{
+  "title": "Diagnóstico de datos operativos",
+  "demand": {
+    "source": "demanda/demanda - Sheet1.csv",
+    "source_sha256": "b69030917f619ead3590753f8ff0936ede66383b4c782cbae5467dece11e72a6",
+    "row_count_including_total": 23690,
+    "actual_row_count": 23689,
+    "summary_total_row_count_excluded": 1,
+    "summary_total_row_values": [
+      {
+        "Pedidos": 5853595,
+        "Despachadas": 5018050,
+        "Cancelado": 589511,
+        "Pendientes": 246034
+      }
+    ],
+    "units": "Not specified in source. Packaging descriptions suggest case/pack context, but no unit is asserted.",
+    "periods": {
+      "years": [
+        "2025",
+        "2026"
+      ],
+      "months_seen_by_year": {
+        "2025": [
+          "Ene.",
+          "Feb.",
+          "Mar.",
+          "Abr.",
+          "May.",
+          "Jun.",
+          "Jul.",
+          "Ago.",
+          "Sept.",
+          "Oct.",
+          "Nov.",
+          "Dic."
+        ],
+        "2026": [
+          "Ene.",
+          "Feb.",
+          "Mar.",
+          "Abr.",
+          "May.",
+          "Jun.",
+          "Jul.",
+          "Ago."
+        ]
+      }
+    },
+    "equation": "Pedidos = Despachadas + Cancelado + Pendientes",
+    "equation_mismatch_count": 0,
+    "equation_mismatch_csv_line_numbers": [],
+    "duplicate_count_on_year_business_month_client_rubro_presentation": 0,
+    "annual_totals": {
+      "2025": {
+        "Pedidos": 3242281,
+        "Despachadas": 2977002,
+        "Cancelado": 265279,
+        "Pendientes": 0
+      },
+      "2026": {
+        "Pedidos": 2611314,
+        "Despachadas": 2041048,
+        "Cancelado": 324232,
+        "Pendientes": 246034
+      }
+    },
+    "monthly_totals_year_month": {
+      "2025 / Abr.": {
+        "Pedidos": 314203,
+        "Despachadas": 257900,
+        "Cancelado": 56303,
+        "Pendientes": 0
+      },
+      "2025 / Ago.": {
+        "Pedidos": 217776,
+        "Despachadas": 204915,
+        "Cancelado": 12861,
+        "Pendientes": 0
+      },
+      "2025 / Dic.": {
+        "Pedidos": 282458,
+        "Despachadas": 259453,
+        "Cancelado": 23005,
+        "Pendientes": 0
+      },
+      "2025 / Ene.": {
+        "Pedidos": 323047,
+        "Despachadas": 299888,
+        "Cancelado": 23159,
+        "Pendientes": 0
+      },
+      "2025 / Feb.": {
+        "Pedidos": 327632,
+        "Despachadas": 288698,
+        "Cancelado": 38934,
+        "Pendientes": 0
+      },
+      "2025 / Jul.": {
+        "Pedidos": 245677,
+        "Despachadas": 233566,
+        "Cancelado": 12111,
+        "Pendientes": 0
+      },
+      "2025 / Jun.": {
+        "Pedidos": 226856,
+        "Despachadas": 215387,
+        "Cancelado": 11469,
+        "Pendientes": 0
+      },
+      "2025 / Mar.": {
+        "Pedidos": 218035,
+        "Despachadas": 189347,
+        "Cancelado": 28688,
+        "Pendientes": 0
+      },
+      "2025 / May.": {
+        "Pedidos": 219226,
+        "Despachadas": 206646,
+        "Cancelado": 12580,
+        "Pendientes": 0
+      },
+      "2025 / Nov.": {
+        "Pedidos": 277650,
+        "Despachadas": 256725,
+        "Cancelado": 20925,
+        "Pendientes": 0
+      },
+      "2025 / Oct.": {
+        "Pedidos": 329824,
+        "Despachadas": 314753,
+        "Cancelado": 15071,
+        "Pendientes": 0
+      },
+      "2025 / Sept.": {
+        "Pedidos": 259897,
+        "Despachadas": 249724,
+        "Cancelado": 10173,
+        "Pendientes": 0
+      },
+      "2026 / Abr.": {
+        "Pedidos": 353368,
+        "Despachadas": 305890,
+        "Cancelado": 46760,
+        "Pendientes": 718
+      },
+      "2026 / Ago.": {
+        "Pedidos": 162976,
+        "Despachadas": 26545,
+        "Cancelado": 818,
+        "Pendientes": 135613
+      },
+      "2026 / Ene.": {
+        "Pedidos": 353494,
+        "Despachadas": 310483,
+        "Cancelado": 43011,
+        "Pendientes": 0
+      },
+      "2026 / Feb.": {
+        "Pedidos": 280379,
+        "Despachadas": 248407,
+        "Cancelado": 31972,
+        "Pendientes": 0
+      },
+      "2026 / Jul.": {
+        "Pedidos": 325842,
+        "Despachadas": 212121,
+        "Cancelado": 29793,
+        "Pendientes": 83928
+      },
+      "2026 / Jun.": {
+        "Pedidos": 345538,
+        "Despachadas": 271531,
+        "Cancelado": 55520,
+        "Pendientes": 18487
+      },
+      "2026 / Mar.": {
+        "Pedidos": 420686,
+        "Despachadas": 358308,
+        "Cancelado": 62378,
+        "Pendientes": 0
+      },
+      "2026 / May.": {
+        "Pedidos": 369031,
+        "Despachadas": 307763,
+        "Cancelado": 53980,
+        "Pendientes": 7288
+      }
+    },
+    "rubro_totals_year_rubro": {
+      "2025 / DETERGENTE CONCENTRADO": {
+        "Pedidos": 77409,
+        "Despachadas": 69870,
+        "Cancelado": 7539,
+        "Pendientes": 0
+      },
+      "2025 / LAVANDINA COMUN": {
+        "Pedidos": 750513,
+        "Despachadas": 721213,
+        "Cancelado": 29300,
+        "Pendientes": 0
+      },
+      "2025 / LAVANDINA CONCENTRADA": {
+        "Pedidos": 443349,
+        "Despachadas": 400376,
+        "Cancelado": 42973,
+        "Pendientes": 0
+      },
+      "2025 / LAVAVAJILLA": {
+        "Pedidos": 564091,
+        "Despachadas": 533560,
+        "Cancelado": 30531,
+        "Pendientes": 0
+      },
+      "2025 / LIQUIDO BACTERICIDA": {
+        "Pedidos": 1400,
+        "Despachadas": 1265,
+        "Cancelado": 135,
+        "Pendientes": 0
+      },
+      "2025 / LIQUIDO DESINFECTANTE": {
+        "Pedidos": 739562,
+        "Despachadas": 660308,
+        "Cancelado": 79254,
+        "Pendientes": 0
+      },
+      "2025 / LIQUIDO LAVAR ROPA": {
+        "Pedidos": 202166,
+        "Despachadas": 171477,
+        "Cancelado": 30689,
+        "Pendientes": 0
+      },
+      "2025 / LIQUIDO LIMPIADOR": {
+        "Pedidos": 64824,
+        "Despachadas": 58534,
+        "Cancelado": 6290,
+        "Pendientes": 0
+      },
+      "2025 / PROMOPACK": {
+        "Pedidos": 195166,
+        "Despachadas": 185346,
+        "Cancelado": 9820,
+        "Pendientes": 0
+      },
+      "2025 / SUAVIZANTE": {
+        "Pedidos": 203801,
+        "Despachadas": 175053,
+        "Cancelado": 28748,
+        "Pendientes": 0
+      },
+      "2026 / DETERGENTE CONCENTRADO": {
+        "Pedidos": 99809,
+        "Despachadas": 83923,
+        "Cancelado": 4715,
+        "Pendientes": 11171
+      },
+      "2026 / LAVANDINA COMUN": {
+        "Pedidos": 611553,
+        "Despachadas": 527989,
+        "Cancelado": 37293,
+        "Pendientes": 46271
+      },
+      "2026 / LAVANDINA CONCENTRADA": {
+        "Pedidos": 297089,
+        "Despachadas": 243910,
+        "Cancelado": 20709,
+        "Pendientes": 32470
+      },
+      "2026 / LAVAVAJILLA": {
+        "Pedidos": 456750,
+        "Despachadas": 357626,
+        "Cancelado": 46777,
+        "Pendientes": 52347
+      },
+      "2026 / LIQUIDO DESINFECTANTE": {
+        "Pedidos": 509831,
+        "Despachadas": 364980,
+        "Cancelado": 102557,
+        "Pendientes": 42294
+      },
+      "2026 / LIQUIDO LAVAR ROPA": {
+        "Pedidos": 231995,
+        "Despachadas": 181434,
+        "Cancelado": 18529,
+        "Pendientes": 32032
+      },
+      "2026 / LIQUIDO LIMPIADOR": {
+        "Pedidos": 87317,
+        "Despachadas": 45969,
+        "Cancelado": 38758,
+        "Pendientes": 2590
+      },
+      "2026 / PROMOPACK": {
+        "Pedidos": 160490,
+        "Despachadas": 123731,
+        "Cancelado": 31195,
+        "Pendientes": 5564
+      },
+      "2026 / SUAVIZANTE": {
+        "Pedidos": 156480,
+        "Despachadas": 111486,
+        "Cancelado": 23699,
+        "Pendientes": 21295
+      }
+    },
+    "family_totals_year_family": {
+      "2025 / Desinfectante": {
+        "Pedidos": 739562,
+        "Despachadas": 660308,
+        "Cancelado": 79254,
+        "Pendientes": 0
+      },
+      "2025 / Detergente concentrado": {
+        "Pedidos": 77409,
+        "Despachadas": 69870,
+        "Cancelado": 7539,
+        "Pendientes": 0
+      },
+      "2025 / Lavandina": {
+        "Pedidos": 1193862,
+        "Despachadas": 1121589,
+        "Cancelado": 72273,
+        "Pendientes": 0
+      },
+      "2025 / Lavarropa": {
+        "Pedidos": 202166,
+        "Despachadas": 171477,
+        "Cancelado": 30689,
+        "Pendientes": 0
+      },
+      "2025 / Lavavajilla": {
+        "Pedidos": 564091,
+        "Despachadas": 533560,
+        "Cancelado": 30531,
+        "Pendientes": 0
+      },
+      "2025 / Suavizante": {
+        "Pedidos": 203801,
+        "Despachadas": 175053,
+        "Cancelado": 28748,
+        "Pendientes": 0
+      },
+      "2026 / Desinfectante": {
+        "Pedidos": 509831,
+        "Despachadas": 364980,
+        "Cancelado": 102557,
+        "Pendientes": 42294
+      },
+      "2026 / Detergente concentrado": {
+        "Pedidos": 99809,
+        "Despachadas": 83923,
+        "Cancelado": 4715,
+        "Pendientes": 11171
+      },
+      "2026 / Lavandina": {
+        "Pedidos": 908642,
+        "Despachadas": 771899,
+        "Cancelado": 58002,
+        "Pendientes": 78741
+      },
+      "2026 / Lavarropa": {
+        "Pedidos": 231995,
+        "Despachadas": 181434,
+        "Cancelado": 18529,
+        "Pendientes": 32032
+      },
+      "2026 / Lavavajilla": {
+        "Pedidos": 456750,
+        "Despachadas": 357626,
+        "Cancelado": 46777,
+        "Pendientes": 52347
+      },
+      "2026 / Suavizante": {
+        "Pedidos": 156480,
+        "Despachadas": 111486,
+        "Cancelado": 23699,
+        "Pendientes": 21295
+      }
+    },
+    "family_totals_year_month_family": {
+      "2025 / Abr. / Desinfectante": {
+        "Pedidos": 89309,
+        "Despachadas": 66392,
+        "Cancelado": 22917,
+        "Pendientes": 0
+      },
+      "2025 / Abr. / Detergente concentrado": {
+        "Pedidos": 3682,
+        "Despachadas": 2812,
+        "Cancelado": 870,
+        "Pendientes": 0
+      },
+      "2025 / Abr. / Lavandina": {
+        "Pedidos": 117864,
+        "Despachadas": 103553,
+        "Cancelado": 14311,
+        "Pendientes": 0
+      },
+      "2025 / Abr. / Lavarropa": {
+        "Pedidos": 14589,
+        "Despachadas": 9797,
+        "Cancelado": 4792,
+        "Pendientes": 0
+      },
+      "2025 / Abr. / Lavavajilla": {
+        "Pedidos": 50056,
+        "Despachadas": 44620,
+        "Cancelado": 5436,
+        "Pendientes": 0
+      },
+      "2025 / Abr. / Suavizante": {
+        "Pedidos": 18608,
+        "Despachadas": 12817,
+        "Cancelado": 5791,
+        "Pendientes": 0
+      },
+      "2025 / Ago. / Desinfectante": {
+        "Pedidos": 43326,
+        "Despachadas": 41939,
+        "Cancelado": 1387,
+        "Pendientes": 0
+      },
+      "2025 / Ago. / Detergente concentrado": {
+        "Pedidos": 7922,
+        "Despachadas": 7176,
+        "Cancelado": 746,
+        "Pendientes": 0
+      },
+      "2025 / Ago. / Lavandina": {
+        "Pedidos": 76570,
+        "Despachadas": 72605,
+        "Cancelado": 3965,
+        "Pendientes": 0
+      },
+      "2025 / Ago. / Lavarropa": {
+        "Pedidos": 15188,
+        "Despachadas": 12583,
+        "Cancelado": 2605,
+        "Pendientes": 0
+      },
+      "2025 / Ago. / Lavavajilla": {
+        "Pedidos": 38449,
+        "Despachadas": 37049,
+        "Cancelado": 1400,
+        "Pendientes": 0
+      },
+      "2025 / Ago. / Suavizante": {
+        "Pedidos": 13844,
+        "Despachadas": 11337,
+        "Cancelado": 2507,
+        "Pendientes": 0
+      },
+      "2025 / Dic. / Desinfectante": {
+        "Pedidos": 58378,
+        "Despachadas": 48523,
+        "Cancelado": 9855,
+        "Pendientes": 0
+      },
+      "2025 / Dic. / Detergente concentrado": {
+        "Pedidos": 9696,
+        "Despachadas": 9571,
+        "Cancelado": 125,
+        "Pendientes": 0
+      },
+      "2025 / Dic. / Lavandina": {
+        "Pedidos": 92916,
+        "Despachadas": 85004,
+        "Cancelado": 7912,
+        "Pendientes": 0
+      },
+      "2025 / Dic. / Lavarropa": {
+        "Pedidos": 16573,
+        "Despachadas": 15963,
+        "Cancelado": 610,
+        "Pendientes": 0
+      },
+      "2025 / Dic. / Lavavajilla": {
+        "Pedidos": 70980,
+        "Despachadas": 69297,
+        "Cancelado": 1683,
+        "Pendientes": 0
+      },
+      "2025 / Dic. / Suavizante": {
+        "Pedidos": 14211,
+        "Despachadas": 12054,
+        "Cancelado": 2157,
+        "Pendientes": 0
+      },
+      "2025 / Ene. / Desinfectante": {
+        "Pedidos": 79390,
+        "Despachadas": 75683,
+        "Cancelado": 3707,
+        "Pendientes": 0
+      },
+      "2025 / Ene. / Detergente concentrado": {
+        "Pedidos": 5921,
+        "Despachadas": 5328,
+        "Cancelado": 593,
+        "Pendientes": 0
+      },
+      "2025 / Ene. / Lavandina": {
+        "Pedidos": 126829,
+        "Despachadas": 116716,
+        "Cancelado": 10113,
+        "Pendientes": 0
+      },
+      "2025 / Ene. / Lavarropa": {
+        "Pedidos": 14896,
+        "Despachadas": 13750,
+        "Cancelado": 1146,
+        "Pendientes": 0
+      },
+      "2025 / Ene. / Lavavajilla": {
+        "Pedidos": 56125,
+        "Despachadas": 50865,
+        "Cancelado": 5260,
+        "Pendientes": 0
+      },
+      "2025 / Ene. / Suavizante": {
+        "Pedidos": 17477,
+        "Despachadas": 16690,
+        "Cancelado": 787,
+        "Pendientes": 0
+      },
+      "2025 / Feb. / Desinfectante": {
+        "Pedidos": 85885,
+        "Despachadas": 75432,
+        "Cancelado": 10453,
+        "Pendientes": 0
+      },
+      "2025 / Feb. / Detergente concentrado": {
+        "Pedidos": 6036,
+        "Despachadas": 4920,
+        "Cancelado": 1116,
+        "Pendientes": 0
+      },
+      "2025 / Feb. / Lavandina": {
+        "Pedidos": 108701,
+        "Despachadas": 99153,
+        "Cancelado": 9548,
+        "Pendientes": 0
+      },
+      "2025 / Feb. / Lavarropa": {
+        "Pedidos": 19021,
+        "Despachadas": 14669,
+        "Cancelado": 4352,
+        "Pendientes": 0
+      },
+      "2025 / Feb. / Lavavajilla": {
+        "Pedidos": 66796,
+        "Despachadas": 59744,
+        "Cancelado": 7052,
+        "Pendientes": 0
+      },
+      "2025 / Feb. / Suavizante": {
+        "Pedidos": 20014,
+        "Despachadas": 17124,
+        "Cancelado": 2890,
+        "Pendientes": 0
+      },
+      "2025 / Jul. / Desinfectante": {
+        "Pedidos": 41314,
+        "Despachadas": 39414,
+        "Cancelado": 1900,
+        "Pendientes": 0
+      },
+      "2025 / Jul. / Detergente concentrado": {
+        "Pedidos": 6920,
+        "Despachadas": 5667,
+        "Cancelado": 1253,
+        "Pendientes": 0
+      },
+      "2025 / Jul. / Lavandina": {
+        "Pedidos": 94458,
+        "Despachadas": 92538,
+        "Cancelado": 1920,
+        "Pendientes": 0
+      },
+      "2025 / Jul. / Lavarropa": {
+        "Pedidos": 19188,
+        "Despachadas": 16567,
+        "Cancelado": 2621,
+        "Pendientes": 0
+      },
+      "2025 / Jul. / Lavavajilla": {
+        "Pedidos": 44263,
+        "Despachadas": 43045,
+        "Cancelado": 1218,
+        "Pendientes": 0
+      },
+      "2025 / Jul. / Suavizante": {
+        "Pedidos": 19751,
+        "Despachadas": 17297,
+        "Cancelado": 2454,
+        "Pendientes": 0
+      },
+      "2025 / Jun. / Desinfectante": {
+        "Pedidos": 30762,
+        "Despachadas": 28427,
+        "Cancelado": 2335,
+        "Pendientes": 0
+      },
+      "2025 / Jun. / Detergente concentrado": {
+        "Pedidos": 5625,
+        "Despachadas": 4996,
+        "Cancelado": 629,
+        "Pendientes": 0
+      },
+      "2025 / Jun. / Lavandina": {
+        "Pedidos": 98841,
+        "Despachadas": 97082,
+        "Cancelado": 1759,
+        "Pendientes": 0
+      },
+      "2025 / Jun. / Lavarropa": {
+        "Pedidos": 15135,
+        "Despachadas": 12591,
+        "Cancelado": 2544,
+        "Pendientes": 0
+      },
+      "2025 / Jun. / Lavavajilla": {
+        "Pedidos": 39281,
+        "Despachadas": 38209,
+        "Cancelado": 1072,
+        "Pendientes": 0
+      },
+      "2025 / Jun. / Suavizante": {
+        "Pedidos": 13431,
+        "Despachadas": 12595,
+        "Cancelado": 836,
+        "Pendientes": 0
+      },
+      "2025 / Mar. / Desinfectante": {
+        "Pedidos": 60376,
+        "Despachadas": 48807,
+        "Cancelado": 11569,
+        "Pendientes": 0
+      },
+      "2025 / Mar. / Detergente concentrado": {
+        "Pedidos": 3383,
+        "Despachadas": 2034,
+        "Cancelado": 1349,
+        "Pendientes": 0
+      },
+      "2025 / Mar. / Lavandina": {
+        "Pedidos": 82137,
+        "Despachadas": 78108,
+        "Cancelado": 4029,
+        "Pendientes": 0
+      },
+      "2025 / Mar. / Lavarropa": {
+        "Pedidos": 11395,
+        "Despachadas": 7320,
+        "Cancelado": 4075,
+        "Pendientes": 0
+      },
+      "2025 / Mar. / Lavavajilla": {
+        "Pedidos": 32961,
+        "Despachadas": 30113,
+        "Cancelado": 2848,
+        "Pendientes": 0
+      },
+      "2025 / Mar. / Suavizante": {
+        "Pedidos": 11292,
+        "Despachadas": 8429,
+        "Cancelado": 2863,
+        "Pendientes": 0
+      },
+      "2025 / May. / Desinfectante": {
+        "Pedidos": 63375,
+        "Despachadas": 60736,
+        "Cancelado": 2639,
+        "Pendientes": 0
+      },
+      "2025 / May. / Detergente concentrado": {
+        "Pedidos": 3841,
+        "Despachadas": 3718,
+        "Cancelado": 123,
+        "Pendientes": 0
+      },
+      "2025 / May. / Lavandina": {
+        "Pedidos": 60602,
+        "Despachadas": 58918,
+        "Cancelado": 1684,
+        "Pendientes": 0
+      },
+      "2025 / May. / Lavarropa": {
+        "Pedidos": 18225,
+        "Despachadas": 15594,
+        "Cancelado": 2631,
+        "Pendientes": 0
+      },
+      "2025 / May. / Lavavajilla": {
+        "Pedidos": 32851,
+        "Despachadas": 30481,
+        "Cancelado": 2370,
+        "Pendientes": 0
+      },
+      "2025 / May. / Suavizante": {
+        "Pedidos": 20271,
+        "Despachadas": 18574,
+        "Cancelado": 1697,
+        "Pendientes": 0
+      },
+      "2025 / Nov. / Desinfectante": {
+        "Pedidos": 57156,
+        "Despachadas": 50375,
+        "Cancelado": 6781,
+        "Pendientes": 0
+      },
+      "2025 / Nov. / Detergente concentrado": {
+        "Pedidos": 6959,
+        "Despachadas": 6689,
+        "Cancelado": 270,
+        "Pendientes": 0
+      },
+      "2025 / Nov. / Lavandina": {
+        "Pedidos": 112459,
+        "Despachadas": 103327,
+        "Cancelado": 9132,
+        "Pendientes": 0
+      },
+      "2025 / Nov. / Lavarropa": {
+        "Pedidos": 17369,
+        "Despachadas": 16090,
+        "Cancelado": 1279,
+        "Pendientes": 0
+      },
+      "2025 / Nov. / Lavavajilla": {
+        "Pedidos": 40617,
+        "Despachadas": 40255,
+        "Cancelado": 362,
+        "Pendientes": 0
+      },
+      "2025 / Nov. / Suavizante": {
+        "Pedidos": 17231,
+        "Despachadas": 15016,
+        "Cancelado": 2215,
+        "Pendientes": 0
+      },
+      "2025 / Oct. / Desinfectante": {
+        "Pedidos": 87279,
+        "Despachadas": 83274,
+        "Cancelado": 4005,
+        "Pendientes": 0
+      },
+      "2025 / Oct. / Detergente concentrado": {
+        "Pedidos": 8943,
+        "Despachadas": 8878,
+        "Cancelado": 65,
+        "Pendientes": 0
+      },
+      "2025 / Oct. / Lavandina": {
+        "Pedidos": 119305,
+        "Despachadas": 113605,
+        "Cancelado": 5700,
+        "Pendientes": 0
+      },
+      "2025 / Oct. / Lavarropa": {
+        "Pedidos": 19356,
+        "Despachadas": 17630,
+        "Cancelado": 1726,
+        "Pendientes": 0
+      },
+      "2025 / Oct. / Lavavajilla": {
+        "Pedidos": 51215,
+        "Despachadas": 49703,
+        "Cancelado": 1512,
+        "Pendientes": 0
+      },
+      "2025 / Oct. / Suavizante": {
+        "Pedidos": 21638,
+        "Despachadas": 19913,
+        "Cancelado": 1725,
+        "Pendientes": 0
+      },
+      "2025 / Sept. / Desinfectante": {
+        "Pedidos": 43012,
+        "Despachadas": 41306,
+        "Cancelado": 1706,
+        "Pendientes": 0
+      },
+      "2025 / Sept. / Detergente concentrado": {
+        "Pedidos": 8481,
+        "Despachadas": 8081,
+        "Cancelado": 400,
+        "Pendientes": 0
+      },
+      "2025 / Sept. / Lavandina": {
+        "Pedidos": 103180,
+        "Despachadas": 100980,
+        "Cancelado": 2200,
+        "Pendientes": 0
+      },
+      "2025 / Sept. / Lavarropa": {
+        "Pedidos": 21231,
+        "Despachadas": 18923,
+        "Cancelado": 2308,
+        "Pendientes": 0
+      },
+      "2025 / Sept. / Lavavajilla": {
+        "Pedidos": 40497,
+        "Despachadas": 40179,
+        "Cancelado": 318,
+        "Pendientes": 0
+      },
+      "2025 / Sept. / Suavizante": {
+        "Pedidos": 16033,
+        "Despachadas": 13207,
+        "Cancelado": 2826,
+        "Pendientes": 0
+      },
+      "2026 / Abr. / Desinfectante": {
+        "Pedidos": 97851,
+        "Despachadas": 86137,
+        "Cancelado": 11116,
+        "Pendientes": 598
+      },
+      "2026 / Abr. / Detergente concentrado": {
+        "Pedidos": 12334,
+        "Despachadas": 11204,
+        "Cancelado": 1130,
+        "Pendientes": 0
+      },
+      "2026 / Abr. / Lavandina": {
+        "Pedidos": 109153,
+        "Despachadas": 98601,
+        "Cancelado": 10552,
+        "Pendientes": 0
+      },
+      "2026 / Abr. / Lavarropa": {
+        "Pedidos": 25088,
+        "Despachadas": 23280,
+        "Cancelado": 1808,
+        "Pendientes": 0
+      },
+      "2026 / Abr. / Lavavajilla": {
+        "Pedidos": 52542,
+        "Despachadas": 47104,
+        "Cancelado": 5438,
+        "Pendientes": 0
+      },
+      "2026 / Abr. / Suavizante": {
+        "Pedidos": 16605,
+        "Despachadas": 14019,
+        "Cancelado": 2466,
+        "Pendientes": 120
+      },
+      "2026 / Ago. / Desinfectante": {
+        "Pedidos": 19399,
+        "Despachadas": 5097,
+        "Cancelado": 106,
+        "Pendientes": 14196
+      },
+      "2026 / Ago. / Detergente concentrado": {
+        "Pedidos": 7559,
+        "Despachadas": 843,
+        "Cancelado": 0,
+        "Pendientes": 6716
+      },
+      "2026 / Ago. / Lavandina": {
+        "Pedidos": 59112,
+        "Despachadas": 9127,
+        "Cancelado": 159,
+        "Pendientes": 49826
+      },
+      "2026 / Ago. / Lavarropa": {
+        "Pedidos": 21007,
+        "Despachadas": 2235,
+        "Cancelado": 0,
+        "Pendientes": 18772
+      },
+      "2026 / Ago. / Lavavajilla": {
+        "Pedidos": 40285,
+        "Despachadas": 5520,
+        "Cancelado": 297,
+        "Pendientes": 34468
+      },
+      "2026 / Ago. / Suavizante": {
+        "Pedidos": 9792,
+        "Despachadas": 1767,
+        "Cancelado": 256,
+        "Pendientes": 7769
+      },
+      "2026 / Ene. / Desinfectante": {
+        "Pedidos": 65055,
+        "Despachadas": 50386,
+        "Cancelado": 14669,
+        "Pendientes": 0
+      },
+      "2026 / Ene. / Detergente concentrado": {
+        "Pedidos": 5911,
+        "Despachadas": 5899,
+        "Cancelado": 12,
+        "Pendientes": 0
+      },
+      "2026 / Ene. / Lavandina": {
+        "Pedidos": 148252,
+        "Despachadas": 142826,
+        "Cancelado": 5426,
+        "Pendientes": 0
+      },
+      "2026 / Ene. / Lavarropa": {
+        "Pedidos": 33023,
+        "Despachadas": 27050,
+        "Cancelado": 5973,
+        "Pendientes": 0
+      },
+      "2026 / Ene. / Lavavajilla": {
+        "Pedidos": 40710,
+        "Despachadas": 39372,
+        "Cancelado": 1338,
+        "Pendientes": 0
+      },
+      "2026 / Ene. / Suavizante": {
+        "Pedidos": 23895,
+        "Despachadas": 18262,
+        "Cancelado": 5633,
+        "Pendientes": 0
+      },
+      "2026 / Feb. / Desinfectante": {
+        "Pedidos": 48545,
+        "Despachadas": 35296,
+        "Cancelado": 13249,
+        "Pendientes": 0
+      },
+      "2026 / Feb. / Detergente concentrado": {
+        "Pedidos": 13123,
+        "Despachadas": 12841,
+        "Cancelado": 282,
+        "Pendientes": 0
+      },
+      "2026 / Feb. / Lavandina": {
+        "Pedidos": 91238,
+        "Despachadas": 86494,
+        "Cancelado": 4744,
+        "Pendientes": 0
+      },
+      "2026 / Feb. / Lavarropa": {
+        "Pedidos": 15094,
+        "Despachadas": 13835,
+        "Cancelado": 1259,
+        "Pendientes": 0
+      },
+      "2026 / Feb. / Lavavajilla": {
+        "Pedidos": 71643,
+        "Despachadas": 68242,
+        "Cancelado": 3401,
+        "Pendientes": 0
+      },
+      "2026 / Feb. / Suavizante": {
+        "Pedidos": 13364,
+        "Despachadas": 10736,
+        "Cancelado": 2628,
+        "Pendientes": 0
+      },
+      "2026 / Jul. / Desinfectante": {
+        "Pedidos": 53791,
+        "Despachadas": 26350,
+        "Cancelado": 7416,
+        "Pendientes": 20025
+      },
+      "2026 / Jul. / Detergente concentrado": {
+        "Pedidos": 13532,
+        "Despachadas": 9774,
+        "Cancelado": 775,
+        "Pendientes": 2983
+      },
+      "2026 / Jul. / Lavandina": {
+        "Pedidos": 94159,
+        "Despachadas": 68840,
+        "Cancelado": 4195,
+        "Pendientes": 21124
+      },
+      "2026 / Jul. / Lavarropa": {
+        "Pedidos": 49003,
+        "Despachadas": 35288,
+        "Cancelado": 1067,
+        "Pendientes": 12648
+      },
+      "2026 / Jul. / Lavavajilla": {
+        "Pedidos": 44752,
+        "Despachadas": 31353,
+        "Cancelado": 3861,
+        "Pendientes": 9538
+      },
+      "2026 / Jul. / Suavizante": {
+        "Pedidos": 33378,
+        "Despachadas": 16123,
+        "Cancelado": 3933,
+        "Pendientes": 13322
+      },
+      "2026 / Jun. / Desinfectante": {
+        "Pedidos": 76391,
+        "Despachadas": 51006,
+        "Cancelado": 19392,
+        "Pendientes": 5993
+      },
+      "2026 / Jun. / Detergente concentrado": {
+        "Pedidos": 17292,
+        "Despachadas": 14315,
+        "Cancelado": 1649,
+        "Pendientes": 1328
+      },
+      "2026 / Jun. / Lavandina": {
+        "Pedidos": 117540,
+        "Despachadas": 100967,
+        "Cancelado": 8916,
+        "Pendientes": 7657
+      },
+      "2026 / Jun. / Lavarropa": {
+        "Pedidos": 20004,
+        "Despachadas": 17094,
+        "Cancelado": 2530,
+        "Pendientes": 380
+      },
+      "2026 / Jun. / Lavavajilla": {
+        "Pedidos": 63462,
+        "Despachadas": 47088,
+        "Cancelado": 13329,
+        "Pendientes": 3045
+      },
+      "2026 / Jun. / Suavizante": {
+        "Pedidos": 15138,
+        "Despachadas": 13036,
+        "Cancelado": 2018,
+        "Pendientes": 84
+      },
+      "2026 / Mar. / Desinfectante": {
+        "Pedidos": 73924,
+        "Despachadas": 56899,
+        "Cancelado": 17025,
+        "Pendientes": 0
+      },
+      "2026 / Mar. / Detergente concentrado": {
+        "Pedidos": 9528,
+        "Despachadas": 9255,
+        "Cancelado": 273,
+        "Pendientes": 0
+      },
+      "2026 / Mar. / Lavandina": {
+        "Pedidos": 188838,
+        "Despachadas": 171246,
+        "Cancelado": 17592,
+        "Pendientes": 0
+      },
+      "2026 / Mar. / Lavarropa": {
+        "Pedidos": 37783,
+        "Despachadas": 34429,
+        "Cancelado": 3354,
+        "Pendientes": 0
+      },
+      "2026 / Mar. / Lavavajilla": {
+        "Pedidos": 50149,
+        "Despachadas": 43813,
+        "Cancelado": 6336,
+        "Pendientes": 0
+      },
+      "2026 / Mar. / Suavizante": {
+        "Pedidos": 25041,
+        "Despachadas": 21126,
+        "Cancelado": 3915,
+        "Pendientes": 0
+      },
+      "2026 / May. / Desinfectante": {
+        "Pedidos": 74875,
+        "Despachadas": 53809,
+        "Cancelado": 19584,
+        "Pendientes": 1482
+      },
+      "2026 / May. / Detergente concentrado": {
+        "Pedidos": 20530,
+        "Despachadas": 19792,
+        "Cancelado": 594,
+        "Pendientes": 144
+      },
+      "2026 / May. / Lavandina": {
+        "Pedidos": 100350,
+        "Despachadas": 93798,
+        "Cancelado": 6418,
+        "Pendientes": 134
+      },
+      "2026 / May. / Lavarropa": {
+        "Pedidos": 30993,
+        "Despachadas": 28223,
+        "Cancelado": 2538,
+        "Pendientes": 232
+      },
+      "2026 / May. / Lavavajilla": {
+        "Pedidos": 93207,
+        "Despachadas": 75134,
+        "Cancelado": 12777,
+        "Pendientes": 5296
+      },
+      "2026 / May. / Suavizante": {
+        "Pedidos": 19267,
+        "Despachadas": 16417,
+        "Cancelado": 2850,
+        "Pendientes": 0
+      }
+    },
+    "family_mapping": {
+      "LAVANDINA COMUN": "Lavandina",
+      "LAVANDINA CONCENTRADA": "Lavandina",
+      "LAVAVAJILLA": "Lavavajilla",
+      "LIQUIDO DESINFECTANTE": "Desinfectante",
+      "LIQUIDO LAVAR ROPA": "Lavarropa",
+      "SUAVIZANTE": "Suavizante",
+      "DETERGENTE CONCENTRADO": "Detergente concentrado"
+    },
+    "excluded_from_six_family_channel_rollup": [
+      "LIQUIDO BACTERICIDA",
+      "LIQUIDO LIMPIADOR",
+      "PROMOPACK"
+    ],
+    "excluded_rubro_totals_year_rubro": {
+      "2025 / LIQUIDO BACTERICIDA": {
+        "Pedidos": 1400,
+        "Despachadas": 1265,
+        "Cancelado": 135,
+        "Pendientes": 0
+      },
+      "2025 / LIQUIDO LIMPIADOR": {
+        "Pedidos": 64824,
+        "Despachadas": 58534,
+        "Cancelado": 6290,
+        "Pendientes": 0
+      },
+      "2025 / PROMOPACK": {
+        "Pedidos": 195166,
+        "Despachadas": 185346,
+        "Cancelado": 9820,
+        "Pendientes": 0
+      },
+      "2026 / LIQUIDO LIMPIADOR": {
+        "Pedidos": 87317,
+        "Despachadas": 45969,
+        "Cancelado": 38758,
+        "Pendientes": 2590
+      },
+      "2026 / PROMOPACK": {
+        "Pedidos": 160490,
+        "Despachadas": 123731,
+        "Cancelado": 31195,
+        "Pendientes": 5564
+      }
+    },
+    "comparison_note": "Demand has explicit years; production files have no year. Annual demand and production totals therefore are not asserted as like-for-like or causally comparable."
+  },
+  "production": {
+    "source": "produccion/prod.csv",
+    "source_sha256": "0bef94aecae58caba72e9c4c956129bcdd7e5dcef0d54cb760537611b0ee03d8",
+    "year": null,
+    "year_note": "No year field is present; do not equate these months with demand 2025 without external confirmation.",
+    "main_file": "prod.csv",
+    "prod1_role": "Separate variant/subset, not additive to prod.csv.",
+    "prod1_source_sha256": "3ffd6a772b283aaf3034b514062c63f06889e8cd77039e46ce984a764d0a3fd6",
+    "prod1_nonblank_data_rows": 121,
+    "prod1_duplicate_month_rubro_presentation_keys": 0,
+    "prod1_comparison_totals_not_for_addition": {
+      "Cajas": 2148184,
+      "Tiempo": 759936
+    },
+    "prod3_source": "produccion/prod3.csv",
+    "prod3_source_sha256": "bfdc98a17ff79762deae95a0b0e5d907f8f3191ed6c65c3a2cc14884a55863eb",
+    "period_months_present": [
+      "Ene.",
+      "Feb.",
+      "Mar.",
+      "Abr.",
+      "May.",
+      "Jun.",
+      "Jul.",
+      "Ago.",
+      "Sept."
+    ],
+    "jan_aug_complete_months_used_for_rates": [
+      "Ene.",
+      "Feb.",
+      "Mar.",
+      "Abr.",
+      "May.",
+      "Jun.",
+      "Jul.",
+      "Ago."
+    ],
+    "september_partial_note": "September has substantially fewer rows and lower Cajas than prior months; treated as partial and excluded from rate calibration.",
+    "prod3_capacity_by_line": {
+      "lavandina": {
+        "production_per_hour": 235.0,
+        "availability_hours_per_month": 330.0
+      },
+      "liq desinfectante": {
+        "production_per_hour": 205.0,
+        "availability_hours_per_month": 330.0
+      },
+      "lavavajilla": {
+        "production_per_hour": 236.0,
+        "availability_hours_per_month": 330.0
+      },
+      "sauvizante": {
+        "production_per_hour": 60.0,
+        "availability_hours_per_month": 330.0
+      },
+      "liq lavar ropa": {
+        "production_per_hour": 120.0,
+        "availability_hours_per_month": 330.0
+      },
+      "detergente conc": {
+        "production_per_hour": 110.0,
+        "availability_hours_per_month": null
+      },
+      "9": {
+        "production_per_hour": 0.0,
+        "availability_hours_per_month": null
+      },
+      "7,5": {
+        "production_per_hour": 0.0,
+        "availability_hours_per_month": null
+      },
+      "22": {
+        "production_per_hour": 0.0,
+        "availability_hours_per_month": null
+      },
+      "1485": {
+        "production_per_hour": 0.0,
+        "availability_hours_per_month": null
+      },
+      "0": {
+        "production_per_hour": 0.0,
+        "availability_hours_per_month": null
+      }
+    },
+    "monthly_totals": {
+      "Ene.": {
+        "row_count": 22,
+        "totals": {
+          "Cajas": 304804,
+          "Tiempo": 98320
+        }
+      },
+      "Feb.": {
+        "row_count": 18,
+        "totals": {
+          "Cajas": 239575,
+          "Tiempo": 88605
+        }
+      },
+      "Mar.": {
+        "row_count": 21,
+        "totals": {
+          "Cajas": 275002,
+          "Tiempo": 92070
+        }
+      },
+      "Abr.": {
+        "row_count": 22,
+        "totals": {
+          "Cajas": 287527,
+          "Tiempo": 100270
+        }
+      },
+      "May.": {
+        "row_count": 20,
+        "totals": {
+          "Cajas": 309950,
+          "Tiempo": 106900
+        }
+      },
+      "Jun.": {
+        "row_count": 23,
+        "totals": {
+          "Cajas": 337295,
+          "Tiempo": 118625
+        }
+      },
+      "Jul.": {
+        "row_count": 20,
+        "totals": {
+          "Cajas": 317296,
+          "Tiempo": 124930
+        }
+      },
+      "Ago.": {
+        "row_count": 19,
+        "totals": {
+          "Cajas": 306003,
+          "Tiempo": 118080
+        }
+      },
+      "Sept.": {
+        "row_count": 12,
+        "totals": {
+          "Cajas": 45370,
+          "Tiempo": 14170
+        }
+      }
+    },
+    "jan_aug_totals": {
+      "Cajas": 2377452,
+      "Tiempo": 847800
+    },
+    "jan_aug_rubro_totals": {
+      "DETERGENTE CONCENTRADO": {
+        "jan_aug_row_count": 13,
+        "Cajas": 86900,
+        "Tiempo": 47225,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 110.408
+      },
+      "LAVANDINA COMUN": {
+        "jan_aug_row_count": 24,
+        "Cajas": 660345,
+        "Tiempo": 168678,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 234.89
+      },
+      "LAVANDINA CONCENTRADA": {
+        "jan_aug_row_count": 24,
+        "Cajas": 282742,
+        "Tiempo": 81417,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 208.366
+      },
+      "LAVAVAJILLA": {
+        "jan_aug_row_count": 16,
+        "Cajas": 470742,
+        "Tiempo": 125798,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 224.523
+      },
+      "LIQUIDO DESINFECTANTE": {
+        "jan_aug_row_count": 18,
+        "Cajas": 426507,
+        "Tiempo": 138165,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 185.216
+      },
+      "LIQUIDO LAVAR ROPA": {
+        "jan_aug_row_count": 31,
+        "Cajas": 231640,
+        "Tiempo": 127435,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 109.063
+      },
+      "LIQUIDO LIMPIADOR": {
+        "jan_aug_row_count": 17,
+        "Cajas": 86569,
+        "Tiempo": 32865,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 158.045
+      },
+      "SUAVIZANTE": {
+        "jan_aug_row_count": 22,
+        "Cajas": 132007,
+        "Tiempo": 126217,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 62.752
+      }
+    },
+    "family_rate_calibration": {
+      "Desinfectante": {
+        "rubro_members": [
+          "LIQUIDO DESINFECTANTE"
+        ],
+        "jan_aug_rows": 18,
+        "cajas_jan_aug": 426507,
+        "tiempo_source_units_jan_aug": 138165,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 185.216,
+        "mean_prod_hs_ho_per_row_unweighted": 49.556,
+        "mean_operarios_per_row_unweighted": 3.922,
+        "time_weighted_prod_hs_ho_times_operarios_line_rate_proxy": 185.512,
+        "ratio_observed_to_prod_hs_ho_times_operarios": 0.9984,
+        "prod3_line_label": "liq desinfectante",
+        "prod3_nominal_rate_cajas_per_hour_label": 205.0,
+        "prod3_availability_hours_per_month": 330.0,
+        "prod3_nominal_monthly_capacity": 67650
+      },
+      "Detergente concentrado": {
+        "rubro_members": [
+          "DETERGENTE CONCENTRADO"
+        ],
+        "jan_aug_rows": 13,
+        "cajas_jan_aug": 86900,
+        "tiempo_source_units_jan_aug": 47225,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 110.408,
+        "mean_prod_hs_ho_per_row_unweighted": 27.846,
+        "mean_operarios_per_row_unweighted": 4.0,
+        "time_weighted_prod_hs_ho_times_operarios_line_rate_proxy": 110.71,
+        "ratio_observed_to_prod_hs_ho_times_operarios": 0.9973,
+        "prod3_line_label": "detergente conc",
+        "prod3_nominal_rate_cajas_per_hour_label": 110.0,
+        "prod3_availability_hours_per_month": null,
+        "prod3_nominal_monthly_capacity": null
+      },
+      "Lavandina": {
+        "rubro_members": [
+          "LAVANDINA COMUN",
+          "LAVANDINA CONCENTRADA"
+        ],
+        "jan_aug_rows": 48,
+        "cajas_jan_aug": 943087,
+        "tiempo_source_units_jan_aug": 250095,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 226.255,
+        "mean_prod_hs_ho_per_row_unweighted": 42.75,
+        "mean_operarios_per_row_unweighted": 4.779,
+        "time_weighted_prod_hs_ho_times_operarios_line_rate_proxy": 226.069,
+        "ratio_observed_to_prod_hs_ho_times_operarios": 1.0008,
+        "prod3_line_label": "lavandina",
+        "prod3_nominal_rate_cajas_per_hour_label": 235.0,
+        "prod3_availability_hours_per_month": 330.0,
+        "prod3_nominal_monthly_capacity": 77550,
+        "mapping_note": "Both lavandina rubros map to one prod3 line/rate; do not double the line capacity. January-August pooled observed rate is computed over combined boxes and combined Tiempo."
+      },
+      "Lavarropa": {
+        "rubro_members": [
+          "LIQUIDO LAVAR ROPA"
+        ],
+        "jan_aug_rows": 31,
+        "cajas_jan_aug": 231640,
+        "tiempo_source_units_jan_aug": 127435,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 109.063,
+        "mean_prod_hs_ho_per_row_unweighted": 35.742,
+        "mean_operarios_per_row_unweighted": 3.052,
+        "time_weighted_prod_hs_ho_times_operarios_line_rate_proxy": 109.177,
+        "ratio_observed_to_prod_hs_ho_times_operarios": 0.999,
+        "prod3_line_label": "liq lavar ropa",
+        "prod3_nominal_rate_cajas_per_hour_label": 120.0,
+        "prod3_availability_hours_per_month": 330.0,
+        "prod3_nominal_monthly_capacity": 39600
+      },
+      "Lavavajilla": {
+        "rubro_members": [
+          "LAVAVAJILLA"
+        ],
+        "jan_aug_rows": 16,
+        "cajas_jan_aug": 470742,
+        "tiempo_source_units_jan_aug": 125798,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 224.523,
+        "mean_prod_hs_ho_per_row_unweighted": 57.75,
+        "mean_operarios_per_row_unweighted": 3.881,
+        "time_weighted_prod_hs_ho_times_operarios_line_rate_proxy": 225.97,
+        "ratio_observed_to_prod_hs_ho_times_operarios": 0.9936,
+        "prod3_line_label": "lavavajilla",
+        "prod3_nominal_rate_cajas_per_hour_label": 236.0,
+        "prod3_availability_hours_per_month": 330.0,
+        "prod3_nominal_monthly_capacity": 77880
+      },
+      "Suavizante": {
+        "rubro_members": [
+          "SUAVIZANTE"
+        ],
+        "jan_aug_rows": 22,
+        "cajas_jan_aug": 132007,
+        "tiempo_source_units_jan_aug": 126217,
+        "observed_cajas_per_hour_if_tiempo_is_minutes": 62.752,
+        "mean_prod_hs_ho_per_row_unweighted": 31.591,
+        "mean_operarios_per_row_unweighted": 2.686,
+        "time_weighted_prod_hs_ho_times_operarios_line_rate_proxy": 62.761,
+        "ratio_observed_to_prod_hs_ho_times_operarios": 0.9999,
+        "prod3_line_label": "sauvizante",
+        "prod3_nominal_rate_cajas_per_hour_label": 60.0,
+        "prod3_availability_hours_per_month": 330.0,
+        "prod3_nominal_monthly_capacity": 19800
+      }
+    },
+    "time_unit_caveat": "The source does not define Tiempo units. Observed Cajas/(Tiempo/60) assumes Tiempo is minutes; validate before using as calibrated rate.",
+    "prod_hs_ho_interpretation": "Column labels suggest Prod/Hs/Ho is per-person hourly productivity; the diagnostic contrasts its time-weighted product with Operarios against the observed line rate, without claiming the source defines the formula."
+  }
+}

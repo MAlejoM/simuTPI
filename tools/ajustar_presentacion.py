@@ -186,6 +186,10 @@ def ajustar(d):
     label(ep[0],'notaEstudio',40,545,'Al finalizar, volver a Main > Estadisticas > Leer ultimos IC.\nSi falla el guardado, mantener esta ventana abierta y pulsar Reintentar guardado.\nStop interrumpe el lote; solo se publican paquetes con el marcador COMPLETO.',14)
     from documentar_planta import documentar
     documentar(d)
+    # Apply the current operating model last, so visual rebuilds cannot restore
+    # the former 40-hour clock, unlimited queues or permanent backlog.
+    from recalibrar_operacion import recalibrar
+    recalibrar(d)
 
 def main():
     backup=Path(tempfile.mkdtemp(prefix='domitec-antes-orden-visual-'))

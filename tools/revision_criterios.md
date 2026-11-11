@@ -1,5 +1,11 @@
 # Revisión de criterios del experimento Domitec
 
+**Versión operativa actual: `operacion-24x7-v2`.** Se corrigieron calendario,
+cancelaciones, demanda y liberación de material. La auditoría 100×3 descrita debajo
+corresponde a la versión anterior y no acredita resultados del modelo corregido.
+La nueva ejecución nativa y su calibración están pendientes. Ver
+[`solucion_operativa_24x7.md`](../docs/solucion_operativa_24x7.md).
+
 ## Alcance y estado
 
 Esta revisión separa el snapshot histórico de la implementación experimental nueva. Los logs `csv/esc0.txt`, `esc1.txt` y `esc2.txt` contienen 100 registros únicos por escenario, numerados del 1 al 100. El CSV histórico ya incluía intervalos marginales y un bloque de comparación pareada 2–0. Los identificadores de réplica permiten reproducir sus diferencias por ID, pero los logs y la columna “Semilla / Réplica” no guardan la semilla efectiva: ese snapshot no prueba que la demanda se haya compartido entre escenarios.

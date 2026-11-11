@@ -33,7 +33,8 @@ public final class TestEstudioPareado {
             for (int escenario = 0; escenario < 3; escenario++) {
                 ComparacionEscenarios.Resultado resultado = new ComparacionEscenarios.Resultado(
                         seed, escenario, seed + escenario * 0.1, seed * 2.0 + escenario,
-                        seed * 3.0 + escenario, 0.5 + escenario, seed * 10.0 + escenario);
+                        seed * 3.0 + escenario, 0.5 + escenario, seed * 10.0 + escenario,
+                        seed + escenario * 4.0, seed * 5.0 + escenario, seed * 6.0 + escenario);
                 RegistroCorrida registro = serieSintetica(seed, escenario);
                 estudio.agregar(resultado, firma, registro.seriesCsv(seed, escenario),
                         cfg.calentamiento, cfg, destino.toString());
@@ -54,19 +55,46 @@ public final class TestEstudioPareado {
         List<String> resultados = Files.readAllLines(paquete.resolve("resultados.csv"), StandardCharsets.UTF_8);
         List<String> series = Files.readAllLines(paquete.resolve("series_semanales.csv"), StandardCharsets.UTF_8);
         List<String> ics = Files.readAllLines(paquete.resolve("ic_pareados.csv"), StandardCharsets.UTF_8);
+        String metadata=Files.readString(paquete.resolve("metadata.txt"),StandardCharsets.UTF_8);
         requiere(resultados.size() == 301, "CSV resultados: 301 filas con encabezado");
+        requiere(resultados.get(0).equals("seed,escenario,firma_demanda,warmup_semanas,fillRate,backlog,stock,bw,produccion,canceladas,wip_max,insumos_final"),
+                "CSV resultados incluye 3 métricas operativas finales");
+        requiere(resultados.get(1).split(",", -1).length == 12, "resultados conserva 12 columnas por fila");
         requiere(series.size() == 30001, "CSV series: 30001 filas con encabezado");
+        requiere(series.get(0).split(",", -1).length == 9 && series.get(1).split(",", -1).length == 9,
+                "series semanales conserva sus 9 columnas");
         requiere(ics.size() == 16, "CSV IC: 16 filas con encabezado");
+        requiere(metadata.contains("mejoraEscenario_hipotesis=1.0"), "metadata registra mejoraEscenario");
+        requiere(metadata.contains("no constituyen validacion real en planta"), "metadata aclara que no es validación real");
         for (int i = 1; i < ics.size(); i++)
             requiere(ics.get(i).split(",", -1)[3].equals("100"), "cada IC publicado tiene n=100");
         SesionEstudio.ultimoResultado=null;
         SesionEstudio.leerUltimoEstudio(destino.toString());
         requiere(SesionEstudio.ultimoResultado.getCount()==300,"lee los CSV publicados en otra sesion");
         requiere(SesionEstudio.ultimoResultado.pairCI95(0,1,"bw").n==100,"IC recargado conserva 100 pares");
+        ComparacionEscenarios.Resultado recargado=SesionEstudio.ultimoResultado.ternasOrdenadas().get(0);
+        requiere(recargado.canceladas==1.0 && recargado.wipMax==5.0 && recargado.insumosFinal==6.0,
+                "lectura nueva conserva las 3 métricas operativas");
+        probarLecturaFormatoAnterior(destino, paquete, resultados);
         Path parcial=Files.createDirectory(destino.resolve("comparacion_99999999_incompleta"));
         Files.copy(paquete.resolve("resultados.csv"),parcial.resolve("resultados.csv"));
         SesionEstudio.leerUltimoEstudio(destino.toString());
         requiere(!SesionEstudio.estado.contains("99999999_incompleta"),"ignora paquetes sin marcador COMPLETO");
+    }
+
+    private static void probarLecturaFormatoAnterior(Path destino, Path paquete, List<String> filas) throws Exception {
+        Path viejo=Files.createDirectory(destino.resolve("comparacion_zz_legacy"));
+        StringBuilder csv=new StringBuilder("seed,escenario,firma_demanda,warmup_semanas,fillRate,backlog,stock,bw,produccion\n");
+        for(int i=1;i<filas.size();i++) {
+            String[] c=filas.get(i).split(",",-1);
+            csv.append(String.join(",", java.util.Arrays.copyOf(c,9))).append('\n');
+        }
+        Files.writeString(viejo.resolve("resultados.csv"),csv.toString(),StandardCharsets.UTF_8);
+        Files.writeString(viejo.resolve("COMPLETO"),"legacy\n",StandardCharsets.UTF_8);
+        SesionEstudio.leerUltimoEstudio(destino.toString());
+        ComparacionEscenarios.Resultado recargado=SesionEstudio.ultimoResultado.ternasOrdenadas().get(0);
+        requiere(recargado.canceladas==0.0 && recargado.wipMax==0.0 && recargado.insumosFinal==0.0,
+                "lectura antigua completa métricas nuevas con cero");
     }
 
     private static void probarReintentoExportacion(Path temp) throws Exception {
@@ -94,7 +122,8 @@ public final class TestEstudioPareado {
         for (int seed = 1; seed <= 100; seed++) for (int escenario = 0; escenario < 3; escenario++) {
             ComparacionEscenarios.Resultado r = new ComparacionEscenarios.Resultado(seed, escenario,
                     seed + escenario * 0.1, seed * 2.0 + escenario, seed * 3.0 + escenario,
-                    0.5 + escenario, seed * 10.0 + escenario);
+                    0.5 + escenario, seed * 10.0 + escenario, seed + escenario * 4.0,
+                    seed * 5.0 + escenario, seed * 6.0 + escenario);
             RegistroCorrida registro = serieSintetica(seed, escenario);
             estudio.agregar(r, repetir('a', 64), registro.seriesCsv(seed, escenario),
                     cfg.calentamiento, cfg, seed == 100 && escenario == 2 ? destinoFinal : destino);

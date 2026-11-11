@@ -1,5 +1,14 @@
 # Domitec interactivo
 
+La versión actual usa **24×7 (168 horas semanales)**, ritmos efectivos históricos,
+cancelaciones con plazo editable y liberación limitada de lotes. La espera inicial
+de 30 días y el límite de 36 lotes son **supuestos provisionales**, visibles en Lógica.
+El pie muestra insumos, WIP y cancelaciones por separado. Las salidas nuevas van a
+`resultados_operativos_v2`; el 100×3 anterior no valida esta versión.
+Ver [solución operativa y criterios de validación](../docs/solucion_operativa_24x7.md).
+La compilación y las pruebas de componentes pasaron; falta ejecutar y contrastar
+el nuevo modelo en AnyLogic antes de actualizar las conclusiones de la exposición.
+
 Abrir `Domitec_Interactivo.alp` en AnyLogic 8.9.10 PLE. Para recorrer la interfaz,
 ejecutar `Simulation_Escenario0_AsIs`: las pestañas son Vista 2D, Vista 3D,
 Estadísticas y Lógica. Los parámetros se editan en Lógica y se confirman con
@@ -51,7 +60,7 @@ Cada corrida dura 100 semanas. La demanda se genera por clave para que no depend
 del orden de eventos; el estudio verifica su firma en cada terna.
 
 Al terminar se publican `resultados.csv`, `series_semanales.csv`,
-`ic_pareados.csv` y `metadata.txt` en una subcarpeta de `resultados_domitec`,
+`ic_pareados.csv` y `metadata.txt` en una subcarpeta de `resultados_operativos_v2`,
 con un marcador `COMPLETO` escrito al final. La publicación no renombra el
 directorio ni elimina archivos si falla. **Reintentar guardado** vuelve a
 exportar los 300 resultados retenidos, sin simularlos otra vez; mantener la
@@ -77,7 +86,7 @@ python tools/diagnosticar_estacionariedad.py --help
 Las pruebas de helpers y la compilación no sustituyen la corrida completa de
 300 simulaciones. El estado de comprobación está en `verificacion_interfaz.json`
 y los criterios pendientes en `../tools/revision_criterios.md`.
-El lote real publicado fue revisado en `../tools/auditoria_estudio_real.md`:
+El lote real de la **versión anterior** fue revisado en `../tools/auditoria_estudio_real.md`:
 300 resultados, 30.000 muestras semanales, demanda común por terna y 15 IC.
 Los escenarios 1 y 2 coinciden en sus cinco indicadores; ese hallazgo requiere
 revisar la lógica o sus supuestos antes de atribuir una mejora al escenario 2.

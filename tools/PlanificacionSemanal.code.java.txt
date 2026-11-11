@@ -1,0 +1,23 @@
+// Supply planning includes raw stock and released WIP separately. No permanent debt.
+caducarPedidos();
+Main m=controlador();
+double ordenes=0;
+for(ProductState ps:inventorySystem){
+    int p=ConfiguracionDomitec.indice(ps.product.name());
+    double objetivo=m.demandaMediaProducto(p)*m.cfg.cobertura[p];
+    double posicion=ps.inventory+ps.onOrder+materiales.materiaPrima(p)+materiales.enProceso(p)-ps.backlog;
+    double faltante=Math.max(0,objetivo-posicion);
+    double comprar=faltante*(ps.backlog>0?m.cfg.factLatigo:1.0);
+    // Compute from current configuration, independent of embedded-agent startup order.
+    ps.weeklyCapacity=m.cfg.horas*m.cfg.rate[p]*m.cfg.capacidadFactor*m.cfg.mejoraEscenario/m.cfg.tiemposFactor;
+    comprar=Math.min(comprar,2*ps.weeklyCapacity);
+    long pedido=Math.round(comprar/1000.0)*1000L;
+    if(pedido>0){
+        ps.onOrder+=pedido;ordenes+=pedido;
+        send(new OrderMessage(ps.product,pedido),m.supplier);
+    }
+}
+m.ordenesHistoricas+=ordenes;
+m.ordenesSemanalActual+=ordenes;
+int semana=(int)Math.floor(time());
+if(semana>=0&&semana<100)m.ordenesPorSemana[semana]+=ordenes;

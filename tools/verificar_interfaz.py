@@ -19,6 +19,10 @@ def main():
         assert e.findtext('ModelTimeProperties/InitialTime') in ['0','0.0']
         assert float(e.findtext('ModelTimeProperties/FinalTime'))==100
     study=next(e for e in model.findall('Experiments/*') if e.findtext('Name')=='Comparacion_100x3')
+    for scenario,name in enumerate(['Simulation_Escenario0_AsIs','Simulation_Escenario1_SinPanico','Simulation_Escenario2_Integral']):
+        experiment=next(e for e in model.findall('Experiments/*') if e.findtext('Name')==name)
+        parameters={p.findtext('ParameterName'):p.findtext('ParameterValue/Code') for p in experiment.findall('Parameters/Parameter')}
+        assert parameters.get('numeroEscenario')==str(scenario),(name,'missing explicit scenario')
     assert study.tag=='ParamVariationExperiment'
     assert study.findtext('NumberOfRuns')=='100' and study.findtext('ReplicationsProperties/ReplicationPerIteration')=='3'
     assert study.findtext('AllowParallelEvaluations')=='false'
@@ -138,7 +142,7 @@ import domitec_main_3d.*;import domitec_main_3d.ProductType;import domitec_main_
         for key,kind in [('delayTime','double'),('newEntity','Batch'),('condition','boolean')]:
             if pars.get(key):jplant+=f'{kind} value{i}_{key}(Batch agent){{return {pars[key]};}}\n'
     for event in plant.findall('Events/Event'):
-        if event.findtext('ExcludeFromBuild')!='true':jplant+='void weekly(){'+event.findtext('Action')+'}\n'
+        if event.findtext('ExcludeFromBuild')!='true':jplant+='void event_'+event.findtext('Name')+'(){'+event.findtext('Action')+'}\n'
     jplant+='}\n'
     jclient=imports+'public class Client extends domitec_main_3d.Client {\n@Override public Main get_Main(){return null;}\nvoid demand(){'+agents['Client'].findtext('Events/Event/Action')+'}\n}'
     jsupplier=imports+'public class Supplier extends domitec_main_3d.Supplier {\n@Override public Main get_Main(){return null;}\nvoid receipt(Object msg){'+agents['Supplier'].findtext('AgentProperties/OnReceive')+'}\n}'
@@ -156,18 +160,17 @@ import domitec_main_3d.*;import domitec_main_3d.ProductType;import domitec_main_
     for name,source in [('Main',jmain),('DomitecPlant',jplant),('Client',jclient),('Supplier',jsupplier),('Batch',jbatch),('Comparacion_100x3',jstudy)]:
         (work/(name+'.java')).write_text(source,encoding='utf8')
     for cls in model.findall('JavaClasses/JavaClass'):
-        if cls.findtext('Name') in ['ComparacionEscenarios','ConfiguracionDomitec','RegistroCorrida','SesionEstudio','EstudioPareado','OperarioAnimation']:
+        if cls.findtext('Name') in ['ComparacionEscenarios','ConfiguracionDomitec','RegistroCorrida','SesionEstudio','EstudioPareado','OperarioAnimation','DatosOperativos','BalanceMateriales','CalendarioPlanta']:
             (work/(cls.findtext('Name')+'.java')).write_text('package domitec_interactivo;\n'+cls.findtext('Text'),encoding='utf8')
     cp=[work/'native.jar']
     for plugin,jar in [('com.anylogic.engine','com.anylogic.engine.jar'),('com.anylogic.engine.datautil','com.anylogic.engine.datautil.jar'),('com.anylogic.engine.database','com.anylogic.engine.database.jar'),('com.anylogic.process_modeling_library','lib/ProcessModelingLibrary.jar')]:cp.append(next((INSTALL/'plugins').glob(plugin+'_*'))/jar)
     p=subprocess.run([str(INSTALL/'jre/bin/javac.exe'),'-encoding','UTF-8','-Xmaxerrs','10','-cp',os.pathsep.join(map(str,cp)),'-d',str(work/'classes'),*[str(f) for f in work.glob('*.java')]],text=True,capture_output=True)
     assert p.returncode==0,p.stdout+p.stderr
     print('PASS: exact UI methods, expressions, controls, event actions, stochastic properties and paired experiment actions compile against AnyLogic API')
-    report={'structure':'passed','java_action_compatibility':'passed','native_300_run':'pending_direct_AnyLogic_launch','native_visual_validation':'pending_retest_after_sector_guide_cleanup','delivery_speed_override':'removed','logic_element_presentation':'hidden','view_2d':'native_flow_diagram','batch_launch':'direct_defaults_or_optional_saved_parameters'}
+    report={'structure':'passed','java_action_compatibility':'passed','model_version':'operacion-24x7-v2','native_300_run':'pending_new_operating_model','native_visual_validation':'pending_reload_of_24x7_model','delivery_speed_override':'removed','logic_element_presentation':'hidden','view_2d':'native_flow_diagram','batch_launch':'direct_defaults_or_optional_saved_parameters'}
     audit=ROOT/'tools/auditoria_estudio_real.json'
     if audit.exists():
-        report['native_300_run']='completed_in_recorded_package'
-        report['last_native_results_audit']=json.loads(audit.read_text(encoding='utf8'))
+        report['previous_model_native_results_audit']=json.loads(audit.read_text(encoding='utf8'))
     (FILE.parent/'verificacion_interfaz.json').write_text(json.dumps(report,indent=2),encoding='utf8')
 
 if __name__=='__main__':main()

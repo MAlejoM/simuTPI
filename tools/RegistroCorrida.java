@@ -18,11 +18,11 @@ public final class RegistroCorrida implements Serializable {
     private static final class Cohorte implements Serializable {
         private static final long serialVersionUID = 1L;
         final int producto; final double tiempo, demanda;
-        double cumplido, inmediato;
+        double cumplido, inmediato, cancelado;
         Cohorte(int producto,double tiempo,double demanda) {
             this.producto=producto; this.tiempo=tiempo; this.demanda=demanda;
         }
-        double pendiente() { return Math.max(0.0, demanda-cumplido); }
+        double pendiente() { return Math.max(0.0, demanda-cumplido-cancelado); }
     }
     private static final class Semana implements Serializable {
         private static final long serialVersionUID = 1L;
@@ -66,10 +66,47 @@ public final class RegistroCorrida implements Serializable {
         Deque<Cohorte> q=pendientes.get(producto);
         while(restante>0.0 && q!=null && !q.isEmpty()) {
             Cohorte c=q.peekFirst();
+            if(tiempo<c.tiempo)throw new IllegalArgumentException("tiempo de atencion anterior a la cohorte");
             double asignado=Math.min(restante,c.pendiente());
             c.cumplido+=asignado; restante-=asignado;
             if(c.pendiente()<=1e-12) q.removeFirst();
         }
+    }
+
+    /** Cancela en orden FIFO las cantidades pendientes cuyo plazo ya vencio. */
+    public double cancelarVencidos(int producto,double tiempo,double esperaSemanas) {
+        validarProducto(producto); noNegativo("tiempo",tiempo); noNegativo("esperaSemanas",esperaSemanas);
+        Deque<Cohorte> q=pendientes.get(producto);
+        if(q==null||q.isEmpty())return 0.0;
+        double total=0.0;
+        java.util.Iterator<Cohorte> it=q.iterator();
+        while(it.hasNext()) {
+            Cohorte c=it.next();
+            if(c.tiempo+esperaSemanas<=tiempo) {
+                double cantidad=c.pendiente();
+                c.cancelado+=cantidad; total+=cantidad; it.remove();
+            }
+        }
+        return total;
+    }
+
+    public double pendienteProducto(int producto) {
+        validarProducto(producto); double total=0.0;
+        Deque<Cohorte> q=pendientes.get(producto);
+        if(q!=null)for(Cohorte c:q)total+=c.pendiente();
+        return total;
+    }
+
+    public double canceladoTotal(double warmup) {
+        noNegativo("warmup",warmup);double total=0.0;
+        for(Cohorte c:cohortes)if(c.tiempo>=warmup)total+=c.cancelado;
+        return total;
+    }
+
+    public double pendienteTotal(double warmup) {
+        noNegativo("warmup",warmup);double total=0.0;
+        for(Cohorte c:cohortes)if(c.tiempo>=warmup)total+=c.pendiente();
+        return total;
     }
 
     public void produccion(double tiempo,double cantidad) {

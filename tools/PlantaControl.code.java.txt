@@ -1,5 +1,6 @@
 public java.util.ArrayDeque<ProductType> tiposPendientes = new java.util.ArrayDeque<ProductType>();
 public long[] lotesCRN = new long[6];
+public BalanceMateriales materiales = new BalanceMateriales();
 public Main controlador(){return (Main)get_Main();}
 public Batch crearLote(ProductType tipo){
     Batch b=new Batch(tipo,1000);
@@ -12,8 +13,9 @@ public Batch crearLiquido(){
 }
 public double tiempoProceso(Batch b,int etapa,double minimo,double moda,double maximo){
     int p=ConfiguracionDomitec.indice(b.tipo.name());
-    return ComparacionEscenarios.triangular(controlador().semillaReplica,p,b.indiceCRN,etapa,minimo,moda,maximo)
-        *controlador().cfg.escalaTurno()*controlador().cfg.tiemposFactor;
+    double horas=ComparacionEscenarios.triangular(controlador().semillaReplica,p,b.indiceCRN,etapa,minimo,moda,maximo)
+        /60.0*controlador().cfg.tiemposFactor;
+    return CalendarioPlanta.duracion(time(),horas,controlador().cfg.horas);
 }
 public boolean calidadAceptada(Batch b,boolean lavandina){
     int p=ConfiguracionDomitec.indice(b.tipo.name());
@@ -22,6 +24,35 @@ public boolean calidadAceptada(Batch b,boolean lavandina){
 }
 public double tiempoEnvasado(Batch b){
     int p=ConfiguracionDomitec.indice(b.tipo.name());
-    return 1000.0/(controlador().cfg.rate[p]*controlador().cfg.capacidadFactor)
-        *controlador().cfg.escalaTurno()*controlador().cfg.tiemposFactor;
+    ConfiguracionDomitec c=controlador().cfg;
+    double horas=b.cajasEquivalentes/(c.rate[p]*c.capacidadFactor*c.mejoraEscenario)*c.tiemposFactor;
+    return CalendarioPlanta.duracion(time(),horas,c.horas);
+}
+public void caducarPedidos(){
+    Main m=controlador();
+    for(ProductState ps:inventorySystem){
+        int p=ConfiguracionDomitec.indice(ps.product.name());
+        m.registro.cancelarVencidos(p,time(),m.cfg.esperaPedidoDias/7.0);
+        ps.backlog=m.registro.pendienteProducto(p);
+    }
+}
+public void finalizarLote(Batch b,boolean scrap){
+    caducarPedidos();
+    materiales.finalizar(ConfiguracionDomitec.indice(b.tipo.name()),b.cajasEquivalentes,scrap);
+}
+public void operarPlanta(){
+    caducarPedidos();
+    ConfiguracionDomitec c=controlador().cfg;
+    if(!CalendarioPlanta.abierto(time(),c.horas))return;
+    for(ProductState ps:inventorySystem){
+        int p=ConfiguracionDomitec.indice(ps.product.name());
+        double objetivo=controlador().demandaMediaProducto(p)*c.cobertura[p]+ps.backlog;
+        if(ps.inventory+materiales.enProceso(p)>=objetivo)continue;
+        // One release card represents a real 1000-box batch, including Source buffers.
+        if(materiales.liberar(p,c.tanque+3,c.maxLotesEnProceso)){
+            if(p==0)sourceLavandina.inject();
+            else{tiposPendientes.addLast(ps.product);sourceLiquidos.inject();}
+        }
+    }
+    materiales.verificar();
 }

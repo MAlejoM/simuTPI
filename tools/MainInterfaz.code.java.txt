@@ -3,9 +3,11 @@ public RegistroCorrida registro = new RegistroCorrida();
 public int vistaActiva = 1, escenarioActivo = 0, perfilCanal = 0, perfilProducto = 0;
 public int metricaIC = 0;
 public String mensajeUI = "Los cambios se aplican a los proximos pedidos y procesos.";
-public String carpetaResultados = java.nio.file.Paths.get(System.getProperty("user.dir"), "resultados_domitec").toAbsolutePath().toString();
+public String carpetaResultados = java.nio.file.Paths.get(System.getProperty("user.dir"), "resultados_operativos_v2").toAbsolutePath().toString();
 public double uiMedia=9379, uiDesvio=11162, uiLead=30, uiCobertura=5.5, uiRate=667;
-public double uiLatigo=1.5, uiHoras=40, uiMermaLav=3, uiMermaLiq=5, uiTiempo=1, uiCapacidad=1, uiWarmup=15;
+public double uiLatigo=1.5, uiHoras=168, uiMermaLav=0, uiMermaLiq=0, uiTiempo=1, uiCapacidad=1, uiWarmup=15;
+public double uiEspera=30;
+public int uiMaxWip=36;
 public int uiReactores=4, uiCola=20, uiTanque=3;
 private com.anylogic.engine.presentation.ShapeEmbeddedObjectPresentation vistaPlanta3D;
 private com.anylogic.engine.markup.Level nivelPlanta3D;
@@ -15,9 +17,9 @@ public void iniciarInterfaz() {
     if(getModelElementsShape()!=null)getModelElementsShape().setVisible(false);
     cfg = configuracionInicial == null ? new ConfiguracionDomitec() : configuracionInicial.copiarDeep();
     if (numeroEscenario >= 0) cfg = cfg.escenario(numeroEscenario);
-    else { cfg.factLatigo = factorLatigoMain; cfg.horas = 168.0 / escalaTurnoMain; }
+    else cfg.factLatigo = factorLatigoMain;
     cfg.validar();
-    escenarioActivo = numeroEscenario >= 0 ? numeroEscenario : (cfg.horas > 45 ? 2 : (cfg.factLatigo <= 1 ? 1 : 0));
+    escenarioActivo = numeroEscenario >= 0 ? numeroEscenario : (cfg.factLatigo <= 1 ? 1 : 0);
     aplicarConfiguracion(cfg, false);
     if (esComparacion) { muestrearWip.reset(); return; }
     nivelPlanta3D = new com.anylogic.engine.markup.Level(this, "planta3D", SHAPE_DRAW_3D, 0);
@@ -99,6 +101,8 @@ public void aplicarConfiguracion(ConfiguracionDomitec nueva, boolean enVivo) {
                 Math.max(p.tankDesinfectante.size(), Math.max(p.tankLavavajilla.size(),
                 Math.max(p.tankLavarropa.size(), Math.max(p.tankSuavizante.size(),p.tankDetergente.size())))))))
         throw new IllegalArgumentException("La capacidad nueva no puede ser menor que los lotes presentes.");
+    if(enVivo && nueva.maxLotesEnProceso*1000.0 < p.materiales.wip())
+        throw new IllegalArgumentException("El limite de liberacion no puede ser menor que el WIP presente.");
     cfg = nueva.copiarDeep();
     factorLatigoMain = cfg.factLatigo;
     escalaTurnoMain = cfg.escalaTurno();
@@ -112,11 +116,9 @@ public void aplicarConfiguracion(ConfiguracionDomitec nueva, boolean enVivo) {
     p.tankLavarropa.set_capacity(cfg.tanque);
     p.tankSuavizante.set_capacity(cfg.tanque);
     p.tankDetergente.set_capacity(cfg.tanque);
-    double[] nominal = {26672,16217,9474,7036,4150,2564};
-    double[] rateBase = {667,405,237,176,104,64};
     for (ProductState ps : p.inventorySystem) {
         int i = ConfiguracionDomitec.indice(ps.product.name());
-        ps.weeklyCapacity = nominal[i] * cfg.capacidadFactor * cfg.rate[i] / rateBase[i];
+        ps.weeklyCapacity = cfg.horas * cfg.rate[i] * cfg.capacidadFactor * cfg.mejoraEscenario / cfg.tiemposFactor;
     }
 }
 
@@ -132,12 +134,14 @@ public void seleccionarPerfil(int canal, int producto) {
 
 public void sincronizarControles() {
     uiLatigo=cfg.factLatigo;uiHoras=cfg.horas;uiMermaLav=cfg.mermaLav*100;uiMermaLiq=cfg.mermaLiq*100;
-    uiTiempo=cfg.tiemposFactor;uiCapacidad=cfg.capacidadFactor;uiWarmup=cfg.calentamiento;
+    uiTiempo=cfg.tiemposFactor;uiCapacidad=cfg.capacidadFactor*cfg.mejoraEscenario;uiWarmup=cfg.calentamiento;
     uiReactores=cfg.reactores;uiCola=cfg.cola;uiTanque=cfg.tanque;
+    uiEspera=cfg.esperaPedidoDias;uiMaxWip=cfg.maxLotesEnProceso;
     if (!esComparacion) {
         campoLatigo.setValueToDefault();campoHoras.setValueToDefault();campoMermaLav.setValueToDefault();
         campoMermaLiq.setValueToDefault();campoTiempo.setValueToDefault();campoCapacidad.setValueToDefault();
         campoWarmup.setValueToDefault();campoReactores.setValueToDefault();campoCola.setValueToDefault();campoTanque.setValueToDefault();
+        campoEspera.setValueToDefault();campoMaxWip.setValueToDefault();
     }
 }
 
@@ -157,8 +161,10 @@ public void guardarPlanta() {
         nueva.factLatigo=uiLatigo;nueva.horas=uiHoras;
         nueva.leadDias[perfilProducto]=uiLead;nueva.cobertura[perfilProducto]=uiCobertura;nueva.rate[perfilProducto]=uiRate;
         nueva.capacidadFactor=uiCapacidad;nueva.tiemposFactor=uiTiempo;
+        nueva.mejoraEscenario=1.0; // The editable multiplier is the effective one shown in the form.
         nueva.mermaLav=uiMermaLav/100;nueva.mermaLiq=uiMermaLiq/100;
         nueva.reactores=uiReactores;nueva.cola=uiCola;nueva.tanque=uiTanque;nueva.calentamiento=uiWarmup;
+        nueva.esperaPedidoDias=uiEspera;nueva.maxLotesEnProceso=uiMaxWip;
         aplicarConfiguracion(nueva,true);escenarioActivo=3;
         mensajeUI="Configuracion personalizada aplicada. Se conservan los procesos en curso.";
     } catch(IllegalArgumentException error){mensajeUI=error.getMessage();}
@@ -168,8 +174,7 @@ public double demandaComun(String canal, ProductType producto) {
     int c=canal.equals("Maxiconsumo")?0:canal.equals("Grandes Clientes")?1:2;
     int p=ConfiguracionDomitec.indice(producto.name());
     long semana=(long)Math.floor(time()+1e-8);
-    double q=cfg.medias[c][p]<=0?0:Math.round(Math.max(0,
-        ComparacionEscenarios.normal(semillaReplica,c,p,semana,cfg.medias[c][p],cfg.desvios[c][p])));
+    double q=Math.round(DatosOperativos.demanda(semillaReplica,c,p,semana,cfg.medias[c][p],cfg.desvios[c][p]));
     registro.entrada(c,p,semana,q);
     if(semana>=0 && semana<100)demandaPorSemana[(int)semana]+=q;
     return q;
@@ -178,20 +183,20 @@ public double demandaComun(String canal, ProductType producto) {
 public double stockActual(){double x=0;for(ProductState p:domitecPlant.inventorySystem)x+=p.inventory;return x;}
 public double backlogActual(){double x=0;for(ProductState p:domitecPlant.inventorySystem)x+=p.backlog;return x;}
 public double wipActual(){
-    DomitecPlant p=(DomitecPlant)domitecPlant;
-    return 1000.0*(p.queueMateriaPrima.size()+p.delayDilucion.size()+p.delayQCLavandina.size()+p.queueTanquePulmon.size()+p.delayEnvasado.size()
-        +p.queueEsperaElaboracion.size()+p.delayReactoresLiquidos.size()+p.delayQCLiquidos.size()
-        +p.tankDesinfectante.size()+p.tankLavavajilla.size()+p.tankLavarropa.size()+p.tankSuavizante.size()+p.tankDetergente.size()
-        +p.delayEnvasadoDesinfectante.size()+p.delayEnvasadoLavavajilla.size()+p.delayEnvasadoLavarropa.size()+p.delayEnvasadoSuavizante.size()+p.delayEnvasadoDetergente.size());
+    return ((DomitecPlant)domitecPlant).materiales.wip();
 }
+public double insumosActual(){return ((DomitecPlant)domitecPlant).materiales.materiasPrimas();}
+public double demandaMediaProducto(int p){double x=0;for(int c=0;c<3;c++)x+=cfg.medias[c][p];return x;}
+public double canceladasActual(){return registro.canceladoTotal(0);}
 public ComparacionEscenarios.Resultado resultadoFinal(int escenario){
     return new ComparacionEscenarios.Resultado(semillaReplica,escenario,100*registro.fillRate(cfg.calentamiento),
-        backlogActual(),stockActual(),registro.bw(cfg.calentamiento),registro.produccionTotal(cfg.calentamiento));
+        backlogActual(),stockActual(),registro.bw(cfg.calentamiento),registro.produccionTotal(cfg.calentamiento),
+        registro.canceladoTotal(cfg.calentamiento),((DomitecPlant)domitecPlant).materiales.picoWip(),insumosActual());
 }
 public String nombreProducto(int i){return new String[]{"Lavandina","Desinfectante","Lavavajilla","Lavarropa","Suavizante","Detergente"}[i];}
 public String nombreCanal(int i){return new String[]{"Maxiconsumo","Grandes clientes","Red propia"}[i];}
 public String numero(double x){return String.format(java.util.Locale.ROOT,"%,.0f",x);}
-public String escenarioTexto(){return escenarioActivo==3?"Personalizado":new String[]{"0 - As-Is","1 - Sin panico","2 - Integral"}[escenarioActivo];}
+public String escenarioTexto(){return escenarioActivo==3?"Personalizado":new String[]{"0 - Base 24x7","1 - Sin panico 24x7","2 - Rendimiento +27.5% (hipotesis)"}[escenarioActivo];}
 public String perfilTexto(){return nombreCanal(perfilCanal)+" / "+nombreProducto(perfilProducto);}
 
 public void ejecutarComparacion() {
@@ -237,11 +242,26 @@ public void registrarProduccion(ProductType tipo,double cantidad){
     if(s>=0&&s<100)produccionPorSemana[s]+=cantidad;
 }
 public void observarSemana(){
+    ((DomitecPlant)domitecPlant).caducarPedidos();
+    ((DomitecPlant)domitecPlant).materiales.verificar();
     int s=(int)Math.floor(time());
-    if(s>=0&&s<100)registro.semanal(s,demandaPorSemana[s],ordenesPorSemana[s],produccionPorSemana[s],stockActual(),backlogActual(),wipActual());
+    if(s>=0&&s<100){
+        registro.semanal(s,demandaPorSemana[s],ordenesPorSemana[s],produccionPorSemana[s],stockActual(),backlogActual(),wipActual());
+        dsDemanda.add(time(),demandaPorSemana[s]);dsOrdenes.add(time(),ordenesPorSemana[s]);
+        dsProduccionSemanal.add(time(),produccionPorSemana[s]);dsBacklog.add(time(),backlogActual());
+    }
+    demandaSemanalActual=0;ordenesSemanalActual=0;produccionSemanalActual=0;
 }
 public void actualizarWipGrafico(){if(!esComparacion)dsWip.add(time(),wipActual());}
 public void validarCorridaCompleta(){
+    DomitecPlant p=(DomitecPlant)domitecPlant;
+    p.caducarPedidos();p.materiales.verificar();
+    double demanda=registro.demandaTotal(0);
+    double cierre=demanda*registro.fillRate(0)+registro.canceladoTotal(0)+registro.pendienteTotal(0);
+    if(Math.abs(demanda-cierre)>1e-5 || Math.abs(backlogActual()-registro.pendienteTotal(0))>1e-5)
+        throw new IllegalStateException("No reconcilia demanda = entregada + cancelada + pendiente");
+    if(wipActual()>cfg.maxLotesEnProceso*1000.0+1e-5)
+        throw new IllegalStateException("WIP supera las tarjetas de liberacion");
     if(time()<99.99999 || registro.numeroSemanas()!=100 || registro.numeroEntradas()!=1800)
         throw new IllegalStateException("Corrida incompleta: tiempo="+time()+", semanas="+registro.numeroSemanas()+"/100, entradas="+registro.numeroEntradas()+"/1800, semilla="+semillaReplica+", escenario="+numeroEscenario+". Ejecutar Comparacion_100x3 desde el menu Run de AnyLogic y dejarlo terminar.");
 }

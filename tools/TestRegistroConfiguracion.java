@@ -9,13 +9,14 @@ public final class TestRegistroConfiguracion {
     }
     private static void configuracion() {
         ConfiguracionDomitec c=new ConfiguracionDomitec().validar();
-        eq(9379,c.medias[0][0],"media default");eq(0,c.medias[1][5],"media cero");
+        eq(DatosOperativos.medias()[0][0],c.medias[0][0],"media historica default");eq(0,c.medias[1][5],"media cero");
         eq(5,ConfiguracionDomitec.indice("detergente concentrado"),"indice por nombre");
         ConfiguracionDomitec copia=c.copiarDeep();copia.medias[0][0]=1;
-        eq(9379,c.medias[0][0],"copia profunda");
+        eq(DatosOperativos.medias()[0][0],c.medias[0][0],"copia profunda");
         ConfiguracionDomitec e2=c.escenario(2);
-        eq(51,e2.horas,"horas escenario 2");eq(1,e2.factLatigo,"factor escenario 2");
-        eq(168.0/51,e2.escalaTurno(),"escala por horas");
+        eq(168,e2.horas,"calendario real en escenario 2");eq(1,e2.factLatigo,"factor escenario 2");
+        eq(1.275,e2.mejoraEscenario,"hipotesis de rendimiento, sin horas ficticias");
+        eq(1.275,e2.escenario(2).mejoraEscenario,"seleccion idempotente");
         boolean invalido=false;try{c.escenario(3);}catch(IllegalArgumentException ex){invalido=true;}
         ok(invalido,"rechaza escenario invalido");
         invalido=false;try{c.medias[0][0]=Double.NaN;c.validar();}catch(IllegalArgumentException ex){invalido=true;}

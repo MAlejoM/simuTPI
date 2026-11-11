@@ -26,9 +26,18 @@ public final class ComparacionEscenarios implements Serializable {
         public final double stock;
         public final double bw;
         public final double produccion;
+        public final double canceladas;
+        public final double wipMax;
+        public final double insumosFinal;
 
         public Resultado(int seed, int escenario, double fillRate, double backlog,
                          double stock, double bw, double produccion) {
+            this(seed, escenario, fillRate, backlog, stock, bw, produccion, 0.0, 0.0, 0.0);
+        }
+
+        public Resultado(int seed, int escenario, double fillRate, double backlog,
+                         double stock, double bw, double produccion, double canceladas,
+                         double wipMax, double insumosFinal) {
             if (seed < SEMILLA_MIN || seed > SEMILLA_MAX)
                 throw new IllegalArgumentException("seed debe estar entre 1 y 100");
             if (escenario < 0 || escenario >= ESCENARIOS)
@@ -38,6 +47,9 @@ public final class ComparacionEscenarios implements Serializable {
             exigirFinito("stock", stock);
             exigirFinito("bw", bw);
             exigirFinito("produccion", produccion);
+            exigirFinito("canceladas", canceladas);
+            exigirFinito("wipMax", wipMax);
+            exigirFinito("insumosFinal", insumosFinal);
             this.seed = seed;
             this.escenario = escenario;
             this.fillRate = fillRate;
@@ -45,6 +57,9 @@ public final class ComparacionEscenarios implements Serializable {
             this.stock = stock;
             this.bw = bw;
             this.produccion = produccion;
+            this.canceladas = canceladas;
+            this.wipMax = wipMax;
+            this.insumosFinal = insumosFinal;
         }
 
         private static void exigirFinito(String nombre, double valor) {

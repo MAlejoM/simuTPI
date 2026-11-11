@@ -17,7 +17,7 @@ public final class SesionEstudio {
     public static volatile ConfiguracionDomitec configuracionEnCurso = null;
     /** Destino base de los cuatro CSV publicados al terminar 300 corridas. */
     public static volatile String carpetaEnCurso = java.nio.file.Paths.get(
-            System.getProperty("user.dir"), "resultados_domitec").toString();
+            System.getProperty("user.dir"), "resultados_operativos_v2").toString();
 
     private static java.nio.file.Path archivoPreparacion() {
         return java.nio.file.Paths.get(System.getProperty("user.dir"), "domitec_estudio.properties").toAbsolutePath();
@@ -28,7 +28,7 @@ public final class SesionEstudio {
         cfg.validar();
         if(carpeta==null || carpeta.trim().isEmpty())throw new IllegalArgumentException("Elegir una carpeta de resultados");
         java.util.Properties p=new java.util.Properties();
-        p.setProperty("version","1");p.setProperty("carpeta",java.nio.file.Paths.get(carpeta).toAbsolutePath().toString());
+        p.setProperty("version","2");p.setProperty("carpeta",java.nio.file.Paths.get(carpeta).toAbsolutePath().toString());
         for(int c=0;c<3;c++)for(int i=0;i<6;i++){
             p.setProperty("media."+c+"."+i,Double.toString(cfg.medias[c][i]));
             p.setProperty("desvio."+c+"."+i,Double.toString(cfg.desvios[c][i]));
@@ -43,6 +43,9 @@ public final class SesionEstudio {
         p.setProperty("alfa",Double.toString(cfg.factLatigo));p.setProperty("horas",Double.toString(cfg.horas));
         p.setProperty("warmup",Double.toString(cfg.calentamiento));p.setProperty("reactores",Integer.toString(cfg.reactores));
         p.setProperty("cola",Integer.toString(cfg.cola));p.setProperty("tanque",Integer.toString(cfg.tanque));
+        p.setProperty("esperaPedidoDias",Double.toString(cfg.esperaPedidoDias));
+        p.setProperty("maxLotesEnProceso",Integer.toString(cfg.maxLotesEnProceso));
+        p.setProperty("mejoraEscenario",Double.toString(cfg.mejoraEscenario));
         java.nio.file.Path target=archivoPreparacion(), temp=null;
         try {
             temp=java.nio.file.Files.createTempFile(target.getParent(),".domitec-estudio-",".tmp");
@@ -66,7 +69,7 @@ public final class SesionEstudio {
 
     public static synchronized void usarPredeterminados() {
         configuracionEnCurso=new ConfiguracionDomitec();
-        carpetaEnCurso=java.nio.file.Paths.get(System.getProperty("user.dir"),"resultados_domitec").toAbsolutePath().toString();
+        carpetaEnCurso=java.nio.file.Paths.get(System.getProperty("user.dir"),"resultados_operativos_v2").toAbsolutePath().toString();
         progreso=0;ejecutando=false;cancelar=false;ultimoResultado=null;
         estado="Configuracion predeterminada | Listo para ejecutar";ultimoResumen="";
     }
@@ -80,7 +83,7 @@ public final class SesionEstudio {
             java.util.Properties p=new java.util.Properties();
             try(java.io.Reader reader=java.nio.file.Files.newBufferedReader(source,java.nio.charset.StandardCharsets.UTF_8)){p.load(reader);}
             catch(java.io.IOException ex){throw new IllegalStateException("No se pudo leer "+source,ex);}
-            if(!"1".equals(p.getProperty("version")))throw new IllegalStateException("Version de configuracion no compatible");
+            if(!"2".equals(p.getProperty("version")))throw new IllegalStateException("Configuracion anterior a la correccion 24x5: volver a guardar parametros desde Main");
             for(int c=0;c<3;c++)for(int i=0;i<6;i++){
                 cfg.medias[c][i]=valor(p,"media."+c+"."+i);cfg.desvios[c][i]=valor(p,"desvio."+c+"."+i);
             }
@@ -89,6 +92,8 @@ public final class SesionEstudio {
             cfg.tiemposFactor=valor(p,"tiempos");cfg.capacidadFactor=valor(p,"capacidad");
             cfg.factLatigo=valor(p,"alfa");cfg.horas=valor(p,"horas");cfg.calentamiento=valor(p,"warmup");
             cfg.reactores=Integer.parseInt(p.getProperty("reactores"));cfg.cola=Integer.parseInt(p.getProperty("cola"));cfg.tanque=Integer.parseInt(p.getProperty("tanque"));
+            cfg.esperaPedidoDias=valor(p,"esperaPedidoDias");cfg.maxLotesEnProceso=Integer.parseInt(p.getProperty("maxLotesEnProceso"));
+            if(p.getProperty("mejoraEscenario")!=null)cfg.mejoraEscenario=valor(p,"mejoraEscenario");
             String folder=p.getProperty("carpeta");
             if(folder==null || folder.trim().isEmpty())throw new IllegalStateException("La configuracion no tiene carpeta de resultados");
             carpetaEnCurso=folder;
@@ -119,11 +124,14 @@ public final class SesionEstudio {
         Double warmup=null;
         try {
             java.util.List<String> rows=java.nio.file.Files.readAllLines(latest.resolve("resultados.csv"),java.nio.charset.StandardCharsets.UTF_8);
-            if(rows.size()!=301 || !rows.get(0).equals("seed,escenario,firma_demanda,warmup_semanas,fillRate,backlog,stock,bw,produccion"))
+            String headerViejo="seed,escenario,firma_demanda,warmup_semanas,fillRate,backlog,stock,bw,produccion";
+            String headerNuevo=headerViejo+",canceladas,wip_max,insumos_final";
+            boolean nuevo=rows.size()==301 && rows.get(0).equals(headerNuevo);
+            if(rows.size()!=301 || (!nuevo && !rows.get(0).equals(headerViejo)))
                 throw new IllegalStateException("El estudio no contiene 300 resultados completos");
             for(int i=1;i<rows.size();i++){
                 String[] cells=rows.get(i).split(",",-1);
-                if(cells.length!=9)throw new IllegalStateException("Fila de resultados invalida: "+i);
+                if(cells.length!=(nuevo?12:9))throw new IllegalStateException("Fila de resultados invalida: "+i);
                 int seed=Integer.parseInt(cells[0]),scenario=Integer.parseInt(cells[1]);
                 double corte=Double.parseDouble(cells[3]);
                 if(!Double.isFinite(corte)||corte<0||corte>=100 || (warmup!=null&&Double.compare(warmup,corte)!=0))
@@ -132,7 +140,10 @@ public final class SesionEstudio {
                 if(!cells[2].matches("[0-9a-fA-F]{64}"))throw new IllegalStateException("Firma invalida");
                 String old=firmas.put(seed,cells[2]);
                 if(old!=null&&!old.equals(cells[2]))throw new IllegalStateException("Demanda distinta en semilla "+seed);
-                datos.agregar(new ComparacionEscenarios.Resultado(seed,scenario,Double.parseDouble(cells[4]),Double.parseDouble(cells[5]),Double.parseDouble(cells[6]),Double.parseDouble(cells[7]),Double.parseDouble(cells[8])));
+                ComparacionEscenarios.Resultado resultado;
+                if(nuevo)resultado=new ComparacionEscenarios.Resultado(seed,scenario,Double.parseDouble(cells[4]),Double.parseDouble(cells[5]),Double.parseDouble(cells[6]),Double.parseDouble(cells[7]),Double.parseDouble(cells[8]),Double.parseDouble(cells[9]),Double.parseDouble(cells[10]),Double.parseDouble(cells[11]));
+                else resultado=new ComparacionEscenarios.Resultado(seed,scenario,Double.parseDouble(cells[4]),Double.parseDouble(cells[5]),Double.parseDouble(cells[6]),Double.parseDouble(cells[7]),Double.parseDouble(cells[8]));
+                datos.agregar(resultado);
             }
         }catch(java.io.IOException ex){throw new IllegalStateException("No se pudo leer el estudio",ex);}
         if(datos.getTernasOrdenadas().size()!=100)throw new IllegalStateException("Se requieren 100 ternas completas");
