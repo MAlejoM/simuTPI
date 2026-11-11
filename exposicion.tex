@@ -1,0 +1,284 @@
+\documentclass[11pt, a4paper]{article}
+
+% ---------------------------------------------------------
+% Paquetes
+% ---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+\decimalpoint
+
+% ---------------------------------------------------------
+% Márgenes y encabezados
+% ---------------------------------------------------------
+\geometry{
+    top=2.0cm,
+    bottom=2.0cm,
+    left=2.0cm,
+    right=2.0cm
+}
+
+\definecolor{azulUTN}{RGB}{0, 70, 127}
+\definecolor{fondoCaja}{RGB}{242, 246, 250}
+\definecolor{bordeCaja}{RGB}{195, 214, 232}
+
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{azulUTN}Guía de Exposición --- TPI Simulación}
+\fancyhead[R]{\small\color{azulUTN}Domitec S.A. (UTN FRRo)}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=azulUTN,
+    urlcolor=azulUTN
+}
+
+\newcommand{\caja}[2]{%
+    \noindent\fcolorbox{bordeCaja}{fondoCaja}{%
+        \begin{minipage}{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}
+            \vspace{2pt}
+            {\color{azulUTN}\bfseries #1}\\[3pt]
+            #2
+            \vspace{2pt}
+        \end{minipage}%
+    }\par\vspace{0.3cm}
+}
+
+% ---------------------------------------------------------
+% Documento
+% ---------------------------------------------------------
+\begin{document}
+
+% Cabecera compacta
+\begin{center}
+    \textcolor{azulUTN}{\rule{\textwidth}{1.4pt}}\\[0.35cm]
+    {\Large\bfseries\color{azulUTN} Guía de Exposición: Cadena de Suministro de Domitec S.A.\par}
+    \vspace{0.15cm}
+    {\normalsize Qué se simuló, cuáles son las variables, cómo se hizo el análisis y qué resultados dio\par}
+    \vspace{0.2cm}
+    {\small\color{black!75}
+    Cátedra de Simulación (4.º Año) --- UTN FRRo $\cdot$ Docentes: Jorge A. Flamini $\cdot$ Juan Ignacio Torres\\
+    Autores: Berlanda, Octavio $\cdot$ Martina, Alejo $\cdot$ Tourne, Lautaro $\cdot$ Tuccori, Renzo $\cdot$ Lezcano, Diego\par}
+    \vspace{0.15cm}
+    \textcolor{azulUTN}{\rule{\textwidth}{0.5pt}}
+\end{center}
+
+\caja{Resumen en 30 segundos (Idea central para abrir la exposición)}{%
+Modelamos en AnyLogic (simulación híbrida \textbf{ABM + DES}) la cadena de suministro de \textbf{Domitec S.A.} (6 familias de productos, 3 canales comerciales, horizonte de 100 semanas) a partir de su estructura productiva y demanda histórica. El objetivo del trabajo fue \textbf{evaluar el efecto látigo} (\textit{bullwhip effect}) bajo distintas políticas de reposición y regímenes de capacidad en planta. Al comparar 3 escenarios en 100 réplicas pareadas, verificamos cómo la amplificación reactiva de pedidos ($\alpha = 1,5$) dispara la variabilidad hacia proveedores ($BW = 1,57$), cómo una reposición neutral ($\alpha = 1,0$) elimina esa amplificación ($BW = 0,85$) sin modificar el nivel de servicio ($81,5\%$), y cómo ampliar la jornada de planta un $27,5\%$ ($40 \to 51\text{ h/sem}$) eleva el nivel de servicio al \textbf{92,42\%} y reduce los pedidos pendientes simulados en un \textbf{57,0\%}.%
+}
+
+% ---------------------------------------------------------
+% 1. DE QUÉ SE TRATA EL TP
+% ---------------------------------------------------------
+\section{¿De qué se trata el trabajo?}
+
+\subsection{Sistema modelado y foco de estudio}
+Domitec S.A. formula, envasa y distribuye mayoristamente artículos de limpieza del hogar en 6 familias de productos (\textit{Lavandina, Líquido Desinfectante, Lavavajilla, Líquido Lavar Ropa, Suavizante y Detergente Concentrado}) hacia 3 canales comerciales (\textit{Maxiconsumo, Grandes Clientes y Red Propia}).
+
+Tomando su operación como caso de estudio empírico, el trabajo se centra en \textbf{evaluar mediante simulación cómo se genera y propaga el efecto látigo (\textit{bullwhip effect})} en una cadena con tiempos de aprovisionamiento prolongados (21 a 45 días según el insumo crítico) y líneas de capacidad finita. En particular, se analizan dos mecanismos:
+\begin{itemize}[leftmargin=0.5cm, itemsep=2pt]
+    \item \textbf{Política de reposición (efecto látigo):} qué ocurre cuando, ante pedidos pendientes (\textit{backlog}), el modelo amplifica las órdenes al proveedor en un $50\%$ ($\alpha = 1,5$), frente a una regla neutral basada estrictamente en la posición neta ($\alpha = 1,0$).
+    \item \textbf{Capacidad horaria de planta:} en qué medida la capacidad de las líneas de envasado ($40\text{ h/sem}$ vs. $51\text{ h/sem}$) condiciona la acumulación de \textit{backlog} y el nivel de servicio (\textit{Fill Rate}), independientemente de la regla de compras.
+\end{itemize}
+La pregunta central del TP es: \textbf{¿cómo impactan la política de reposición ($\alpha$) y la capacidad horaria de planta sobre el efecto látigo y el nivel de servicio?}
+
+\subsection{Cómo está armado el modelo híbrido (AnyLogic)}
+Se combinaron dos paradigmas porque el sistema mezcla decisiones de actores externos con flujo físico de planta:
+\begin{itemize}[leftmargin=0.5cm, itemsep=2pt]
+    \item \textbf{Modelado Basado en Agentes (ABM):} representa la interacción semanal entre los \textbf{3 Clientes} (que generan demanda), el \textbf{Proveedor} (que entrega tras el \textit{lead time}) y la \textbf{Planta} (\texttt{DomitecPlant}), coordinados por \texttt{Main}.
+    \item \textbf{Eventos Discretos (DES):} representa el flujo interno por lotes (\texttt{Batch} de $1.000$ cajas) en dos ramas productivas:
+    \begin{itemize}[leftmargin=0.5cm, itemsep=1pt]
+        \item \textit{Lavandina:} dilución $\rightarrow$ control de calidad (QC, $3\%$ merma) $\rightarrow$ tanque pulmón $\rightarrow$ línea de envasado $\rightarrow$ depósito.
+        \item \textit{Líquidos formulados (5 familias):} cola compartida $\rightarrow$ 4 reactores en paralelo $\rightarrow$ QC ($5\%$ merma) $\rightarrow$ tanque por producto $\rightarrow$ línea dedicada de envasado $\rightarrow$ depósito.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Los 3 escenarios evaluados}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l c c c L}
+\toprule
+\textbf{Escenario} & \textbf{Factor Látigo ($\alpha$)} & \textbf{Horas/sem} & \textbf{\texttt{escalaTurno}} & \textbf{Qué evalúa} \\
+\midrule
+\textbf{0 --- Base (con $\alpha=1,5$)} & $1,5$ & $40$ h & $4,200$ & Política reactiva ante atrasos con jornada base de $40$ h/sem. \\
+\textbf{1 --- Reposición Neutral}     & $1,0$ & $40$ h & $4,200$ & Supresión del multiplicador reactivo manteniendo $40$ h/sem. \\
+\textbf{2 --- Integral}               & $1,0$ & $51$ h & $3,294$ & Reposición neutral + extensión de jornada de $+27,5\%$ ($+11$ h/sem). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ---------------------------------------------------------
+% 2. VARIABLES DEL MODELO
+% ---------------------------------------------------------
+\section{Variables del modelo}
+
+Para explicar el modelo con claridad, las variables se agrupan en cuatro categorías:
+
+\subsection{Variables de entrada (Parámetros calibrados)}
+\begin{itemize}[leftmargin=0.5cm, itemsep=2pt]
+    \item \textbf{Demanda semanal por canal y familia:} modelada a partir de datos históricos con una normal rectificada en cero $D = \max(0,\, \mathcal{N}(\mu, \sigma))$ redondeada a cajas.
+    \begin{itemize}[leftmargin=0.5cm, itemsep=1pt]
+        \item \textit{Detalle clave:} la suma de las medias nominales ($\mu$) es \textbf{68.705 cajas/semana}, pero al rectificar los valores negativos en cero (especialmente en canales concentrados de alta varianza), la \textbf{demanda efectiva real que ingresa al sistema es de 74.438 cajas/semana} ($+8,3\%$).
+        \item \textit{Participación efectiva por canal:} Red Propia ($44,1\%$), Maxiconsumo ($40,1\%$) y Grandes Clientes ($15,8\%$).
+    \end{itemize}
+    \item \textbf{Parámetros operativos por familia:} definidos en la Tabla~\ref{tab:param_familias}. El depósito de producto terminado inicia con un stock total de $346.000$ cajas (acorde a la cobertura de cada familia), mientras que reactores y tanques arrancan vacíos.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Parámetros operativos y balance demanda-capacidad por familia de producto.}
+\label{tab:param_familias}
+\begin{tabularx}{\textwidth}{l R R R R R R R}
+\toprule
+\textbf{Familia} & \textbf{Lead Time} & \textbf{Cobert.} & \textbf{Rate} & \textbf{Cap. 40 h} & \textbf{Cap. 51 h} & \textbf{Dem. Efec.} & \textbf{Merma} \\
+ & \textbf{(días)} & \textbf{(sem)} & \textbf{(caj/h)} & \textbf{(caj/sem)} & \textbf{(caj/sem)} & \textbf{(caj/sem)} & \textbf{QC} \\
+\midrule
+Lavandina       & $30$ & $5,5$ & $667$ & $26.680$ & $34.017$ & $27.745$ & $3\%$ \\
+Desinfectante   & $21$ & $4,5$ & $405$ & $16.200$ & $20.655$ & $19.276$ & $5\%$ \\
+Lavavajilla     & $21$ & $4,0$ & $237$ & $9.480$  & $12.087$ & $\mathbf{13.655}$ & $5\%$ \\
+Lavarropa       & $21$ & $4,0$ & $176$ & $7.040$  & $8.976$  & $6.193$  & $5\%$ \\
+Suavizante      & $45$ & $7,5$ & $104$ & $4.160$  & $5.304$  & $4.956$  & $5\%$ \\
+Detergente      & $21$ & $4,0$ & $64$  & $2.560$  & $3.264$  & $2.614$  & $5\%$ \\
+\midrule
+\textbf{Total Planta} & --- & --- & --- & \textbf{66.120} & \textbf{84.303} & \textbf{74.438} & --- \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Variables de decisión (Control)}
+Son las dos variables que definen los escenarios experimentales:
+\begin{enumerate}[leftmargin=0.5cm, itemsep=1pt]
+    \item \textbf{\texttt{factorLatigo} ($\alpha$):} multiplicador aplicado sobre el faltante cuando hay pedidos pendientes ($\alpha = 1,5$ en Escenario 0 / Base; $\alpha = 1,0$ en Escenarios 1 y 2).
+    \item \textbf{\texttt{horas} / \texttt{escalaTurno}:} duración de la jornada semanal ($40$ h vs. $51$ h). En AnyLogic se implementa escalando los tiempos de proceso por el factor $\text{escalaTurno} = 168 / \text{horas}$ ($4,2$ para $40$ h; $3,294$ para $51$ h).
+\end{enumerate}
+
+\subsection{Variables de estado internas}
+Se actualizan continuamente por producto en cada semana:
+\begin{itemize}[leftmargin=0.5cm, itemsep=1pt]
+    \item \textbf{\texttt{inventory}:} stock físico terminado disponible en depósito (cajas).
+    \item \textbf{\texttt{onOrder}:} cajas ya pedidas al proveedor que todavía están en viaje (\textit{en tránsito}).
+    \item \textbf{\texttt{wip}:} lotes en curso dentro de la planta (colas, dilución, reactores, QC, tanques y envasadoras).
+    \item \textbf{\texttt{backlog}:} pedidos de clientes que no pudieron despacharse en el momento y esperan en cola FIFO.
+\end{itemize}
+
+\subsection{Variables de salida (KPIs)}
+Medidas desde el fin del calentamiento (semana 15) hasta el final del horizonte (semana 100):
+\begin{itemize}[leftmargin=0.5cm, itemsep=1pt]
+    \item \textbf{Fill Rate / Nivel de Servicio (\%):} porcentaje de la demanda (por cohortes post \textit{warm-up}) que logró ser entregada antes de finalizar la semana 100, ya sea de forma inmediata o diferida al salir de planta.
+    \item \textbf{Backlog final (cajas):} deuda pendiente acumulada al cierre de la semana 100.
+    \item \textbf{Stock final (cajas):} inventario disponible en depósito al cierre de la semana 100.
+    \item \textbf{Razón Bullwhip ($BW$):} cociente entre la varianza semanal de las órdenes al proveedor y la varianza semanal de la demanda ($BW > 1$ indica amplificación; $BW < 1$ indica suavizamiento).
+    \item \textbf{Producción total (cajas):} volumen terminado en las 85 semanas posteriores al calentamiento.
+\end{itemize}
+
+% ---------------------------------------------------------
+% 3. CÓMO SE CALCULÓ EL ANÁLISIS
+% ---------------------------------------------------------
+\section{¿Cómo se calculó el análisis?}
+
+\subsection{Lógica semanal del sistema}
+Cada semana $k \in \{0, \dots, 99\}$ ejecuta una secuencia fija de eventos:
+\begin{enumerate}[leftmargin=0.5cm, itemsep=2pt]
+    \item \textbf{Demanda y despacho ($t = k$):} cada cliente emite 6 pedidos. Si hay stock, la planta despacha $\min(\text{stock}, \text{pedido})$; el faltante pasa a \texttt{backlog}.
+    \item \textbf{Planificación semanal ($t = k + 0,01$):} para cada familia se evalúa la posición neta de inventario y se calcula cuánto pedir al proveedor:
+    \begin{align}
+        \text{Posición Neta} &= \text{Inventario} + \text{onOrder} + \text{WIP} - \text{Backlog} \\
+        \text{Faltante} &= \max(0,\; \text{CapSem} \times \text{Cobertura} - \text{Posición Neta}) \\
+        \text{Pedido} &= \min\!\Big(2 \times \text{CapSem},\; \text{Faltante} \times \big(\text{Backlog} > 0 \;\text{?}\; \alpha : 1,0\big)\Big)
+    \end{align}
+    El pedido se redondea a múltiplos de $1.000$ cajas (tamaño del lote físico) y queda topeado a 2 semanas de capacidad para evitar órdenes infinitas.
+    \item \textbf{Entrega y proceso DES:} tras esperar $\text{leadDias}/7$ semanas, el proveedor entrega e inyecta los lotes a planta. Luego atraviesan elaboración, control de calidad (con descarte por merma) y envasado. Al finalizar, las $1.000$ cajas ingresan al depósito, saldan primero el \texttt{backlog} pendiente en orden FIFO y el resto queda como stock.
+    \item \textbf{Registro semanal ($t = k + 0,9999$):} se guardan demanda, órdenes, producción, stock, backlog y WIP de la semana.
+\end{enumerate}
+
+\subsection{Diseño experimental y análisis estadístico}
+\begin{itemize}[leftmargin=0.5cm, itemsep=2pt]
+    \item \textbf{Corridas y horizonte:} se ejecutaron \textbf{300 corridas} ($100$ semillas $\times$ $3$ escenarios) sobre un horizonte de \textbf{100 semanas}.
+    \item \textbf{Período de calentamiento (\textit{warm-up}):} se fijaron \textbf{15 semanas} iniciales de llenado de cañerías (justificado por los \textit{lead times} de hasta $6,4$ semanas); las métricas acumuladas computan las 85 semanas restantes.
+    \item \textbf{Números Aleatorios Comunes (CRN):} la demanda se generó mediante una función determinista por clave (\textit{semilla, canal, producto, semana}), independiente del orden de los eventos. En las $100$ ternas se verificó una \textbf{firma SHA-256 idéntica}, garantizando que los 3 escenarios enfrentaran exactamente los mismos pedidos.
+    \item \textbf{Intervalos de confianza pareados:} para cada métrica y par de escenarios $(A, B)$ se calculó la diferencia semilla a semilla $\Delta_r = Y_r(A) - Y_r(B)$ y su intervalo bilateral al $95\%$ mediante $t$ de Student ($n=100$, $gl=99$, $t_{0,975;99} = 1,9842$). Esto reduce drásticamente el error estándar al eliminar la variabilidad propia entre semillas.
+\end{itemize}
+
+% ---------------------------------------------------------
+% 4. RESULTADOS Y CONCLUSIONES
+% ---------------------------------------------------------
+\section{Resultados obtenidos e interpretación}
+
+En las Tablas~\ref{tab:res_exp} y \ref{tab:pareados_exp} se consolidan las medias de las 100 réplicas y el contraste pareado principal del paquete final auditado.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Resultados promedio por escenario (100 réplicas, IC al 95\%).}
+\label{tab:res_exp}
+\begin{tabularx}{\textwidth}{l R R R}
+\toprule
+\textbf{Métrica (KPI)} & \textbf{Esc. 0 ($\alpha=1,5$)} & \textbf{Esc. 1 ($\alpha=1,0$)} & \textbf{Esc. 2 (Integral)} \\
+\midrule
+Fill Rate Global (\%)      & $81,54\% \pm 1,82\%$       & $81,53\% \pm 1,82\%$       & $\mathbf{92,42\%} \pm 2,03\%$ \\
+Backlog Final (cajas)      & $1.210.794 \pm 132.997$    & $1.211.124 \pm 132.991$    & $\mathbf{520.291} \pm 146.255$ \\
+Stock Final (cajas)        & $6.502 \pm 1.858$          & $6.322 \pm 1.837$          & $\mathbf{40.999} \pm 4.955$ \\
+Razón Bullwhip ($BW$)      & $1,57 \pm 0,05$            & $\mathbf{0,85} \pm 0,02$   & $\mathbf{0,85} \pm 0,02$ \\
+Producción (85 sem.)       & $5.259.010$                & $5.258.660$                & $\mathbf{5.894.620}$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Contrastes pareados principales: Escenario 2 (Integral) menos Escenario 0 ($\alpha=1,5$).}
+\label{tab:pareados_exp}
+\begin{tabularx}{\textwidth}{l R R L}
+\toprule
+\textbf{Métrica} & \textbf{Diferencia Media} & \textbf{IC 95\% Pareado} & \textbf{Consistencia en las 100 semillas} \\
+\midrule
+Fill Rate          & $+10,885\text{ pp}$       & $[+10,474 ; +11,296]$       & Mejora en \textbf{100 / 100} semillas \\
+Backlog Final      & $-690.503\text{ cajas}$   & $[-718.112 ; -662.894]$     & Reduce en \textbf{100 / 100} semillas ($-57,0\%$) \\
+Razón Bullwhip     & $-0,719$                  & $[-0,752 ; -0,686]$         & Elimina amplificación aguas arriba \\
+Producción (85 s.) & $+635.610\text{ cajas}$   & $[+610.812 ; +660.408]$     & Aumenta en \textbf{100 / 100} semillas ($+12,1\%$) \\
+Stock Final        & $+34.497\text{ cajas}$    & $[+29.721 ; +39.273]$       & Aumenta en $98 / 100$ semillas \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Qué significan estos números (las 4 ideas clave para defender)}
+\begin{enumerate}[leftmargin=0.5cm, itemsep=3pt]
+    \item \textbf{El efecto látigo y el nivel de servicio responden a mecanismos distintos:}
+    el Escenario 1 muestra que pasar de $\alpha = 1,5$ a $\alpha = 1,0$ reduce la razón Bullwhip de $1,57$ a $0,85$, pero el Fill Rate permanece en $81,53\%$. \textit{Conclusión:} la política de reposición gobierna las oscilaciones de órdenes hacia proveedores, mientras que el nivel de servicio depende de la capacidad física de planta.
+
+    \item \textbf{El Escenario 2 mejora el desempeño en el 100\% de las corridas:}
+    ampliar la jornada ($40 \to 51\text{ h/sem}$) eleva la capacidad agregada simulada de $66.120$ a $84.303$ cajas/semana (superando la demanda efectiva de $74.438$). Esto incrementa el Fill Rate en $+10,89\text{ pp}$ (llevando la mediana al $97\%$) y reduce el backlog final simulado en un $57,0\%$.
+
+    \item \textbf{Por qué el Escenario 2 mejora pero no llega al 100\% ni a estacionariedad perfecta:}
+    aunque la capacidad agregada alcanza, el mix por producto sigue desbalanceado: a $51$ h, la línea de \textbf{Lavavajilla} queda por debajo de su demanda efectiva ($12.087$ de capacidad nominal vs. $13.655$ cajas/sem, más $5\%$ de merma), y Desinfectante y Suavizante operan al $93\%$ antes de mermas. Por ello, la pendiente del backlog baja de $+12.360$ a $+5.059$ cajas/semana sin llegar a cero (y en el $10\%$ de semillas de mayor demanda el Fill Rate cae cerca del $78\%$). Además, el Fill Rate de $92,42\%$ coexiste con $520.291$ cajas pendientes porque mide cohortes atendidas hasta el final del horizonte, no solo entregas instantáneas.
+
+    \item \textbf{Implicancia práctica de la evaluación:}
+    más allá de las estimaciones ilustrativas de costos del informe, los resultados físicos de simulación muestran con claridad que mitigar el efecto látigo exige reglas de reposición estables ($\alpha = 1,0$), mientras que sostener niveles altos de servicio requiere acompañar esa regla con capacidad productiva acorde al mix de demanda (particularmente en la línea de Lavavajilla).
+\end{enumerate}
+
+\end{document}
