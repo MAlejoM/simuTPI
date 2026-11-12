@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper]{article}
+\documentclass[11pt, a4paper]{article}
 
 % ---------------------------------------------------------
 % Paquetes
@@ -40,10 +40,10 @@
 % Márgenes
 % ---------------------------------------------------------
 \geometry{
-    top=2.5cm,
-    bottom=2.5cm,
-    left=2.5cm,
-    right=2.5cm
+    top=2.0cm,
+    bottom=2.0cm,
+    left=2.0cm,
+    right=2.0cm
 }
 
 % ---------------------------------------------------------
@@ -242,8 +242,8 @@ Las familias representadas son lavandina, desinfectante, lavavajilla, líquido p
 
 La versión analizada es \texttt{operacion-24x7-v2}. La planta abre \textbf{168 horas semanales}, según la información operativa aportada por el grupo. La apertura se distingue del tiempo efectivo de cada línea: paradas, limpieza, cambios de presentación y asignación de producción pueden reducir su rendimiento. No se interpreta que abrir 24 horas implique producir continuamente a la velocidad mecánica máxima.
 
-\subsection{Preguntas y objetivos}
-El objetivo es evaluar políticas de abastecimiento y de control de producción mediante un modelo verificable, con resultados reproducibles y supuestos identificados. Se plantean cuatro preguntas:
+\subsection{Objetivos y preguntas de simulación}
+El objetivo general es evaluar políticas de abastecimiento y control de producción mediante un modelo de simulación híbrido verificable, con resultados reproducibles y supuestos explícitamente identificados. Se plantean cuatro preguntas:
 \begin{enumerate}[leftmargin=0.6cm]
     \item \textquestiondown{}Cómo cambia la variabilidad de las órdenes al reemplazar una reposición reactiva con factor 1,5 por una política con factor 1,0?
     \item \textquestiondown{}Qué efecto tiene esa modificación sobre entregas, cancelaciones, pedidos pendientes e inventarios?
@@ -251,8 +251,11 @@ El objetivo es evaluar políticas de abastecimiento y de control de producción 
     \item \textquestiondown{}Qué información adicional hace falta para validar los supuestos de espera, WIP y costos, y trasladar los resultados a una decisión real?
 \end{enumerate}
 
-\section{Datos de entrada y calibración}
-\subsection{Fuentes, períodos y depuración}
+\section{Metodología}
+El estudio sigue el ciclo metodológico de simulación de sistemas discretos e híbridos: formulación del problema y objetivos, recolección y depuración de datos de entrada, conceptualización e implementación en AnyLogic, verificación de balances, análisis crítico de validez operacional, diseño experimental con números aleatorios comunes (CRN) y evaluación estadística de resultados.
+
+\subsection{Datos de entrada y calibración}
+\subsubsection{Fuentes, períodos y depuración}
 Se utilizaron las planillas comerciales y de producción incluidas en el proyecto~\cite{datos-demanda,datos-produccion}. La fuente de demanda contiene 23.689 registros comerciales con año, entre enero de 2025 y agosto de 2026, además de una fila final de totales. Esa fila se excluye para evitar duplicar cantidades. Las columnas distinguen pedidos, despachadas, canceladas y pendientes; no se trata de una base de despachos exclusivamente. En cada registro se verifica:
 \begin{equation}
     Q_{\text{pedido}}=Q_{\text{despachado}}+Q_{\text{cancelado}}+Q_{\text{pendiente}}.
@@ -282,12 +285,12 @@ Para calibrar los ritmos de producción se tomó el registro histórico principa
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figuras/demanda_historica_2025.png}
+\includegraphics[width=0.88\textwidth]{figuras/demanda_historica_2025.png}
 \caption{Cantidades comerciales mensuales de 2025 para las seis familias incluidas. Pedidos, despachos y cancelaciones corresponden a los registros de cada mes; no son resultados de simulación ni fechas individuales de cancelación.}
 \label{fig:demanda_historica}
 \end{figure}
 
-\subsection{Generación de demanda}
+\subsubsection{Generación de demanda}
 La versión anterior utilizaba normales recortadas en cero. Con alta dispersión, ese recorte eleva la media resultante respecto de la media de la normal original. La versión actual remuestrea directamente los doce perfiles mensuales de pedidos de 2025 y evita atribuir a los datos una distribución semanal que no fue observada.
 
 Para un canal $c$, producto $p$ y mes $m$, con $d_m$ días y cantidad mensual $Q_{cpm}$, se define la tasa semanal equivalente:
@@ -339,7 +342,7 @@ En cada bloque de cuatro semanas se elige un mes con probabilidad $w_m$ y se apl
 
 Los controles de media y desvío reescalan los perfiles históricos para estudiar configuraciones personalizadas. Si ese ajuste produce cantidades negativas se recortan en cero, por lo que en tales configuraciones la media elegida puede diferir de la media generada. Los experimentos informados utilizan los valores históricos predeterminados, sin ese ajuste.
 
-\subsection{Calendario y ritmos efectivos}
+\subsubsection{Calendario y ritmos efectivos}
 La unidad temporal del modelo es la semana y el calendario base es continuo: 24 horas por día, siete días por semana. Para relacionar producción histórica y apertura se utiliza un mes de referencia de $365/12$ días, sin inventar el año faltante del archivo. Las horas abiertas de los ocho meses considerados son:
 \begin{equation}
     H_{\text{ref}}=8\frac{365}{12}\,24=5.840\ \text{horas}.
@@ -369,15 +372,15 @@ Estos ritmos son referencias de \textbf{producción efectiva histórica}, que co
 
 La relación \texttt{Cajas}/(\texttt{Tiempo}/60) se usa solo como contraste, interpretando provisionalmente \texttt{Tiempo} en minutos. Su división por \texttt{Operarios} se aproxima a \texttt{Prod/Hs/Ho}, lo que respalda esa interpretación. La tasa utilizada en el modelo, en cambio, se obtiene de cajas y horas de apertura, sin depender de esa unidad no confirmada.
 
-\section{Modelo conceptual e implementación}
-\subsection{Arquitectura híbrida y flujo físico}
+\subsection{Modelo conceptual e implementación}
+\subsubsection{Arquitectura híbrida y flujo físico}
 La arquitectura combina agentes para los clientes, el proveedor y la planta con eventos discretos para los lotes internos~\cite{lawkelton,banks,wu2011}. Los clientes emiten pedidos por producto; el proveedor entrega insumos equivalentes después de un retardo parametrizado. La representación de insumos es agregada en cajas equivalentes de producto: no se simulan por separado todas las restricciones de una lista de materiales químicos y de envases.
 
 El recorrido distingue recepción y almacén de insumos, liberación a producción, elaboración, control de calidad, tanques pulmón, envasado y producto terminado. Lavandina tiene una rama propia; los cinco líquidos comparten reactores antes de ingresar a líneas de envasado diferenciadas. Un lote representa 1.000 cajas equivalentes. Las estaciones 3D ilustran partes de esas etapas: no todas son servidores productivos independientes. El movimiento de operarios y vehículos es ilustrativo y no agrega capacidad al proceso.
 
 Los tiempos de elaboración e inspección conservan distribuciones triangulares parametrizadas del modelo, como supuestos que requieren contraste con mediciones. Todas las duraciones se convierten a semanas mediante un único reloj operativo. El antiguo esquema alternativo de seis máquinas no acredita producción: el stock terminado se actualiza desde el flujo de procesos.
 
-\subsection{Liberación limitada e inventarios}
+\subsubsection{Liberación limitada e inventarios}
 Una entrega del proveedor incrementa insumos almacenados, no el WIP automáticamente. La política autoriza nuevos lotes solo cuando hay materiales y tarjetas de liberación disponibles. La configuración inicial permite 36 lotes globales y, por producto, hasta la capacidad de su tanque más tres lotes: seis con el valor predeterminado. Al terminar un lote o enviarlo a rechazo se devuelve la tarjeta. Las colas y máquinas poseen capacidades finitas explícitas~\cite{anylogic-queue,anylogic-delay}.
 
 Las tarjetas incluyen los lotes retenidos en buffers de entrada; por tanto, limitar WIP no elimina material ni recorta el gráfico. Los excedentes de una recepción permanecen como insumos y continúan visibles. El límite de 36 lotes es una \textbf{política provisional de control}, no una medición de espacio físico de fábrica.
@@ -402,12 +405,12 @@ Detergente concentrado & 21 & 4,0 & 10.000 \\
 \end{tabularx}
 \end{table}
 
-\subsection{Pedidos pendientes y cancelaciones}
+\subsubsection{Pedidos pendientes y cancelaciones}
 Cuando falta stock, la parte no entregada se registra como una cohorte pendiente con producto, fecha y cantidad. La producción terminada atiende primero pendientes FIFO por producto. Al vencer la espera configurada, la cantidad remanente se cancela, sale del backlog y deja de alimentar la necesidad de compra. Permanece incluida en la demanda solicitada y no cuenta como entrega.
 
 La espera inicial de \textbf{30 días} es una hipótesis explícita. La planilla mensual no permite estimar la paciencia del cliente ni el instante de cada cancelación. Debe evaluarse sensibilidad a 0, 7 y 30 días antes de atribuir realismo a un plazo único. La cancelación inmediata representa venta perdida al llegar; un plazo positivo permite entregas diferidas. Los resultados presentados corresponden al supuesto de 30 días.
 
-\subsection{Reposición semanal}
+\subsubsection{Reposición semanal}
 Para cada producto $p$ se calcula un stock objetivo a partir de demanda media y cobertura:
 \begin{align}
     S_p^*&=\bar D_p\,c_p,\\
@@ -418,13 +421,13 @@ donde $I_p$ es producto terminado, $O_p$ insumos pedidos en tránsito, $A_p$ ins
 
 La referencia semanal usada para ese límite es $168\,r_p\,k\,\gamma/f_t$, con multiplicador de capacidad $k$, factor de escenario $\gamma$ y factor de tiempos $f_t$. En la base $k=f_t=\gamma=1$. Esta referencia no garantiza la producción efectivamente obtenida: el flujo sigue condicionado por demanda, abastecimiento, buffers y procesos anteriores.
 
-\subsection{Interfaz y alcance visual}
+\subsubsection{Interfaz y alcance visual}
 El agente principal inicia directamente en la vista \texttt{Planta 3D} y organiza la navegación en cuatro pestañas superiores: \texttt{Planta 3D}, \texttt{Flujo 2D}, \texttt{Estadísticas} (con subpestañas de series temporales e indicadores de estudio) y \texttt{Configuración} (con subpestañas de escenario y política, demanda por perfil y parámetros de planta y capacidad). La vista 3D dispone de vista general y vista superior, mientras que \texttt{Flujo 2D} resume recepción, procesos, pulmones, envasado y depósitos. La interfaz permite seleccionar escenarios y modificar demanda, abastecimiento, ritmos, espera de pedidos y límite de liberación; la barra de estado diferencia insumos, WIP y cancelaciones.
 
 Los cambios interactivos afectan las decisiones siguientes; los lotes en curso conservan su duración ya calculada. Para reproducir la comparación estadística se utilizan experimentos nuevos con configuración común fija, no cambios de parámetros durante una corrida.
 
-\section{Verificación y diseño experimental}
-\subsection{Balances y comprobaciones}
+\subsection{Verificación, validación y diseño experimental}
+\subsubsection{Balances, comprobaciones y alcance de validación}
 La implementación comprueba dos identidades de conservación:
 \begin{align}
     D(t)&=T(t)+C(t)+B(t),\\
@@ -436,7 +439,7 @@ Las pruebas de componentes cubren FIFO, vencimiento en el límite del plazo, ent
 
 La compilación del código generado y las comprobaciones de interfaz verifican consistencia de implementación. La auditoría de las salidas confirma integridad del experimento. Ninguna de esas comprobaciones sustituye la validación operacional de paciencia, buffers, inventarios iniciales y capacidad contra mediciones de planta.
 
-\subsection{Escenarios y semillas comunes}
+\subsubsection{Escenarios y semillas comunes}
 Se utiliza \texttt{Comparacion\_100x3}, un experimento de variación de parámetros~\cite{anylogic-paramvariation}. La iteración $r=1,\ldots,100$ identifica una semilla; sus tres réplicas representan escenarios 0, 1 y 2. En total son 300 corridas de 100 semanas.
 
 \begin{table}[htbp]
@@ -458,7 +461,7 @@ El factor 1,275 conserva la mejora relativa propuesta en el diseño anterior, pe
 
 La iteración identifica la semilla $r$; sus tres réplicas identifican los escenarios 0, 1 y 2. El código utiliza \texttt{getCurrentIteration()} para la semilla y resta uno a \texttt{getCurrentReplication()} para seleccionar el escenario. El generador por claves produce la misma demanda para una terna con semilla $r$, con independencia del orden de eventos. Cada corrida registra 1.800 entradas: 100 semanas por tres canales por seis productos, incluidas combinaciones con demanda cero. La firma SHA-256 permite comprobar el emparejamiento. Las 100 semillas proporcionan las unidades de replicación; los tres resultados de una terna no son tres observaciones independientes de una misma política.
 
-\subsection{Métricas, calentamiento e intervalos}
+\subsubsection{Métricas, calentamiento e intervalos}
 Se conserva un calentamiento inicial de 15 semanas como valor provisional. Su filtrado se aplica a las métricas correspondientes; los estados físicos no se reinician en esa semana. La sensibilidad a ese corte y la evolución temporal deben revisarse antes de afirmar régimen estacionario.
 
 El servicio por cohortes es la proporción de la demanda de pedidos ingresados desde la semana 15 que fue entregada, de inmediato o diferida, antes de finalizar la semana 100. \textbf{No equivale a servicio inmediato ni a cumplimiento de una fecha prometida}. Las canceladas siguen en el denominador; los pedidos todavía pendientes al cierre producen censura por horizonte finito.
@@ -585,7 +588,7 @@ almacenados se informan por separado para que el control no oculte sobrecompras.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figuras/series_modelo_24x7.png}
+\includegraphics[width=0.88\textwidth]{figuras/series_modelo_24x7.png}
 \caption{Series semanales medias de las 100 réplicas por escenario del modelo 24$\times$7: órdenes, producción, backlog y WIP. La demanda es común a los escenarios dentro de cada semilla. La zona inicial sombreada señala las 15 semanas de calentamiento provisional. El WIP se observa al cierre semanal; sus picos entre observaciones se recogen en el máximo de cada corrida.}
 \label{fig:series_actuales}
 \end{figure}
@@ -628,7 +631,7 @@ Para anclar los precios unitarios a referencias de mercado actuales, se parte de
 \label{tab:precios_mercado}
 \begin{tabularx}{\textwidth}{Xrrr}
 \toprule
-Familia & Participación 2025 (\%) & Precio público est. (USD/u.) & Valor salida fábrica (USD/caja) \\
+Familia & \shortstack[r]{Part. 2025\\(\%)} & \shortstack[r]{Precio público\\est. (USD/u.)} & \shortstack[r]{Salida fábrica\\(USD/caja)} \\
 \midrule
 Lavandina & 40,05\% & 0,70 & 6,00 \\
 Líquido desinfectante & 24,81\% & 0,85 & 7,20 \\
@@ -699,6 +702,9 @@ $c_B = \text{USD } 0{,}40/\text{caja-sem}$ & USD 25.637 & USD 24.725 & \textbf{U
 \end{enumerate}
 
 Las próximas verificaciones deben priorizar: sensibilidad a esperas de 0, 7 y 30 días; capacidad y ubicación real de buffers; datos semanales o diarios de pedidos; inventarios iniciales; identificación del año de producción; evaluación de calentamiento y horizonte; y costos incrementales de la mejora. Cada configuración debe repetir las mismas 100 semillas y conservar sus metadatos, sin mezclar resultados de distintas versiones.
+
+\medskip
+\noindent\textbf{Acceso al modelo en AnyLogic Cloud:} La versión interactiva del modelo para su ejecución y exploración en línea se encuentra publicada en AnyLogic Cloud (\url{https://cloud.anylogic.com/model/Domitec_Interactivo}).
 
 \begin{thebibliography}{10}
 \bibitem{lawkelton}
