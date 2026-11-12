@@ -1,0 +1,26 @@
+{
+  "input_package": "domitec_interactivo/resultados_operativos_v2/comparacion_20261111_194531_208",
+  "source_csv_hashes": {
+    "COMPLETO": "1378691549409c7049d257c97d058cb1a6f038fdd8d62244f99bf3d1361680dd",
+    "metadata.txt": "ca225bfb93a7e9a0301f07977047dfe7d289b581e890d17dec77065ac00bf9bb",
+    "resultados.csv": "c4b6a76d276db452b5140aaac157885fab83802ba735888d408b8d40074814b9",
+    "ic_pareados.csv": "58c51cd2d3891ec5376f362b64e2f7d014034181d083af06c55445cfd6cb70dc",
+    "series_semanales.csv": "f6eed051cef44d33bba0c1573303c2253b92ab8896960ae4d79e753dd463d447"
+  },
+  "tex_sha256": "6f53201a20b921c363689386cf2961dc1321454ffda55d57eca82a4742f93827",
+  "pdf_sha256": "a601fc032841796f8dc187c70a8ff3bd1b2af20251ceb53822120b5a5502afeb",
+  "pdf_pages": 15,
+  "paired_intervals_recalculated": 15,
+  "native_runs": 300,
+  "common_seed_triples": 100,
+  "weekly_rows": 30000,
+  "latex_references": "passed",
+  "pdf_visual_review": "passed; contact sheet and detailed checks of tables, figures, typography and references",
+  "remaining_limits": [
+    "provisional_warmup_15_weeks",
+    "customer_patience_30_days_assumed",
+    "release_limit_36_lots_provisional",
+    "production_year_unknown",
+    "no_economic_cost_measurements"
+  ]
+}
