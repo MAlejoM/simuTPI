@@ -159,8 +159,7 @@ def render(tab, sub=0, guia=False, agent_name='Main'):
 
 
 if __name__ == '__main__':
-    render(0, guia=False)
-    render(0, guia=True)
+    render(0)
     render(1)
     render(2, sub=0)
     render(2, sub=1)

@@ -42,7 +42,7 @@ def _guia_planta_java(sectors: list) -> str:
     ) + '}'
     return f'''
 // GUIA_PLANTA: presentation state only; it never changes production.
-public int sector3DActivo=0;
+public int sector3DActivo=-1;
 public String nombreSector3D(){{return ({names})[sector3DActivo];}}
 public String descripcionSector3D(){{return ({descriptions})[sector3DActivo];}}
 public void enfocarSector3D(){{
@@ -61,6 +61,13 @@ def modularizar(d):
     def byname(name):
         return next(n for n in scene.getElementsByTagName('*') if text(n, 'Name') == name)
 
+    def byname_any(names):
+        for name in names:
+            found = next((n for n in scene.getElementsByTagName('*') if text(n, 'Name') == name), None)
+            if found is not None:
+                return found
+        raise StopIteration(names)
+
     uid = max(int(n.firstChild.data.strip()) for n in d.getElementsByTagName('Id')
               if n.firstChild and n.firstChild.data.strip().isdigit()) + 10
 
@@ -77,7 +84,7 @@ def modularizar(d):
     # Capture reusable templates & preserved domain widgets before rebuilding Main scene.
     tpl_rect = byname('fondoUI').cloneNode(True)
     tpl_txt = byname('mediaLabel').cloneNode(True)
-    tpl_btn = byname('editarLogicaUI').cloneNode(True)
+    tpl_btn = byname_any(['editarLogicaUI', 'restablecerCamaraUI']).cloneNode(True)
     tpl_edit = byname('campoMedia').cloneNode(True)
     tpl_check = byname('operariosUI').cloneNode(True)
     tpl_window3d = byname('ventanaPlanta3D').cloneNode(True)
@@ -88,8 +95,8 @@ def modularizar(d):
         p.removeChild(p.firstChild)
 
     plots = {name: byname(name).cloneNode(True) for name in ['plot', 'plot1', 'plot2', 'plotWip']}
-    plano_group = byname('cuerpoVista0')
-    plano_nodes = [n.cloneNode(True) for n in children(children(plano_group, 'Presentation')[0])]
+    plano_parent = byname('planoFondo').parentNode
+    plano_nodes = [n.cloneNode(True) for n in children(plano_parent) if text(n, 'Name').startswith('plano')]
 
     while scene.firstChild:
         scene.removeChild(scene.firstChild)
@@ -209,7 +216,7 @@ def modularizar(d):
     )
 
     # ------------------------------------------------------------------
-    # Tab 0: Planta 3D (Default landing screen, clean viewport + toggleable guide)
+    # Tab 0: Planta 3D (Default landing screen, clean viewport)
     # ------------------------------------------------------------------
     v0 = group(scene, 'cuerpoVista0', 'vistaActiva == 0')
     panel(v0, 'fondoCuerpo0', 24, 120, 1232, 854, WHITE, BORDER)
@@ -217,17 +224,14 @@ def modularizar(d):
 
     chk = tpl_check.cloneNode(True)
     fresh(chk)
-    for k, v in {'Name': 'operariosUI', 'X': 330, 'Y': 137, 'DrawMode': 'SHAPE_DRAW_2D'}.items():
+    for k, v in {'Name': 'operariosUI', 'X': 450, 'Y': 137, 'DrawMode': 'SHAPE_DRAW_2D'}.items():
         put(chk, k, v)
     put(children(chk, 'ExtendedProperties')[0], 'Link', 'domitecPlant.animarOperarios')
     put(children(chk, 'ExtendedProperties')[0], 'LabelText', 'Recorridos de operarios')
     v0.appendChild(chk)
 
-    button(v0, 'vistaSuperiorUI', 608, 132, 168, 30, 'Vista superior', 'vistaSuperior();')
-    button(v0, 'restablecerCamaraUI', 788, 132, 194, 30, 'Perspectiva general', 'restablecerCamara();')
-    button(v0, 'toggleGuia3DUI', 994, 132, 246, 30, 'Guia de sectores (1-9)', 'alternarGuia3D();')
-    g3d_bar = panel(v0, 'guia3DActivaBar', 994, 163, 246, 3, TEAL)
-    code(g3d_bar, 'VisibleCode', 'mostrarGuia3D')
+    button(v0, 'vistaSuperiorUI', 840, 132, 190, 30, 'Vista superior', 'vistaSuperior();')
+    button(v0, 'restablecerCamaraUI', 1044, 132, 202, 30, 'Perspectiva general', 'restablecerCamara();')
 
     win = tpl_window3d.cloneNode(True)
     fresh(win)
@@ -237,20 +241,6 @@ def modularizar(d):
     v0.appendChild(win)
 
     sectors = json.loads((ROOT / 'tools/sectores_planta.json').read_text(encoding='utf8'))
-    guia = group(v0, 'guia3D_grupo', 'mostrarGuia3D')
-    panel(guia, 'guia3D_panel', 962, 172, 284, 790, BG, BORDER)
-    label(guia, 'guia3D_titulo', 978, 188, 'GUIA DE SECTORES', 14, TEAL)
-    for i, s in enumerate(sectors):
-        y = 220 + i * 33
-        button(guia, f'guia3D_sector_{i}', 978, y, 252, 27, f'{i + 1}. {s["nombre"]}', f'sector3DActivo={i};')
-        bar = panel(guia, f'guia3D_activo_{i}', 970, y, 4, 27, ACCENT)
-        code(bar, 'VisibleCode', f'sector3DActivo=={i}')
-    label(guia, 'guia3D_seleccion', 978, 535, 'Sector', 14, TEAL, expr='nombreSector3D()')
-    label(guia, 'guia3D_descripcion', 978, 566, 'Descripcion', 12, INK, expr='descripcionSector3D()')
-    label(guia, 'guia3D_nota', 978, 725,
-          'El sector seleccionado se marca\ncon un contorno en el piso.\n\nCada lote representa 1.000 cajas.',
-          11, MUTED)
-    button(guia, 'guia3D_enfocar', 978, 916, 252, 30, 'Acercar al sector', 'enfocarSector3D();')
 
     # ------------------------------------------------------------------
     # Tab 1: Flujo 2D (Clean process schematic)
@@ -490,6 +480,12 @@ def modularizar(d):
     # Update Main AdditionalClassCode cleanly, keeping GUIA_PLANTA helpers.
     additional = _strip_var_decls((ROOT / 'tools/MainInterfaz.code.java.txt').read_text(encoding='utf8'))
     code(main, 'AdditionalClassCode', additional + _guia_planta_java(sectors))
+
+    # Fix invalid RunConfigurationOutput names copied from old chart captions.
+    for rco in model.getElementsByTagName('RunConfigurationOutput'):
+        name = text(rco, 'Name')
+        if '|' in name or name.startswith('ESTADISTICAS'):
+            put(rco, 'Name', 'Plot demanda y ordenes')
 
 
 def main():

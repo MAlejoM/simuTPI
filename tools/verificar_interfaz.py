@@ -51,8 +51,10 @@ def main():
     assert 'nivelPlanta3D.add(vistaPlanta3D)' in ui_code
     assert 'presentation.add(nivelPlanta3D)' in ui_code
     assert 'vistaPlanta3D.setVisible(vista == 0)' in ui_code
-    for subgroup in ['guia3D_grupo', 'statsSeries', 'statsResumen', 'cfgPolitica', 'cfgDemanda', 'cfgPlanta']:
+    for subgroup in ['statsSeries', 'statsResumen', 'cfgPolitica', 'cfgDemanda', 'cfgPlanta']:
         assert any(n.findtext('Name')==subgroup for n in main.findall('.//Group')), subgroup
+    for rco in model.findall('.//RunConfigurationOutput'):
+        assert '|' not in rco.findtext('Name',''), rco.findtext('Name','')
     assert 'setRealTimeScale' not in plant.findtext('AgentProperties/OnReceive')
     assert 'new Comparacion_100x3()' not in ui_code
     assert 'SesionEstudio.preparar(cfg,carpetaResultados)' in ui_code
@@ -71,7 +73,6 @@ def main():
     assert legacy.findtext('VisibleCode')=='false'
     for product in ['lavandina','desinfectante','lavavajilla','lavarropa','suavizante','detergente']:
         assert any(n.findtext('Name')=='maquina_'+product+'_3' for n in legacy.findall('.//Rectangle'))
-    assert len([n for n in main.findall('.//Control') if n.findtext('Name','').startswith('guia3D_sector_')])==9
     for tag in ['Variables','Ports','Events','Connectors','ContainerLinks','EmbeddedObjects']:
         for n in plant.findall(tag+'/*'):
             if n.find('X') is not None:assert float(n.findtext('X'))>=2000

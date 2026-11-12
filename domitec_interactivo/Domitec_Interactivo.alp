@@ -32756,7 +32756,6 @@ Maxiconsumo, Cadenas y Red Propia]]></Text>
 public RegistroCorrida registro = new RegistroCorrida();
 public int vistaActiva = 0, subVistaStats = 0, subVistaConfig = 0, escenarioActivo = 0, perfilCanal = 0, perfilProducto = 0;
 public int metricaIC = 0;
-public boolean mostrarGuia3D = false;
 public String mensajeUI = "Los cambios se aplican a los proximos pedidos y procesos.";
 private com.anylogic.engine.presentation.ShapeEmbeddedObjectPresentation vistaPlanta3D;
 private com.anylogic.engine.markup.Level nivelPlanta3D;
@@ -32782,7 +32781,6 @@ public void iniciarInterfaz() {
     sincronizarControles();
     mostrarVista(0);
     restablecerCamara();
-    if (ventanaPlanta3D != null) ventanaPlanta3D.setWidth(mostrarGuia3D ? 918 : 1212);
 }
 
 public void mostrarVista(int vista) {
@@ -32790,11 +32788,6 @@ public void mostrarVista(int vista) {
     vistaActiva = vista;
     // Draw modes are fixed at construction in AnyLogic. Tabs only change visibility.
     if (vistaPlanta3D != null) vistaPlanta3D.setVisible(vista == 0);
-}
-
-public void alternarGuia3D() {
-    mostrarGuia3D = !mostrarGuia3D;
-    if (ventanaPlanta3D != null) ventanaPlanta3D.setWidth(mostrarGuia3D ? 918 : 1212);
 }
 
 public double stockProducto(int producto) {
@@ -33022,7 +33015,7 @@ public void validarCorridaCompleta(){
 }
 
 // GUIA_PLANTA: presentation state only; it never changes production.
-public int sector3DActivo=0;
+public int sector3DActivo=-1;
 public String nombreSector3D(){return (new String[]{"1. Recepción Parque","2. Dilución y calidad","3. Envasado Parque","4. Depósito Parque","5. Recepción Vicentin","6. Reactores y calidad","7. Tanques pulmón","8. Envasado Vicentin","9. Depósito Vicentin"})[sector3DActivo];}
 public String descripcionSector3D(){return (new String[]{"Materias primas e insumos\npara la línea de lavandina.\nLos lotes recibidos esperan\nantes de la dilución.","Se diluye la lavandina y se\ncontrola su calidad. Los lotes\naprobados pasan al pulmón;\nlos rechazados son merma.","Envases, llenado y cierre\nhasta obtener cajas. Los\nequipos representan la línea\nde envasado de lavandina.","Almacena lavandina terminada.\nEl stock se usa para despachar.\nLo que no puede atenderse\nqueda como pedido pendiente.","Insumos de los líquidos:\nbases, tensoactivos, esencias\ny materiales de envase. Los\nlotes esperan elaboración.","Elaboración de los líquidos\nen reactores compartidos.\nDespués se controla la calidad\ny se separa la merma.","Guardan semielaborado\naprobado, separado por\nproducto, mientras espera\nsu turno de envasado.","Cinco líneas: desinfectante,\nlavavajilla, lavarropa,\nsuavizante y detergente.\nTransforman los lotes en cajas.","Almacena las cajas terminadas\nde los cinco líquidos. El\ndespacho reduce stock y se\nregistra la demanda pendiente."})[sector3DActivo];}
 public void enfocarSector3D(){
@@ -34338,7 +34331,7 @@ public void enfocarSector3D(){
 					<LevelVisibility>DIM_NON_CURRENT</LevelVisibility>
 
 			<Presentation><Rectangle>
-					<Id>3699000005858</Id>
+					<Id>3699000006301</Id>
 					<Name>fondoUI</Name>
 					<X>0</X><Y>0</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -34359,7 +34352,7 @@ public void enfocarSector3D(){
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005859</Id>
+					<Id>3699000006302</Id>
 					<Name>cabeceraUI</Name>
 					<X>0</X><Y>0</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -34380,7 +34373,7 @@ public void enfocarSector3D(){
 					<FillColor>-15193551</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005860</Id>
+					<Id>3699000006303</Id>
 					<Name>marcaUI</Name>
 					<X>24</X><Y>19</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -34401,7 +34394,7 @@ public void enfocarSector3D(){
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005861</Id>
+					<Id>3699000006304</Id>
 					<Name>vista3D</Name>
 					<X>620</X><Y>17</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -34420,7 +34413,7 @@ public void enfocarSector3D(){
 						<LabelText>Planta 3D</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000005862</Id>
+					<Id>3699000006305</Id>
 					<Name>tabActiva0</Name>
 					<X>620</X><Y>55</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -34442,7 +34435,7 @@ public void enfocarSector3D(){
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[vistaActiva == 0]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005863</Id>
+					<Id>3699000006306</Id>
 					<Name>vista2D</Name>
 					<X>778</X><Y>17</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -34461,7 +34454,7 @@ public void enfocarSector3D(){
 						<LabelText>Flujo 2D</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000005864</Id>
+					<Id>3699000006307</Id>
 					<Name>tabActiva1</Name>
 					<X>778</X><Y>55</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -34483,7 +34476,7 @@ public void enfocarSector3D(){
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[vistaActiva == 1]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005865</Id>
+					<Id>3699000006308</Id>
 					<Name>estadisticas</Name>
 					<X>936</X><Y>17</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -34502,7 +34495,7 @@ public void enfocarSector3D(){
 						<LabelText>Estadisticas</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000005866</Id>
+					<Id>3699000006309</Id>
 					<Name>tabActiva2</Name>
 					<X>936</X><Y>55</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -34524,7 +34517,7 @@ public void enfocarSector3D(){
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[vistaActiva == 2]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005867</Id>
+					<Id>3699000006310</Id>
 					<Name>logica</Name>
 					<X>1094</X><Y>17</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -34543,7 +34536,7 @@ public void enfocarSector3D(){
 						<LabelText>Configuracion</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000005868</Id>
+					<Id>3699000006311</Id>
 					<Name>tabActiva3</Name>
 					<X>1094</X><Y>55</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -34564,7 +34557,7 @@ public void enfocarSector3D(){
 					<FillColor>-11546643</FillColor>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[vistaActiva == 3]]></VisibleCode></Rectangle><Rectangle>
-					<Id>3699000005869</Id>
+					<Id>3699000006312</Id>
 					<Name>statusBarUI</Name>
 					<X>24</X><Y>74</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -34585,7 +34578,7 @@ public void enfocarSector3D(){
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005870</Id>
+					<Id>3699000006313</Id>
 					<Name>tiempoUI</Name>
 					<X>40</X><Y>84</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -34605,7 +34598,7 @@ public void enfocarSector3D(){
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA["Semana " + String.format(java.util.Locale.ROOT,"%.2f",time()) + " / 100  |  Semilla " + semillaReplica]]></TextCode></Text><Text>
-					<Id>3699000005871</Id>
+					<Id>3699000006314</Id>
 					<Name>escenarioActivoUI</Name>
 					<X>330</X><Y>84</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -34625,7 +34618,7 @@ public void enfocarSector3D(){
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA["Escenario: " + escenarioTexto() + "  |  alfa=" + cfg.factLatigo + "  |  " + numero(cfg.horas) + " h/sem"]]></TextCode></Text><Text>
-					<Id>3699000005872</Id>
+					<Id>3699000006315</Id>
 					<Name>resumenRapidoUI</Name>
 					<X>855</X><Y>84</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -34645,7 +34638,7 @@ public void enfocarSector3D(){
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA["Fill Rate: " + (time()<cfg.calentamiento ? "Calent." : String.format(java.util.Locale.ROOT,"%.1f%%",100*registro.fillRate(cfg.calentamiento))) + "  |  Backlog: " + numero(backlogActual()) + "  |  WIP: " + numero(wipActual())]]></TextCode></Text><Group>
-					<Id>3699000005873</Id>
+					<Id>3699000006316</Id>
 					<Name>cuerpoVista0</Name>
 					<X>0</X><Y>0</Y>
 					<PublicFlag>true</PublicFlag>
@@ -34658,7 +34651,7 @@ public void enfocarSector3D(){
 					<Rotation>0</Rotation>
 
 			<Presentation><Rectangle>
-					<Id>3699000005874</Id>
+					<Id>3699000006317</Id>
 					<Name>fondoCuerpo0</Name>
 					<X>24</X><Y>120</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -34679,7 +34672,7 @@ public void enfocarSector3D(){
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005875</Id>
+					<Id>3699000006318</Id>
 					<Name>tituloPlanta3D</Name>
 					<X>40</X><Y>139</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -34700,9 +34693,9 @@ public void enfocarSector3D(){
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="CheckBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005876</Id>
+					<Id>3699000006319</Id>
 					<Name>operariosUI</Name>
-					<X>330</X><Y>137</Y>
+					<X>450</X><Y>137</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -34721,15 +34714,15 @@ public void enfocarSector3D(){
 	 				</ExtendedProperties>
 				</Control><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005877</Id>
+					<Id>3699000006320</Id>
 					<Name>vistaSuperiorUI</Name>
-					<X>608</X><Y>132</Y>
+					<X>840</X><Y>132</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="168" Height="30">
+					<BasicProperties Width="190" Height="30">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor/>
 						<Enabled>true</Enabled>
@@ -34741,15 +34734,15 @@ public void enfocarSector3D(){
 					</ExtendedProperties>
 				</Control><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005878</Id>
+					<Id>3699000006321</Id>
 					<Name>restablecerCamaraUI</Name>
-					<X>788</X><Y>132</Y>
+					<X>1044</X><Y>132</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="194" Height="30">
+					<BasicProperties Width="202" Height="30">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor/>
 						<Enabled>true</Enabled>
@@ -34759,49 +34752,8 @@ public void enfocarSector3D(){
 						<Font Name="Dialog" Size="11" Style="0"/>
 						<LabelText>Perspectiva general</LabelText>
 					</ExtendedProperties>
-				</Control><Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005879</Id>
-					<Name>toggleGuia3DUI</Name>
-					<X>994</X><Y>132</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="246" Height="30">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[alternarGuia3D();]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText>Guia de sectores (1-9)</LabelText>
-					</ExtendedProperties>
-				</Control><Rectangle>
-					<Id>3699000005880</Id>
-					<Name>guia3DActivaBar</Name>
-					<X>994</X><Y>163</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>0</LineWidth>
-					<LineColor>-14381747</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>246</Width>
-					<Height>3</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-14381747</FillColor>
-					<FillMaterial>null</FillMaterial>
-				<VisibleCode><![CDATA[mostrarGuia3D]]></VisibleCode></Rectangle><Control Type="Window3D">
-					<Id>3699000005881</Id>
+				</Control><Control Type="Window3D">
+					<Id>3699000006322</Id>
 					<Name>ventanaPlanta3D</Name>
 					<X>34</X><Y>172</Y>
 					<Width>1212</Width>
@@ -34813,518 +34765,10 @@ public void enfocarSector3D(){
 					<NavigationType>full</NavigationType>
 					<FarClippingDistance>4000</FarClippingDistance>
 					<Camera>camaraMain</Camera>
-				</Control><Group>
-					<Id>3699000005882</Id>
-					<Name>guia3D_grupo</Name>
-					<X>0</X><Y>0</Y>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0</Rotation>
-
-			<Presentation><Rectangle>
-					<Id>3699000005883</Id>
-					<Name>guia3D_panel</Name>
-					<X>962</X><Y>172</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>1</LineWidth>
-					<LineColor>-1906964</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>284</Width>
-					<Height>790</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-658189</FillColor>
-					<FillMaterial>null</FillMaterial>
-				</Rectangle><Text>
-					<Id>3699000005884</Id>
-					<Name>guia3D_titulo</Name>
-					<X>978</X><Y>188</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-14381747</Color>
-					<Text>GUIA DE SECTORES</Text>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>14</Size>
-						<Style>0</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				</Text><Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005885</Id>
-					<Name>guia3D_sector_0</Name>
-					<X>978</X><Y>220</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="252" Height="27">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[sector3DActivo=0;]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText>1. Recepción Parque</LabelText>
-					</ExtendedProperties>
-				</Control><Rectangle>
-					<Id>3699000005886</Id>
-					<Name>guia3D_activo_0</Name>
-					<X>970</X><Y>220</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>0</LineWidth>
-					<LineColor>-11546643</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>4</Width>
-					<Height>27</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-11546643</FillColor>
-					<FillMaterial>null</FillMaterial>
-				<VisibleCode><![CDATA[sector3DActivo==0]]></VisibleCode></Rectangle><Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005887</Id>
-					<Name>guia3D_sector_1</Name>
-					<X>978</X><Y>253</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="252" Height="27">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[sector3DActivo=1;]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText>2. Dilución y calidad</LabelText>
-					</ExtendedProperties>
-				</Control><Rectangle>
-					<Id>3699000005888</Id>
-					<Name>guia3D_activo_1</Name>
-					<X>970</X><Y>253</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>0</LineWidth>
-					<LineColor>-11546643</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>4</Width>
-					<Height>27</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-11546643</FillColor>
-					<FillMaterial>null</FillMaterial>
-				<VisibleCode><![CDATA[sector3DActivo==1]]></VisibleCode></Rectangle><Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005889</Id>
-					<Name>guia3D_sector_2</Name>
-					<X>978</X><Y>286</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="252" Height="27">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[sector3DActivo=2;]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText>3. Envasado Parque</LabelText>
-					</ExtendedProperties>
-				</Control><Rectangle>
-					<Id>3699000005890</Id>
-					<Name>guia3D_activo_2</Name>
-					<X>970</X><Y>286</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>0</LineWidth>
-					<LineColor>-11546643</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>4</Width>
-					<Height>27</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-11546643</FillColor>
-					<FillMaterial>null</FillMaterial>
-				<VisibleCode><![CDATA[sector3DActivo==2]]></VisibleCode></Rectangle><Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005891</Id>
-					<Name>guia3D_sector_3</Name>
-					<X>978</X><Y>319</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="252" Height="27">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[sector3DActivo=3;]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText>4. Depósito Parque</LabelText>
-					</ExtendedProperties>
-				</Control><Rectangle>
-					<Id>3699000005892</Id>
-					<Name>guia3D_activo_3</Name>
-					<X>970</X><Y>319</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>0</LineWidth>
-					<LineColor>-11546643</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>4</Width>
-					<Height>27</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-11546643</FillColor>
-					<FillMaterial>null</FillMaterial>
-				<VisibleCode><![CDATA[sector3DActivo==3]]></VisibleCode></Rectangle><Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005893</Id>
-					<Name>guia3D_sector_4</Name>
-					<X>978</X><Y>352</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="252" Height="27">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[sector3DActivo=4;]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText>5. Recepción Vicentin</LabelText>
-					</ExtendedProperties>
-				</Control><Rectangle>
-					<Id>3699000005894</Id>
-					<Name>guia3D_activo_4</Name>
-					<X>970</X><Y>352</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>0</LineWidth>
-					<LineColor>-11546643</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>4</Width>
-					<Height>27</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-11546643</FillColor>
-					<FillMaterial>null</FillMaterial>
-				<VisibleCode><![CDATA[sector3DActivo==4]]></VisibleCode></Rectangle><Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005895</Id>
-					<Name>guia3D_sector_5</Name>
-					<X>978</X><Y>385</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="252" Height="27">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[sector3DActivo=5;]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText>6. Reactores y calidad</LabelText>
-					</ExtendedProperties>
-				</Control><Rectangle>
-					<Id>3699000005896</Id>
-					<Name>guia3D_activo_5</Name>
-					<X>970</X><Y>385</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>0</LineWidth>
-					<LineColor>-11546643</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>4</Width>
-					<Height>27</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-11546643</FillColor>
-					<FillMaterial>null</FillMaterial>
-				<VisibleCode><![CDATA[sector3DActivo==5]]></VisibleCode></Rectangle><Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005897</Id>
-					<Name>guia3D_sector_6</Name>
-					<X>978</X><Y>418</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="252" Height="27">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[sector3DActivo=6;]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText>7. Tanques pulmón</LabelText>
-					</ExtendedProperties>
-				</Control><Rectangle>
-					<Id>3699000005898</Id>
-					<Name>guia3D_activo_6</Name>
-					<X>970</X><Y>418</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>0</LineWidth>
-					<LineColor>-11546643</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>4</Width>
-					<Height>27</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-11546643</FillColor>
-					<FillMaterial>null</FillMaterial>
-				<VisibleCode><![CDATA[sector3DActivo==6]]></VisibleCode></Rectangle><Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005899</Id>
-					<Name>guia3D_sector_7</Name>
-					<X>978</X><Y>451</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="252" Height="27">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[sector3DActivo=7;]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText>8. Envasado Vicentin</LabelText>
-					</ExtendedProperties>
-				</Control><Rectangle>
-					<Id>3699000005900</Id>
-					<Name>guia3D_activo_7</Name>
-					<X>970</X><Y>451</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>0</LineWidth>
-					<LineColor>-11546643</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>4</Width>
-					<Height>27</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-11546643</FillColor>
-					<FillMaterial>null</FillMaterial>
-				<VisibleCode><![CDATA[sector3DActivo==7]]></VisibleCode></Rectangle><Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005901</Id>
-					<Name>guia3D_sector_8</Name>
-					<X>978</X><Y>484</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="252" Height="27">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[sector3DActivo=8;]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText>9. Depósito Vicentin</LabelText>
-					</ExtendedProperties>
-				</Control><Rectangle>
-					<Id>3699000005902</Id>
-					<Name>guia3D_activo_8</Name>
-					<X>970</X><Y>484</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>0</LineWidth>
-					<LineColor>-11546643</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>4</Width>
-					<Height>27</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-11546643</FillColor>
-					<FillMaterial>null</FillMaterial>
-				<VisibleCode><![CDATA[sector3DActivo==8]]></VisibleCode></Rectangle><Text>
-					<Id>3699000005903</Id>
-					<Name>guia3D_seleccion</Name>
-					<X>978</X><Y>535</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-14381747</Color>
-					<Text>Sector</Text>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>14</Size>
-						<Style>0</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				<TextCode><![CDATA[nombreSector3D()]]></TextCode></Text><Text>
-					<Id>3699000005904</Id>
-					<Name>guia3D_descripcion</Name>
-					<X>978</X><Y>566</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-15193551</Color>
-					<Text>Descripcion</Text>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>12</Size>
-						<Style>0</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				<TextCode><![CDATA[descripcionSector3D()]]></TextCode></Text><Text>
-					<Id>3699000005905</Id>
-					<Name>guia3D_nota</Name>
-					<X>978</X><Y>725</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-9603453</Color>
-					<Text>El sector seleccionado se marca
-con un contorno en el piso.
-
-Cada lote representa 1.000 cajas.</Text>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>11</Size>
-						<Style>0</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				</Text><Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000005906</Id>
-					<Name>guia3D_enfocar</Name>
-					<X>978</X><Y>916</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<BasicProperties Width="252" Height="30">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<ActionCode><![CDATA[enfocarSector3D();]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText>Acercar al sector</LabelText>
-					</ExtendedProperties>
 				</Control></Presentation>
 
-				<VisibleCode><![CDATA[mostrarGuia3D]]></VisibleCode></Group></Presentation>
-
 				<VisibleCode><![CDATA[vistaActiva == 0]]></VisibleCode></Group><Group>
-					<Id>3699000005907</Id>
+					<Id>3699000006323</Id>
 					<Name>cuerpoVista1</Name>
 					<X>0</X><Y>0</Y>
 					<PublicFlag>true</PublicFlag>
@@ -35337,7 +34781,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<Rotation>0</Rotation>
 
 			<Presentation><Rectangle>
-					<Id>3699000005908</Id>
+					<Id>3699000006324</Id>
 					<Name>fondoCuerpo1</Name>
 					<X>24</X><Y>120</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35358,7 +34802,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005909</Id>
+					<Id>3699000006325</Id>
 					<Name>tituloPlano2DHeader</Name>
 					<X>40</X><Y>136</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35378,7 +34822,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005910</Id>
+					<Id>3699000006326</Id>
 					<Name>subtituloPlano2DHeader</Name>
 					<X>40</X><Y>162</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35398,7 +34842,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005911</Id>
+					<Id>3699000006327</Id>
 					<Name>resumenPlano2DHeader</Name>
 					<X>760</X><Y>138</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35418,7 +34862,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA["Stock: " + numero(stockActual()) + "  |  Produccion: " + numero(registro.produccionTotal(cfg.calentamiento)) + "  |  Canceladas: " + numero(canceladasActual())]]></TextCode></Text><Rectangle>
-					<Id>3699000005912</Id>
+					<Id>3699000006328</Id>
 					<Name><![CDATA[planoFondo]]></Name>
 					<X>24</X><Y>200</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35439,7 +34883,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005913</Id>
+					<Id>3699000006329</Id>
 					<Name><![CDATA[planoTitulo]]></Name>
 					<X>48</X><Y>222</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35459,7 +34903,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005914</Id>
+					<Id>3699000006330</Id>
 					<Name><![CDATA[planoParqueTitulo]]></Name>
 					<X>55</X><Y>256</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35479,7 +34923,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005915</Id>
+					<Id>3699000006331</Id>
 					<Name><![CDATA[planoVicentinTitulo]]></Name>
 					<X>55</X><Y>520</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35499,7 +34943,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005916</Id>
+					<Id>3699000006332</Id>
 					<Name><![CDATA[planoParqueRecepcion]]></Name>
 					<X>55</X><Y>280</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35520,7 +34964,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005917</Id>
+					<Id>3699000006333</Id>
 					<Name><![CDATA[planoParqueRecepcionFranja]]></Name>
 					<X>55</X><Y>280</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35541,7 +34985,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-15238159</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005918</Id>
+					<Id>3699000006334</Id>
 					<Name><![CDATA[planoParqueRecepcionTitulo]]></Name>
 					<X>65</X><Y>287</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35561,7 +35005,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005919</Id>
+					<Id>3699000006335</Id>
 					<Name><![CDATA[planoParqueDilucion]]></Name>
 					<X>275</X><Y>280</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35582,7 +35026,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005920</Id>
+					<Id>3699000006336</Id>
 					<Name><![CDATA[planoParqueDilucionFranja]]></Name>
 					<X>275</X><Y>280</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35603,7 +35047,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-15238159</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005921</Id>
+					<Id>3699000006337</Id>
 					<Name><![CDATA[planoParqueDilucionTitulo]]></Name>
 					<X>285</X><Y>287</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35623,7 +35067,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005922</Id>
+					<Id>3699000006338</Id>
 					<Name><![CDATA[planoParqueEnvasado]]></Name>
 					<X>525</X><Y>280</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35644,7 +35088,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005923</Id>
+					<Id>3699000006339</Id>
 					<Name><![CDATA[planoParqueEnvasadoFranja]]></Name>
 					<X>525</X><Y>280</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35665,7 +35109,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-15238159</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005924</Id>
+					<Id>3699000006340</Id>
 					<Name><![CDATA[planoParqueEnvasadoTitulo]]></Name>
 					<X>535</X><Y>287</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35685,7 +35129,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005925</Id>
+					<Id>3699000006341</Id>
 					<Name><![CDATA[planoParqueDeposito]]></Name>
 					<X>975</X><Y>280</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35706,7 +35150,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005926</Id>
+					<Id>3699000006342</Id>
 					<Name><![CDATA[planoParqueDepositoFranja]]></Name>
 					<X>975</X><Y>280</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35727,7 +35171,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-15238159</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005927</Id>
+					<Id>3699000006343</Id>
 					<Name><![CDATA[planoParqueDepositoTitulo]]></Name>
 					<X>985</X><Y>287</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35747,7 +35191,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005928</Id>
+					<Id>3699000006344</Id>
 					<Name><![CDATA[planoParqueMateria]]></Name>
 					<X>68</X><Y>325</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35767,7 +35211,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005929</Id>
+					<Id>3699000006345</Id>
 					<Name><![CDATA[planoHipoTanque]]></Name>
 					<X>88</X><Y>352</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35788,7 +35232,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005930</Id>
+					<Id>3699000006346</Id>
 					<Name><![CDATA[planoHipoTapa]]></Name>
 					<X>86</X><Y>352</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35809,7 +35253,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005931</Id>
+					<Id>3699000006347</Id>
 					<Name><![CDATA[planoHipoPie]]></Name>
 					<X>95</X><Y>395</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35830,7 +35274,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-15193551</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005932</Id>
+					<Id>3699000006348</Id>
 					<Name><![CDATA[planoInsumosTanque]]></Name>
 					<X>178</X><Y>352</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35851,7 +35295,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005933</Id>
+					<Id>3699000006349</Id>
 					<Name><![CDATA[planoInsumosTapa]]></Name>
 					<X>176</X><Y>352</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35872,7 +35316,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005934</Id>
+					<Id>3699000006350</Id>
 					<Name><![CDATA[planoInsumosPie]]></Name>
 					<X>185</X><Y>395</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -35893,7 +35337,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-15193551</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005935</Id>
+					<Id>3699000006351</Id>
 					<Name><![CDATA[planoParqueRecepDesc]]></Name>
 					<X>68</X><Y>412</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35913,7 +35357,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005936</Id>
+					<Id>3699000006352</Id>
 					<Name><![CDATA[planoParqueCola]]></Name>
 					<X>68</X><Y>439</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35934,7 +35378,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005937</Id>
+					<Id>3699000006353</Id>
 					<Name><![CDATA[planoParqueDilucionDesc]]></Name>
 					<X>288</X><Y>325</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35954,7 +35398,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005938</Id>
+					<Id>3699000006354</Id>
 					<Name><![CDATA[planoParqueProceso]]></Name>
 					<X>288</X><Y>374</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35975,7 +35419,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005939</Id>
+					<Id>3699000006355</Id>
 					<Name><![CDATA[planoParqueQc]]></Name>
 					<X>288</X><Y>401</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -35996,7 +35440,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005940</Id>
+					<Id>3699000006356</Id>
 					<Name><![CDATA[planoParquePulmon]]></Name>
 					<X>288</X><Y>428</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36017,7 +35461,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005941</Id>
+					<Id>3699000006357</Id>
 					<Name><![CDATA[planoParqueLinea]]></Name>
 					<X>540</X><Y>325</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36037,7 +35481,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005942</Id>
+					<Id>3699000006358</Id>
 					<Name><![CDATA[planoCintaParque]]></Name>
 					<X>540</X><Y>391</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36058,7 +35502,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-9603453</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005943</Id>
+					<Id>3699000006359</Id>
 					<Name><![CDATA[planoEquipoParque0]]></Name>
 					<X>551</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36079,7 +35523,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005944</Id>
+					<Id>3699000006360</Id>
 					<Name><![CDATA[planoEquipoParqueTapa0]]></Name>
 					<X>551</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36100,7 +35544,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005945</Id>
+					<Id>3699000006361</Id>
 					<Name><![CDATA[planoEquipoParqueNombre0]]></Name>
 					<X>563</X><Y>366</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36120,7 +35564,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005946</Id>
+					<Id>3699000006362</Id>
 					<Name><![CDATA[planoEquipoParque1]]></Name>
 					<X>615</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36141,7 +35585,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005947</Id>
+					<Id>3699000006363</Id>
 					<Name><![CDATA[planoEquipoParqueTapa1]]></Name>
 					<X>615</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36162,7 +35606,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005948</Id>
+					<Id>3699000006364</Id>
 					<Name><![CDATA[planoEquipoParqueNombre1]]></Name>
 					<X>627</X><Y>366</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36182,7 +35626,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005949</Id>
+					<Id>3699000006365</Id>
 					<Name><![CDATA[planoEquipoParque2]]></Name>
 					<X>679</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36203,7 +35647,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005950</Id>
+					<Id>3699000006366</Id>
 					<Name><![CDATA[planoEquipoParqueTapa2]]></Name>
 					<X>679</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36224,7 +35668,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005951</Id>
+					<Id>3699000006367</Id>
 					<Name><![CDATA[planoEquipoParqueNombre2]]></Name>
 					<X>691</X><Y>366</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36244,7 +35688,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005952</Id>
+					<Id>3699000006368</Id>
 					<Name><![CDATA[planoEquipoParque3]]></Name>
 					<X>743</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36265,7 +35709,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005953</Id>
+					<Id>3699000006369</Id>
 					<Name><![CDATA[planoEquipoParqueTapa3]]></Name>
 					<X>743</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36286,7 +35730,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005954</Id>
+					<Id>3699000006370</Id>
 					<Name><![CDATA[planoEquipoParqueNombre3]]></Name>
 					<X>755</X><Y>366</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36306,7 +35750,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005955</Id>
+					<Id>3699000006371</Id>
 					<Name><![CDATA[planoEquipoParque4]]></Name>
 					<X>807</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36327,7 +35771,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005956</Id>
+					<Id>3699000006372</Id>
 					<Name><![CDATA[planoEquipoParqueTapa4]]></Name>
 					<X>807</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36348,7 +35792,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005957</Id>
+					<Id>3699000006373</Id>
 					<Name><![CDATA[planoEquipoParqueNombre4]]></Name>
 					<X>819</X><Y>366</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36368,7 +35812,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005958</Id>
+					<Id>3699000006374</Id>
 					<Name><![CDATA[planoEquipoParque5]]></Name>
 					<X>871</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36389,7 +35833,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005959</Id>
+					<Id>3699000006375</Id>
 					<Name><![CDATA[planoEquipoParqueTapa5]]></Name>
 					<X>871</X><Y>353</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36410,7 +35854,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005960</Id>
+					<Id>3699000006376</Id>
 					<Name><![CDATA[planoEquipoParqueNombre5]]></Name>
 					<X>883</X><Y>366</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36430,7 +35874,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005961</Id>
+					<Id>3699000006377</Id>
 					<Name><![CDATA[planoPasosParque]]></Name>
 					<X>540</X><Y>409</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36450,7 +35894,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005962</Id>
+					<Id>3699000006378</Id>
 					<Name><![CDATA[planoParqueEnvasadoCount]]></Name>
 					<X>540</X><Y>437</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36471,7 +35915,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005963</Id>
+					<Id>3699000006379</Id>
 					<Name><![CDATA[planoParqueStock]]></Name>
 					<X>990</X><Y>411</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36492,7 +35936,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005964</Id>
+					<Id>3699000006380</Id>
 					<Name><![CDATA[planoParqueBacklog]]></Name>
 					<X>990</X><Y>439</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36513,7 +35957,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005965</Id>
+					<Id>3699000006381</Id>
 					<Name><![CDATA[planoParqueDepositoDesc]]></Name>
 					<X>990</X><Y>325</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36533,7 +35977,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005966</Id>
+					<Id>3699000006382</Id>
 					<Name><![CDATA[planoParqueDepositoNote]]></Name>
 					<X>990</X><Y>350</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36553,7 +35997,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005967</Id>
+					<Id>3699000006383</Id>
 					<Name><![CDATA[planoPalletParque0]]></Name>
 					<X>993</X><Y>377</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36574,7 +36018,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3355546</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005968</Id>
+					<Id>3699000006384</Id>
 					<Name><![CDATA[planoPalletBaseParque0]]></Name>
 					<X>990</X><Y>399</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36595,7 +36039,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-9603453</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005969</Id>
+					<Id>3699000006385</Id>
 					<Name><![CDATA[planoPalletParque1]]></Name>
 					<X>1061</X><Y>377</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36616,7 +36060,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3355546</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005970</Id>
+					<Id>3699000006386</Id>
 					<Name><![CDATA[planoPalletBaseParque1]]></Name>
 					<X>1058</X><Y>399</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36637,7 +36081,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-9603453</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005971</Id>
+					<Id>3699000006387</Id>
 					<Name><![CDATA[planoPalletParque2]]></Name>
 					<X>1129</X><Y>377</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36658,7 +36102,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3355546</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005972</Id>
+					<Id>3699000006388</Id>
 					<Name><![CDATA[planoPalletBaseParque2]]></Name>
 					<X>1126</X><Y>399</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36679,7 +36123,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-9603453</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005973</Id>
+					<Id>3699000006389</Id>
 					<Name><![CDATA[planoParqueFlujo1Flecha]]></Name>
 					<X>261</X><Y>361</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36699,7 +36143,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005974</Id>
+					<Id>3699000006390</Id>
 					<Name><![CDATA[planoParqueFlujo2Flecha]]></Name>
 					<X>511</X><Y>361</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36719,7 +36163,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005975</Id>
+					<Id>3699000006391</Id>
 					<Name><![CDATA[planoParqueFlujo3Flecha]]></Name>
 					<X>961</X><Y>361</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36739,7 +36183,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005976</Id>
+					<Id>3699000006392</Id>
 					<Name><![CDATA[planoVicentinRecepcion]]></Name>
 					<X>55</X><Y>550</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36760,7 +36204,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005977</Id>
+					<Id>3699000006393</Id>
 					<Name><![CDATA[planoVicentinRecepcionFranja]]></Name>
 					<X>55</X><Y>550</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36781,7 +36225,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-11546643</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005978</Id>
+					<Id>3699000006394</Id>
 					<Name><![CDATA[planoVicentinRecepcionTitulo]]></Name>
 					<X>65</X><Y>557</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36801,7 +36245,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005979</Id>
+					<Id>3699000006395</Id>
 					<Name><![CDATA[planoVicentinQc]]></Name>
 					<X>275</X><Y>550</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36822,7 +36266,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005980</Id>
+					<Id>3699000006396</Id>
 					<Name><![CDATA[planoVicentinQcFranja]]></Name>
 					<X>275</X><Y>550</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36843,7 +36287,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-11546643</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005981</Id>
+					<Id>3699000006397</Id>
 					<Name><![CDATA[planoVicentinQcTitulo]]></Name>
 					<X>285</X><Y>557</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36863,7 +36307,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005982</Id>
+					<Id>3699000006398</Id>
 					<Name><![CDATA[planoVicentinPulmon]]></Name>
 					<X>275</X><Y>685</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36884,7 +36328,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005983</Id>
+					<Id>3699000006399</Id>
 					<Name><![CDATA[planoVicentinPulmonFranja]]></Name>
 					<X>275</X><Y>685</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36905,7 +36349,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-11546643</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005984</Id>
+					<Id>3699000006400</Id>
 					<Name><![CDATA[planoVicentinPulmonTitulo]]></Name>
 					<X>285</X><Y>692</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36925,7 +36369,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005985</Id>
+					<Id>3699000006401</Id>
 					<Name><![CDATA[planoVicentinEnvasado]]></Name>
 					<X>525</X><Y>550</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36946,7 +36390,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005986</Id>
+					<Id>3699000006402</Id>
 					<Name><![CDATA[planoVicentinEnvasadoFranja]]></Name>
 					<X>525</X><Y>550</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -36967,7 +36411,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-11546643</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005987</Id>
+					<Id>3699000006403</Id>
 					<Name><![CDATA[planoVicentinEnvasadoTitulo]]></Name>
 					<X>535</X><Y>557</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -36987,7 +36431,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005988</Id>
+					<Id>3699000006404</Id>
 					<Name><![CDATA[planoVicentinDeposito]]></Name>
 					<X>975</X><Y>550</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37008,7 +36452,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005989</Id>
+					<Id>3699000006405</Id>
 					<Name><![CDATA[planoVicentinDepositoFranja]]></Name>
 					<X>975</X><Y>550</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37029,7 +36473,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-11546643</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005990</Id>
+					<Id>3699000006406</Id>
 					<Name><![CDATA[planoVicentinDepositoTitulo]]></Name>
 					<X>985</X><Y>557</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37049,7 +36493,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005991</Id>
+					<Id>3699000006407</Id>
 					<Name><![CDATA[planoVicentinRecepDesc]]></Name>
 					<X>68</X><Y>600</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37069,7 +36513,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000005992</Id>
+					<Id>3699000006408</Id>
 					<Name><![CDATA[planoVicentinRecepHint]]></Name>
 					<X>68</X><Y>626</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37089,7 +36533,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000005993</Id>
+					<Id>3699000006409</Id>
 					<Name><![CDATA[planoBaseLiquidosTanque]]></Name>
 					<X>88</X><Y>668</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37110,7 +36554,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005994</Id>
+					<Id>3699000006410</Id>
 					<Name><![CDATA[planoBaseLiquidosTapa]]></Name>
 					<X>86</X><Y>668</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37131,7 +36575,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005995</Id>
+					<Id>3699000006411</Id>
 					<Name><![CDATA[planoBaseLiquidosPie]]></Name>
 					<X>95</X><Y>711</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37152,7 +36596,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-15193551</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005996</Id>
+					<Id>3699000006412</Id>
 					<Name><![CDATA[planoInsumosLiquidosTanque]]></Name>
 					<X>178</X><Y>668</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37173,7 +36617,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005997</Id>
+					<Id>3699000006413</Id>
 					<Name><![CDATA[planoInsumosLiquidosTapa]]></Name>
 					<X>176</X><Y>668</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37194,7 +36638,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000005998</Id>
+					<Id>3699000006414</Id>
 					<Name><![CDATA[planoInsumosLiquidosPie]]></Name>
 					<X>185</X><Y>711</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37215,7 +36659,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-15193551</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000005999</Id>
+					<Id>3699000006415</Id>
 					<Name><![CDATA[planoVicentinMateriales]]></Name>
 					<X>68</X><Y>737</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37235,7 +36679,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006000</Id>
+					<Id>3699000006416</Id>
 					<Name><![CDATA[planoVicentinCola]]></Name>
 					<X>68</X><Y>773</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37256,7 +36700,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006001</Id>
+					<Id>3699000006417</Id>
 					<Name><![CDATA[planoVicentinQcDesc]]></Name>
 					<X>288</X><Y>593</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37277,7 +36721,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006002</Id>
+					<Id>3699000006418</Id>
 					<Name><![CDATA[planoVicentinProcesoCount]]></Name>
 					<X>288</X><Y>626</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37298,7 +36742,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006003</Id>
+					<Id>3699000006419</Id>
 					<Name><![CDATA[planoVicentinQcCount]]></Name>
 					<X>288</X><Y>648</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37319,7 +36763,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006004</Id>
+					<Id>3699000006420</Id>
 					<Name><![CDATA[planoPulmonLinea0]]></Name>
 					<X>288</X><Y>719</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37340,7 +36784,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006005</Id>
+					<Id>3699000006421</Id>
 					<Name><![CDATA[planoPulmonLinea1]]></Name>
 					<X>288</X><Y>738</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37361,7 +36805,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006006</Id>
+					<Id>3699000006422</Id>
 					<Name><![CDATA[planoPulmonLinea2]]></Name>
 					<X>288</X><Y>757</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37382,7 +36826,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006007</Id>
+					<Id>3699000006423</Id>
 					<Name><![CDATA[planoPulmonLinea3]]></Name>
 					<X>288</X><Y>776</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37403,7 +36847,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006008</Id>
+					<Id>3699000006424</Id>
 					<Name><![CDATA[planoPulmonLinea4]]></Name>
 					<X>288</X><Y>795</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37424,7 +36868,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006009</Id>
+					<Id>3699000006425</Id>
 					<Name><![CDATA[planoBajadaPulmon]]></Name>
 					<X>390</X><Y>672</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37445,7 +36889,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000006010</Id>
+					<Id>3699000006426</Id>
 					<Name><![CDATA[planoLinea0]]></Name>
 					<X>538</X><Y>584</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37466,7 +36910,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000006011</Id>
+					<Id>3699000006427</Id>
 					<Name><![CDATA[planoLinea0Indicador]]></Name>
 					<X>538</X><Y>584</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37487,7 +36931,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14013155</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006012</Id>
+					<Id>3699000006428</Id>
 					<Name><![CDATA[planoLinea0Nombre]]></Name>
 					<X>551</X><Y>589</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37507,7 +36951,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006013</Id>
+					<Id>3699000006429</Id>
 					<Name><![CDATA[planoCintaLiquido0]]></Name>
 					<X>660</X><Y>603</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37528,7 +36972,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-9603453</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000006014</Id>
+					<Id>3699000006430</Id>
 					<Name><![CDATA[planoEquipoLiquido0_0]]></Name>
 					<X>663</X><Y>590</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37549,7 +36993,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006015</Id>
+					<Id>3699000006431</Id>
 					<Name><![CDATA[planoEtapaLiquido0_0]]></Name>
 					<X>669</X><Y>594</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37569,7 +37013,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006016</Id>
+					<Id>3699000006432</Id>
 					<Name><![CDATA[planoEquipoLiquido0_1]]></Name>
 					<X>688</X><Y>590</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37590,7 +37034,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006017</Id>
+					<Id>3699000006433</Id>
 					<Name><![CDATA[planoEtapaLiquido0_1]]></Name>
 					<X>694</X><Y>594</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37610,7 +37054,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006018</Id>
+					<Id>3699000006434</Id>
 					<Name><![CDATA[planoEquipoLiquido0_2]]></Name>
 					<X>713</X><Y>590</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37631,7 +37075,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006019</Id>
+					<Id>3699000006435</Id>
 					<Name><![CDATA[planoEtapaLiquido0_2]]></Name>
 					<X>719</X><Y>594</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37651,7 +37095,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006020</Id>
+					<Id>3699000006436</Id>
 					<Name><![CDATA[planoEquipoLiquido0_3]]></Name>
 					<X>738</X><Y>590</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37672,7 +37116,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006021</Id>
+					<Id>3699000006437</Id>
 					<Name><![CDATA[planoEtapaLiquido0_3]]></Name>
 					<X>744</X><Y>594</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37692,7 +37136,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006022</Id>
+					<Id>3699000006438</Id>
 					<Name><![CDATA[planoEquipoLiquido0_4]]></Name>
 					<X>763</X><Y>590</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37713,7 +37157,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006023</Id>
+					<Id>3699000006439</Id>
 					<Name><![CDATA[planoEtapaLiquido0_4]]></Name>
 					<X>769</X><Y>594</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37733,7 +37177,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006024</Id>
+					<Id>3699000006440</Id>
 					<Name><![CDATA[planoEquipoLiquido0_5]]></Name>
 					<X>788</X><Y>590</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37754,7 +37198,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006025</Id>
+					<Id>3699000006441</Id>
 					<Name><![CDATA[planoEtapaLiquido0_5]]></Name>
 					<X>794</X><Y>594</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37774,7 +37218,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006026</Id>
+					<Id>3699000006442</Id>
 					<Name><![CDATA[planoLinea0Lotes]]></Name>
 					<X>832</X><Y>589</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37795,7 +37239,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006027</Id>
+					<Id>3699000006443</Id>
 					<Name><![CDATA[planoDepositoProducto0]]></Name>
 					<X>990</X><Y>589</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37815,7 +37259,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006028</Id>
+					<Id>3699000006444</Id>
 					<Name><![CDATA[planoDepositoStock0]]></Name>
 					<X>1100</X><Y>589</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37836,7 +37280,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006029</Id>
+					<Id>3699000006445</Id>
 					<Name><![CDATA[planoLinea1]]></Name>
 					<X>538</X><Y>622</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37857,7 +37301,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000006030</Id>
+					<Id>3699000006446</Id>
 					<Name><![CDATA[planoLinea1Indicador]]></Name>
 					<X>538</X><Y>622</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37878,7 +37322,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14013155</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006031</Id>
+					<Id>3699000006447</Id>
 					<Name><![CDATA[planoLinea1Nombre]]></Name>
 					<X>551</X><Y>627</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37898,7 +37342,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006032</Id>
+					<Id>3699000006448</Id>
 					<Name><![CDATA[planoCintaLiquido1]]></Name>
 					<X>660</X><Y>641</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37919,7 +37363,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-9603453</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000006033</Id>
+					<Id>3699000006449</Id>
 					<Name><![CDATA[planoEquipoLiquido1_0]]></Name>
 					<X>663</X><Y>628</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37940,7 +37384,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006034</Id>
+					<Id>3699000006450</Id>
 					<Name><![CDATA[planoEtapaLiquido1_0]]></Name>
 					<X>669</X><Y>632</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -37960,7 +37404,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006035</Id>
+					<Id>3699000006451</Id>
 					<Name><![CDATA[planoEquipoLiquido1_1]]></Name>
 					<X>688</X><Y>628</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -37981,7 +37425,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006036</Id>
+					<Id>3699000006452</Id>
 					<Name><![CDATA[planoEtapaLiquido1_1]]></Name>
 					<X>694</X><Y>632</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38001,7 +37445,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006037</Id>
+					<Id>3699000006453</Id>
 					<Name><![CDATA[planoEquipoLiquido1_2]]></Name>
 					<X>713</X><Y>628</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38022,7 +37466,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006038</Id>
+					<Id>3699000006454</Id>
 					<Name><![CDATA[planoEtapaLiquido1_2]]></Name>
 					<X>719</X><Y>632</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38042,7 +37486,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006039</Id>
+					<Id>3699000006455</Id>
 					<Name><![CDATA[planoEquipoLiquido1_3]]></Name>
 					<X>738</X><Y>628</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38063,7 +37507,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006040</Id>
+					<Id>3699000006456</Id>
 					<Name><![CDATA[planoEtapaLiquido1_3]]></Name>
 					<X>744</X><Y>632</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38083,7 +37527,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006041</Id>
+					<Id>3699000006457</Id>
 					<Name><![CDATA[planoEquipoLiquido1_4]]></Name>
 					<X>763</X><Y>628</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38104,7 +37548,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006042</Id>
+					<Id>3699000006458</Id>
 					<Name><![CDATA[planoEtapaLiquido1_4]]></Name>
 					<X>769</X><Y>632</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38124,7 +37568,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006043</Id>
+					<Id>3699000006459</Id>
 					<Name><![CDATA[planoEquipoLiquido1_5]]></Name>
 					<X>788</X><Y>628</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38145,7 +37589,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006044</Id>
+					<Id>3699000006460</Id>
 					<Name><![CDATA[planoEtapaLiquido1_5]]></Name>
 					<X>794</X><Y>632</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38165,7 +37609,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006045</Id>
+					<Id>3699000006461</Id>
 					<Name><![CDATA[planoLinea1Lotes]]></Name>
 					<X>832</X><Y>627</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38186,7 +37630,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006046</Id>
+					<Id>3699000006462</Id>
 					<Name><![CDATA[planoDepositoProducto1]]></Name>
 					<X>990</X><Y>627</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38206,7 +37650,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006047</Id>
+					<Id>3699000006463</Id>
 					<Name><![CDATA[planoDepositoStock1]]></Name>
 					<X>1100</X><Y>627</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38227,7 +37671,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006048</Id>
+					<Id>3699000006464</Id>
 					<Name><![CDATA[planoLinea2]]></Name>
 					<X>538</X><Y>660</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38248,7 +37692,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000006049</Id>
+					<Id>3699000006465</Id>
 					<Name><![CDATA[planoLinea2Indicador]]></Name>
 					<X>538</X><Y>660</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38269,7 +37713,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14013155</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006050</Id>
+					<Id>3699000006466</Id>
 					<Name><![CDATA[planoLinea2Nombre]]></Name>
 					<X>551</X><Y>665</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38289,7 +37733,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006051</Id>
+					<Id>3699000006467</Id>
 					<Name><![CDATA[planoCintaLiquido2]]></Name>
 					<X>660</X><Y>679</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38310,7 +37754,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-9603453</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000006052</Id>
+					<Id>3699000006468</Id>
 					<Name><![CDATA[planoEquipoLiquido2_0]]></Name>
 					<X>663</X><Y>666</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38331,7 +37775,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006053</Id>
+					<Id>3699000006469</Id>
 					<Name><![CDATA[planoEtapaLiquido2_0]]></Name>
 					<X>669</X><Y>670</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38351,7 +37795,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006054</Id>
+					<Id>3699000006470</Id>
 					<Name><![CDATA[planoEquipoLiquido2_1]]></Name>
 					<X>688</X><Y>666</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38372,7 +37816,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006055</Id>
+					<Id>3699000006471</Id>
 					<Name><![CDATA[planoEtapaLiquido2_1]]></Name>
 					<X>694</X><Y>670</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38392,7 +37836,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006056</Id>
+					<Id>3699000006472</Id>
 					<Name><![CDATA[planoEquipoLiquido2_2]]></Name>
 					<X>713</X><Y>666</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38413,7 +37857,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006057</Id>
+					<Id>3699000006473</Id>
 					<Name><![CDATA[planoEtapaLiquido2_2]]></Name>
 					<X>719</X><Y>670</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38433,7 +37877,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006058</Id>
+					<Id>3699000006474</Id>
 					<Name><![CDATA[planoEquipoLiquido2_3]]></Name>
 					<X>738</X><Y>666</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38454,7 +37898,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006059</Id>
+					<Id>3699000006475</Id>
 					<Name><![CDATA[planoEtapaLiquido2_3]]></Name>
 					<X>744</X><Y>670</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38474,7 +37918,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006060</Id>
+					<Id>3699000006476</Id>
 					<Name><![CDATA[planoEquipoLiquido2_4]]></Name>
 					<X>763</X><Y>666</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38495,7 +37939,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006061</Id>
+					<Id>3699000006477</Id>
 					<Name><![CDATA[planoEtapaLiquido2_4]]></Name>
 					<X>769</X><Y>670</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38515,7 +37959,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006062</Id>
+					<Id>3699000006478</Id>
 					<Name><![CDATA[planoEquipoLiquido2_5]]></Name>
 					<X>788</X><Y>666</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38536,7 +37980,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006063</Id>
+					<Id>3699000006479</Id>
 					<Name><![CDATA[planoEtapaLiquido2_5]]></Name>
 					<X>794</X><Y>670</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38556,7 +38000,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006064</Id>
+					<Id>3699000006480</Id>
 					<Name><![CDATA[planoLinea2Lotes]]></Name>
 					<X>832</X><Y>665</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38577,7 +38021,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006065</Id>
+					<Id>3699000006481</Id>
 					<Name><![CDATA[planoDepositoProducto2]]></Name>
 					<X>990</X><Y>665</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38597,7 +38041,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006066</Id>
+					<Id>3699000006482</Id>
 					<Name><![CDATA[planoDepositoStock2]]></Name>
 					<X>1100</X><Y>665</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38618,7 +38062,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006067</Id>
+					<Id>3699000006483</Id>
 					<Name><![CDATA[planoLinea3]]></Name>
 					<X>538</X><Y>698</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38639,7 +38083,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000006068</Id>
+					<Id>3699000006484</Id>
 					<Name><![CDATA[planoLinea3Indicador]]></Name>
 					<X>538</X><Y>698</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38660,7 +38104,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14013155</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006069</Id>
+					<Id>3699000006485</Id>
 					<Name><![CDATA[planoLinea3Nombre]]></Name>
 					<X>551</X><Y>703</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38680,7 +38124,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006070</Id>
+					<Id>3699000006486</Id>
 					<Name><![CDATA[planoCintaLiquido3]]></Name>
 					<X>660</X><Y>717</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38701,7 +38145,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-9603453</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000006071</Id>
+					<Id>3699000006487</Id>
 					<Name><![CDATA[planoEquipoLiquido3_0]]></Name>
 					<X>663</X><Y>704</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38722,7 +38166,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006072</Id>
+					<Id>3699000006488</Id>
 					<Name><![CDATA[planoEtapaLiquido3_0]]></Name>
 					<X>669</X><Y>708</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38742,7 +38186,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006073</Id>
+					<Id>3699000006489</Id>
 					<Name><![CDATA[planoEquipoLiquido3_1]]></Name>
 					<X>688</X><Y>704</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38763,7 +38207,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006074</Id>
+					<Id>3699000006490</Id>
 					<Name><![CDATA[planoEtapaLiquido3_1]]></Name>
 					<X>694</X><Y>708</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38783,7 +38227,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006075</Id>
+					<Id>3699000006491</Id>
 					<Name><![CDATA[planoEquipoLiquido3_2]]></Name>
 					<X>713</X><Y>704</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38804,7 +38248,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006076</Id>
+					<Id>3699000006492</Id>
 					<Name><![CDATA[planoEtapaLiquido3_2]]></Name>
 					<X>719</X><Y>708</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38824,7 +38268,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006077</Id>
+					<Id>3699000006493</Id>
 					<Name><![CDATA[planoEquipoLiquido3_3]]></Name>
 					<X>738</X><Y>704</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38845,7 +38289,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006078</Id>
+					<Id>3699000006494</Id>
 					<Name><![CDATA[planoEtapaLiquido3_3]]></Name>
 					<X>744</X><Y>708</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38865,7 +38309,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006079</Id>
+					<Id>3699000006495</Id>
 					<Name><![CDATA[planoEquipoLiquido3_4]]></Name>
 					<X>763</X><Y>704</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38886,7 +38330,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006080</Id>
+					<Id>3699000006496</Id>
 					<Name><![CDATA[planoEtapaLiquido3_4]]></Name>
 					<X>769</X><Y>708</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38906,7 +38350,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006081</Id>
+					<Id>3699000006497</Id>
 					<Name><![CDATA[planoEquipoLiquido3_5]]></Name>
 					<X>788</X><Y>704</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -38927,7 +38371,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006082</Id>
+					<Id>3699000006498</Id>
 					<Name><![CDATA[planoEtapaLiquido3_5]]></Name>
 					<X>794</X><Y>708</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38947,7 +38391,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006083</Id>
+					<Id>3699000006499</Id>
 					<Name><![CDATA[planoLinea3Lotes]]></Name>
 					<X>832</X><Y>703</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38968,7 +38412,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006084</Id>
+					<Id>3699000006500</Id>
 					<Name><![CDATA[planoDepositoProducto3]]></Name>
 					<X>990</X><Y>703</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -38988,7 +38432,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006085</Id>
+					<Id>3699000006501</Id>
 					<Name><![CDATA[planoDepositoStock3]]></Name>
 					<X>1100</X><Y>703</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39009,7 +38453,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006086</Id>
+					<Id>3699000006502</Id>
 					<Name><![CDATA[planoLinea4]]></Name>
 					<X>538</X><Y>736</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39030,7 +38474,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000006087</Id>
+					<Id>3699000006503</Id>
 					<Name><![CDATA[planoLinea4Indicador]]></Name>
 					<X>538</X><Y>736</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39051,7 +38495,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14013155</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006088</Id>
+					<Id>3699000006504</Id>
 					<Name><![CDATA[planoLinea4Nombre]]></Name>
 					<X>551</X><Y>741</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39071,7 +38515,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006089</Id>
+					<Id>3699000006505</Id>
 					<Name><![CDATA[planoCintaLiquido4]]></Name>
 					<X>660</X><Y>755</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39092,7 +38536,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-9603453</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Rectangle>
-					<Id>3699000006090</Id>
+					<Id>3699000006506</Id>
 					<Name><![CDATA[planoEquipoLiquido4_0]]></Name>
 					<X>663</X><Y>742</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39113,7 +38557,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006091</Id>
+					<Id>3699000006507</Id>
 					<Name><![CDATA[planoEtapaLiquido4_0]]></Name>
 					<X>669</X><Y>746</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39133,7 +38577,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006092</Id>
+					<Id>3699000006508</Id>
 					<Name><![CDATA[planoEquipoLiquido4_1]]></Name>
 					<X>688</X><Y>742</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39154,7 +38598,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006093</Id>
+					<Id>3699000006509</Id>
 					<Name><![CDATA[planoEtapaLiquido4_1]]></Name>
 					<X>694</X><Y>746</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39174,7 +38618,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006094</Id>
+					<Id>3699000006510</Id>
 					<Name><![CDATA[planoEquipoLiquido4_2]]></Name>
 					<X>713</X><Y>742</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39195,7 +38639,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006095</Id>
+					<Id>3699000006511</Id>
 					<Name><![CDATA[planoEtapaLiquido4_2]]></Name>
 					<X>719</X><Y>746</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39215,7 +38659,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006096</Id>
+					<Id>3699000006512</Id>
 					<Name><![CDATA[planoEquipoLiquido4_3]]></Name>
 					<X>738</X><Y>742</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39236,7 +38680,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006097</Id>
+					<Id>3699000006513</Id>
 					<Name><![CDATA[planoEtapaLiquido4_3]]></Name>
 					<X>744</X><Y>746</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39256,7 +38700,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006098</Id>
+					<Id>3699000006514</Id>
 					<Name><![CDATA[planoEquipoLiquido4_4]]></Name>
 					<X>763</X><Y>742</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39277,7 +38721,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006099</Id>
+					<Id>3699000006515</Id>
 					<Name><![CDATA[planoEtapaLiquido4_4]]></Name>
 					<X>769</X><Y>746</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39297,7 +38741,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006100</Id>
+					<Id>3699000006516</Id>
 					<Name><![CDATA[planoEquipoLiquido4_5]]></Name>
 					<X>788</X><Y>742</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39318,7 +38762,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-3810857</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006101</Id>
+					<Id>3699000006517</Id>
 					<Name><![CDATA[planoEtapaLiquido4_5]]></Name>
 					<X>794</X><Y>746</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39338,7 +38782,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006102</Id>
+					<Id>3699000006518</Id>
 					<Name><![CDATA[planoLinea4Lotes]]></Name>
 					<X>832</X><Y>741</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39359,7 +38803,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006103</Id>
+					<Id>3699000006519</Id>
 					<Name><![CDATA[planoDepositoProducto4]]></Name>
 					<X>990</X><Y>741</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39379,7 +38823,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006104</Id>
+					<Id>3699000006520</Id>
 					<Name><![CDATA[planoDepositoStock4]]></Name>
 					<X>1100</X><Y>741</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39400,7 +38844,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006105</Id>
+					<Id>3699000006521</Id>
 					<Name><![CDATA[planoVicentinPasos]]></Name>
 					<X>540</X><Y>790</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39420,7 +38864,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006106</Id>
+					<Id>3699000006522</Id>
 					<Name><![CDATA[planoVicentinStock]]></Name>
 					<X>990</X><Y>790</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39441,7 +38885,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006107</Id>
+					<Id>3699000006523</Id>
 					<Name><![CDATA[planoVicentinBacklog]]></Name>
 					<X>990</X><Y>808</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39462,7 +38906,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006108</Id>
+					<Id>3699000006524</Id>
 					<Name><![CDATA[planoVicentinFlujo1Flecha]]></Name>
 					<X>261</X><Y>678</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39482,7 +38926,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006109</Id>
+					<Id>3699000006525</Id>
 					<Name><![CDATA[planoVicentinFlujo2Flecha]]></Name>
 					<X>511</X><Y>678</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39502,7 +38946,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006110</Id>
+					<Id>3699000006526</Id>
 					<Name><![CDATA[planoVicentinFlujo3Flecha]]></Name>
 					<X>961</X><Y>678</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39522,7 +38966,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006111</Id>
+					<Id>3699000006527</Id>
 					<Name><![CDATA[planoNota]]></Name>
 					<X>55</X><Y>858</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39542,7 +38986,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006112</Id>
+					<Id>3699000006528</Id>
 					<Name>notaPlano2DFooter</Name>
 					<X>40</X><Y>924</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39564,7 +39008,7 @@ Cada lote representa 1.000 cajas.</Text>
 				</Text></Presentation>
 
 				<VisibleCode><![CDATA[vistaActiva == 1]]></VisibleCode></Group><Group>
-					<Id>3699000006113</Id>
+					<Id>3699000006529</Id>
 					<Name>cuerpoVista2</Name>
 					<X>0</X><Y>0</Y>
 					<PublicFlag>true</PublicFlag>
@@ -39577,7 +39021,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<Rotation>0</Rotation>
 
 			<Presentation><Rectangle>
-					<Id>3699000006114</Id>
+					<Id>3699000006530</Id>
 					<Name>fondoCuerpo2</Name>
 					<X>24</X><Y>120</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39598,7 +39042,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006115</Id>
+					<Id>3699000006531</Id>
 					<Name>tituloStats</Name>
 					<X>40</X><Y>138</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39619,7 +39063,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006116</Id>
+					<Id>3699000006532</Id>
 					<Name>subTabStats0</Name>
 					<X>220</X><Y>132</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -39638,7 +39082,7 @@ Cada lote representa 1.000 cajas.</Text>
 						<LabelText>Series temporales</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006117</Id>
+					<Id>3699000006533</Id>
 					<Name>subTabStatsBar0</Name>
 					<X>220</X><Y>164</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39660,7 +39104,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[subVistaStats == 0]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006118</Id>
+					<Id>3699000006534</Id>
 					<Name>subTabStats1</Name>
 					<X>444</X><Y>132</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -39679,7 +39123,7 @@ Cada lote representa 1.000 cajas.</Text>
 						<LabelText>KPIs y Estudio 100x3</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006119</Id>
+					<Id>3699000006535</Id>
 					<Name>subTabStatsBar1</Name>
 					<X>444</X><Y>164</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39700,7 +39144,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[subVistaStats == 1]]></VisibleCode></Rectangle><Rectangle>
-					<Id>3699000006120</Id>
+					<Id>3699000006536</Id>
 					<Name>lineaStatsHeader</Name>
 					<X>40</X><Y>172</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -39721,7 +39165,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1906964</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Group>
-					<Id>3699000006121</Id>
+					<Id>3699000006537</Id>
 					<Name>statsSeries</Name>
 					<X>0</X><Y>0</Y>
 					<PublicFlag>true</PublicFlag>
@@ -39734,7 +39178,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<Rotation>0</Rotation>
 
 			<Presentation><Text>
-					<Id>3699000006122</Id>
+					<Id>3699000006538</Id>
 					<Name>warmupStatsBadge</Name>
 					<X>880</X><Y>139</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -39754,7 +39198,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA["Ventana post warm-up: desde semana " + cfg.calentamiento]]></TextCode></Text><TimePlot>
-					<Id>3699000006123</Id>
+					<Id>3699000006539</Id>
 					<Name><![CDATA[plot]]></Name>
 					<X>40</X><Y>190</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -39764,7 +39208,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
 					<AutoUpdate>false</AutoUpdate>
 					<RecurrenceProperties>
-						<Id>3699000006124</Id>
+						<Id>3699000006540</Id>
 						<OccurrenceAtTime>true</OccurrenceAtTime>
 						<OccurrenceDate>1789027200000</OccurrenceDate>
 						<OccurrenceTime Class="CodeUnitValue">
@@ -39810,7 +39254,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<Interpolation>LINEAR</Interpolation>
 					<DatasetExpression>  
 						<Title><![CDATA[Demanda Clientes]]></Title>
-					<Id>3699000006125</Id>
+					<Id>3699000006541</Id>
 					<Expression><![CDATA[dsDemanda]]></Expression>
 					<Color>-7667573</Color>
 					<Expression2><![CDATA[demandaHistorica]]></Expression2>
@@ -39820,7 +39264,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</DatasetExpression>
 					<DatasetExpression>  
 						<Title><![CDATA[Órdenes al Proveedor]]></Title>
-					<Id>3699000006126</Id>
+					<Id>3699000006542</Id>
 					<Expression><![CDATA[dsOrdenes]]></Expression>
 					<Color>-23296</Color>
 					<Expression2><![CDATA[ordenesHistoricas]]></Expression2>
@@ -39833,7 +39277,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillAreaUnderLine>false</FillAreaUnderLine>
 					<LabelFormat>MODEL_TIME_UNITS</LabelFormat>
     			</TimePlot><TimePlot>
-					<Id>3699000006127</Id>
+					<Id>3699000006543</Id>
 					<Name><![CDATA[plot1]]></Name>
 					<X>652</X><Y>190</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -39843,7 +39287,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
 					<AutoUpdate>false</AutoUpdate>
 					<RecurrenceProperties>
-						<Id>3699000006128</Id>
+						<Id>3699000006544</Id>
 						<OccurrenceAtTime>true</OccurrenceAtTime>
 						<OccurrenceDate>1789027200000</OccurrenceDate>
 						<OccurrenceTime Class="CodeUnitValue">
@@ -39889,7 +39333,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<Interpolation>LINEAR</Interpolation>
 					<DatasetExpression>  
 						<Title><![CDATA[Demanda Clientes]]></Title>
-					<Id>3699000006129</Id>
+					<Id>3699000006545</Id>
 					<Expression><![CDATA[dsDemanda]]></Expression>
 					<Color>-16776961</Color>
 					<Expression2><![CDATA[demandaHistorica]]></Expression2>
@@ -39899,7 +39343,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</DatasetExpression>
 					<DatasetExpression>  
 						<Title><![CDATA[Producción Terminada]]></Title>
-					<Id>3699000006130</Id>
+					<Id>3699000006546</Id>
 					<Expression><![CDATA[dsProduccionSemanal]]></Expression>
 					<Color>-65536</Color>
 					<Expression2><![CDATA[ordenesHistoricas]]></Expression2>
@@ -39912,7 +39356,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillAreaUnderLine>false</FillAreaUnderLine>
 					<LabelFormat>MODEL_TIME_UNITS</LabelFormat>
     			</TimePlot><TimePlot>
-					<Id>3699000006131</Id>
+					<Id>3699000006547</Id>
 					<Name><![CDATA[plot2]]></Name>
 					<X>40</X><Y>560</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -39922,7 +39366,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
 					<AutoUpdate>false</AutoUpdate>
 					<RecurrenceProperties>
-						<Id>3699000006132</Id>
+						<Id>3699000006548</Id>
 						<OccurrenceAtTime>true</OccurrenceAtTime>
 						<OccurrenceDate>1789027200000</OccurrenceDate>
 						<OccurrenceTime Class="CodeUnitValue">
@@ -39968,7 +39412,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<Interpolation>LINEAR</Interpolation>
 					<DatasetExpression>  
 						<Title><![CDATA[Pedidos Atrasados / Backlog]]></Title>
-					<Id>3699000006133</Id>
+					<Id>3699000006549</Id>
 					<Expression><![CDATA[dsBacklog]]></Expression>
 					<Color>-16711936</Color>
 					<Expression2><![CDATA[demandaHistorica]]></Expression2>
@@ -39981,7 +39425,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillAreaUnderLine>false</FillAreaUnderLine>
 					<LabelFormat>MODEL_TIME_UNITS</LabelFormat>
     			</TimePlot><TimePlot>
-					<Id>3699000006134</Id>
+					<Id>3699000006550</Id>
 					<Name><![CDATA[plotWip]]></Name>
 					<X>652</X><Y>560</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -39991,7 +39435,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
 					<AutoUpdate>false</AutoUpdate>
 					<RecurrenceProperties>
-						<Id>3699000006135</Id>
+						<Id>3699000006551</Id>
 						<OccurrenceAtTime>true</OccurrenceAtTime>
 						<OccurrenceDate>1789027200000</OccurrenceDate>
 						<OccurrenceTime Class="CodeUnitValue">
@@ -40037,7 +39481,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<Interpolation>LINEAR</Interpolation>
 					<DatasetExpression>  
 						<Title><![CDATA[Cajas en proceso (WIP)]]></Title>
-					<Id>3699000006136</Id>
+					<Id>3699000006552</Id>
 					<Expression><![CDATA[dsWip]]></Expression>
 					<Color>-7453523</Color>
 					<Expression2><![CDATA[ordenesHistoricas]]></Expression2>
@@ -40050,7 +39494,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillAreaUnderLine>false</FillAreaUnderLine>
 					<LabelFormat>MODEL_TIME_UNITS</LabelFormat>
     			</TimePlot><Text>
-					<Id>3699000006137</Id>
+					<Id>3699000006553</Id>
 					<Name>notaEstacionariaUI</Name>
 					<X>40</X><Y>932</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40072,7 +39516,7 @@ Cada lote representa 1.000 cajas.</Text>
 				</Text></Presentation>
 
 				<VisibleCode><![CDATA[subVistaStats == 0]]></VisibleCode></Group><Group>
-					<Id>3699000006138</Id>
+					<Id>3699000006554</Id>
 					<Name>statsResumen</Name>
 					<X>0</X><Y>0</Y>
 					<PublicFlag>true</PublicFlag>
@@ -40085,7 +39529,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<Rotation>0</Rotation>
 
 			<Presentation><Text>
-					<Id>3699000006139</Id>
+					<Id>3699000006555</Id>
 					<Name>tituloKpisStats</Name>
 					<X>40</X><Y>190</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40105,7 +39549,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006140</Id>
+					<Id>3699000006556</Id>
 					<Name>kpiCard0</Name>
 					<X>40</X><Y>218</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40126,7 +39570,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006141</Id>
+					<Id>3699000006557</Id>
 					<Name>kpiTitulo0</Name>
 					<X>56</X><Y>232</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40146,7 +39590,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006142</Id>
+					<Id>3699000006558</Id>
 					<Name>kpiValor0</Name>
 					<X>56</X><Y>258</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40166,7 +39610,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA[time()<cfg.calentamiento ? "Calentando" : String.format(java.util.Locale.ROOT,"%.2f%%",100*registro.fillRate(cfg.calentamiento))]]></TextCode></Text><Rectangle>
-					<Id>3699000006143</Id>
+					<Id>3699000006559</Id>
 					<Name>kpiCard1</Name>
 					<X>444</X><Y>218</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40187,7 +39631,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006144</Id>
+					<Id>3699000006560</Id>
 					<Name>kpiTitulo1</Name>
 					<X>460</X><Y>232</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40207,7 +39651,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006145</Id>
+					<Id>3699000006561</Id>
 					<Name>kpiValor1</Name>
 					<X>460</X><Y>258</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40227,7 +39671,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA[numero(backlogActual())]]></TextCode></Text><Rectangle>
-					<Id>3699000006146</Id>
+					<Id>3699000006562</Id>
 					<Name>kpiCard2</Name>
 					<X>848</X><Y>218</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40248,7 +39692,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006147</Id>
+					<Id>3699000006563</Id>
 					<Name>kpiTitulo2</Name>
 					<X>864</X><Y>232</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40268,7 +39712,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006148</Id>
+					<Id>3699000006564</Id>
 					<Name>kpiValor2</Name>
 					<X>864</X><Y>258</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40288,7 +39732,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA[numero(stockActual())]]></TextCode></Text><Rectangle>
-					<Id>3699000006149</Id>
+					<Id>3699000006565</Id>
 					<Name>kpiCard3</Name>
 					<X>40</X><Y>312</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40309,7 +39753,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006150</Id>
+					<Id>3699000006566</Id>
 					<Name>kpiTitulo3</Name>
 					<X>56</X><Y>326</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40329,7 +39773,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006151</Id>
+					<Id>3699000006567</Id>
 					<Name>kpiValor3</Name>
 					<X>56</X><Y>352</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40349,7 +39793,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA[numero(wipActual())]]></TextCode></Text><Rectangle>
-					<Id>3699000006152</Id>
+					<Id>3699000006568</Id>
 					<Name>kpiCard4</Name>
 					<X>444</X><Y>312</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40370,7 +39814,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006153</Id>
+					<Id>3699000006569</Id>
 					<Name>kpiTitulo4</Name>
 					<X>460</X><Y>326</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40390,7 +39834,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006154</Id>
+					<Id>3699000006570</Id>
 					<Name>kpiValor4</Name>
 					<X>460</X><Y>352</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40410,7 +39854,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA[numero(registro.produccionTotal(cfg.calentamiento))]]></TextCode></Text><Rectangle>
-					<Id>3699000006155</Id>
+					<Id>3699000006571</Id>
 					<Name>kpiCard5</Name>
 					<X>848</X><Y>312</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40431,7 +39875,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006156</Id>
+					<Id>3699000006572</Id>
 					<Name>kpiTitulo5</Name>
 					<X>864</X><Y>326</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40451,7 +39895,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006157</Id>
+					<Id>3699000006573</Id>
 					<Name>kpiValor5</Name>
 					<X>864</X><Y>352</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40471,7 +39915,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA[String.format(java.util.Locale.ROOT,"%.3f",registro.bw(cfg.calentamiento))]]></TextCode></Text><Rectangle>
-					<Id>3699000006158</Id>
+					<Id>3699000006574</Id>
 					<Name>panelOperacion24x7</Name>
 					<X>40</X><Y>410</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40492,7 +39936,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006159</Id>
+					<Id>3699000006575</Id>
 					<Name>resumenOperacionUI</Name>
 					<X>56</X><Y>421</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40512,7 +39956,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA["24x7 | Canceladas: "+numero(canceladasActual())+" | Insumos almacenados: "+numero(insumosActual())+" | WIP liberado: "+numero(wipActual())]]></TextCode></Text><Rectangle>
-					<Id>3699000006160</Id>
+					<Id>3699000006576</Id>
 					<Name>panelPareados</Name>
 					<X>40</X><Y>466</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40533,7 +39977,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006161</Id>
+					<Id>3699000006577</Id>
 					<Name>tituloPareadosUI</Name>
 					<X>60</X><Y>486</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40554,7 +39998,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006162</Id>
+					<Id>3699000006578</Id>
 					<Name>estudioUI</Name>
 					<X>762</X><Y>478</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -40574,7 +40018,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</ExtendedProperties>
 				</Control><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006163</Id>
+					<Id>3699000006579</Id>
 					<Name>detenerEstudioUI</Name>
 					<X>1036</X><Y>478</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -40593,7 +40037,7 @@ Cada lote representa 1.000 cajas.</Text>
 						<LabelText>Leer ultimos IC</LabelText>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006164</Id>
+					<Id>3699000006580</Id>
 					<Name>estadoEstudioUI</Name>
 					<X>60</X><Y>522</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40614,7 +40058,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA[SesionEstudio.estado + " | " + SesionEstudio.progreso + "/300"]]></TextCode></Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006165</Id>
+					<Id>3699000006581</Id>
 					<Name>metricaIC0</Name>
 					<X>60</X><Y>556</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -40633,7 +40077,7 @@ Cada lote representa 1.000 cajas.</Text>
 						<LabelText>Servicio</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006166</Id>
+					<Id>3699000006582</Id>
 					<Name>metricaICBar0</Name>
 					<X>60</X><Y>588</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40655,7 +40099,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[metricaIC == 0]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006167</Id>
+					<Id>3699000006583</Id>
 					<Name>metricaIC1</Name>
 					<X>196</X><Y>556</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -40674,7 +40118,7 @@ Cada lote representa 1.000 cajas.</Text>
 						<LabelText>Backlog</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006168</Id>
+					<Id>3699000006584</Id>
 					<Name>metricaICBar1</Name>
 					<X>196</X><Y>588</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40696,7 +40140,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[metricaIC == 1]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006169</Id>
+					<Id>3699000006585</Id>
 					<Name>metricaIC2</Name>
 					<X>332</X><Y>556</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -40715,7 +40159,7 @@ Cada lote representa 1.000 cajas.</Text>
 						<LabelText>Latigo</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006170</Id>
+					<Id>3699000006586</Id>
 					<Name>metricaICBar2</Name>
 					<X>332</X><Y>588</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40736,7 +40180,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[metricaIC == 2]]></VisibleCode></Rectangle><Text>
-					<Id>3699000006171</Id>
+					<Id>3699000006587</Id>
 					<Name>tablaPareadosUI</Name>
 					<X>60</X><Y>608</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40756,7 +40200,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA[tablaIC()]]></TextCode></Text><Rectangle>
-					<Id>3699000006172</Id>
+					<Id>3699000006588</Id>
 					<Name>panelGuiaEstudio</Name>
 					<X>630</X><Y>556</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40777,7 +40221,7 @@ Cada lote representa 1.000 cajas.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006173</Id>
+					<Id>3699000006589</Id>
 					<Name>tituloGuiaEstudio</Name>
 					<X>650</X><Y>578</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40797,7 +40241,7 @@ Cada lote representa 1.000 cajas.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006174</Id>
+					<Id>3699000006590</Id>
 					<Name>textoGuiaEstudio</Name>
 					<X>650</X><Y>616</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40831,7 +40275,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 				<VisibleCode><![CDATA[subVistaStats == 1]]></VisibleCode></Group></Presentation>
 
 				<VisibleCode><![CDATA[vistaActiva == 2]]></VisibleCode></Group><Group>
-					<Id>3699000006175</Id>
+					<Id>3699000006591</Id>
 					<Name>cuerpoVista3</Name>
 					<X>0</X><Y>0</Y>
 					<PublicFlag>true</PublicFlag>
@@ -40844,7 +40288,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 					<Rotation>0</Rotation>
 
 			<Presentation><Rectangle>
-					<Id>3699000006176</Id>
+					<Id>3699000006592</Id>
 					<Name>fondoCuerpo3</Name>
 					<X>24</X><Y>120</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40865,7 +40309,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006177</Id>
+					<Id>3699000006593</Id>
 					<Name>tituloConfigUI</Name>
 					<X>40</X><Y>138</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -40886,7 +40330,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006178</Id>
+					<Id>3699000006594</Id>
 					<Name>subTabCfg0</Name>
 					<X>220</X><Y>132</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -40905,7 +40349,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 						<LabelText>1. Escenario y Politica</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006179</Id>
+					<Id>3699000006595</Id>
 					<Name>subTabCfgBar0</Name>
 					<X>220</X><Y>164</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40927,7 +40371,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[subVistaConfig == 0]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006180</Id>
+					<Id>3699000006596</Id>
 					<Name>subTabCfg1</Name>
 					<X>454</X><Y>132</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -40946,7 +40390,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 						<LabelText>2. Demanda por Perfil</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006181</Id>
+					<Id>3699000006597</Id>
 					<Name>subTabCfgBar1</Name>
 					<X>454</X><Y>164</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -40968,7 +40412,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[subVistaConfig == 1]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006182</Id>
+					<Id>3699000006598</Id>
 					<Name>subTabCfg2</Name>
 					<X>688</X><Y>132</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -40987,7 +40431,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 						<LabelText>3. Planta y Capacidad</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006183</Id>
+					<Id>3699000006599</Id>
 					<Name>subTabCfgBar2</Name>
 					<X>688</X><Y>164</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41008,7 +40452,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[subVistaConfig == 2]]></VisibleCode></Rectangle><Rectangle>
-					<Id>3699000006184</Id>
+					<Id>3699000006600</Id>
 					<Name>lineaCfgHeader</Name>
 					<X>40</X><Y>172</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41029,7 +40473,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 					<FillColor>-1906964</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Group>
-					<Id>3699000006185</Id>
+					<Id>3699000006601</Id>
 					<Name>cfgPolitica</Name>
 					<X>0</X><Y>0</Y>
 					<PublicFlag>true</PublicFlag>
@@ -41042,7 +40486,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 					<Rotation>0</Rotation>
 
 			<Presentation><Rectangle>
-					<Id>3699000006186</Id>
+					<Id>3699000006602</Id>
 					<Name>card_escenarios_cfg</Name>
 					<X>40</X><Y>194</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41063,7 +40507,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006187</Id>
+					<Id>3699000006603</Id>
 					<Name>tituloEscenarios</Name>
 					<X>60</X><Y>214</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41084,7 +40528,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006188</Id>
+					<Id>3699000006604</Id>
 					<Name>escenarioUI0</Name>
 					<X>60</X><Y>258</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41103,7 +40547,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 						<LabelText>0 - Base 24x7</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006189</Id>
+					<Id>3699000006605</Id>
 					<Name>escenarioBar0</Name>
 					<X>60</X><Y>294</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41124,7 +40568,7 @@ pareadas por semilla (CRN) despues del calentamiento.</Text>
 					<FillColor>-11546643</FillColor>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[escenarioActivo == 0]]></VisibleCode></Rectangle><Text>
-					<Id>3699000006190</Id>
+					<Id>3699000006606</Id>
 					<Name>escenarioDesc0</Name>
 					<X>312</X><Y>258</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41146,7 +40590,7 @@ Factor latigo alfa = 1.5</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006191</Id>
+					<Id>3699000006607</Id>
 					<Name>escenarioUI1</Name>
 					<X>60</X><Y>340</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41165,7 +40609,7 @@ Factor latigo alfa = 1.5</Text>
 						<LabelText>1 - Sin panico</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006192</Id>
+					<Id>3699000006608</Id>
 					<Name>escenarioBar1</Name>
 					<X>60</X><Y>376</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41186,7 +40630,7 @@ Factor latigo alfa = 1.5</Text>
 					<FillColor>-11546643</FillColor>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[escenarioActivo == 1]]></VisibleCode></Rectangle><Text>
-					<Id>3699000006193</Id>
+					<Id>3699000006609</Id>
 					<Name>escenarioDesc1</Name>
 					<X>312</X><Y>340</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41208,7 +40652,7 @@ Mantiene operacion 24x7</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006194</Id>
+					<Id>3699000006610</Id>
 					<Name>escenarioUI2</Name>
 					<X>60</X><Y>422</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41227,7 +40671,7 @@ Mantiene operacion 24x7</Text>
 						<LabelText>2 - Rendim. +27.5%</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006195</Id>
+					<Id>3699000006611</Id>
 					<Name>escenarioBar2</Name>
 					<X>60</X><Y>458</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41248,7 +40692,7 @@ Mantiene operacion 24x7</Text>
 					<FillColor>-11546643</FillColor>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[escenarioActivo == 2]]></VisibleCode></Rectangle><Text>
-					<Id>3699000006196</Id>
+					<Id>3699000006612</Id>
 					<Name>escenarioDesc2</Name>
 					<X>312</X><Y>422</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41269,7 +40713,7 @@ hipotesis +27,5% rendimiento</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006197</Id>
+					<Id>3699000006613</Id>
 					<Name>card_escenario_resumen</Name>
 					<X>60</X><Y>520</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41290,7 +40734,7 @@ hipotesis +27,5% rendimiento</Text>
 					<FillColor>-1</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006198</Id>
+					<Id>3699000006614</Id>
 					<Name>escenarioResumenCfgUI</Name>
 					<X>76</X><Y>536</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41310,7 +40754,7 @@ hipotesis +27,5% rendimiento</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA["Escenario activo: " + escenarioTexto() + "\nAlfa (latigo): " + cfg.factLatigo + "  |  Apertura: " + numero(cfg.horas) + " h/sem\nWarm-up: " + cfg.calentamiento + " sem  |  Espera cancelacion: " + cfg.esperaPedidoDias + " d"]]></TextCode></Text><Rectangle>
-					<Id>3699000006199</Id>
+					<Id>3699000006615</Id>
 					<Name>card_politica_cfg</Name>
 					<X>642</X><Y>194</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41331,7 +40775,7 @@ hipotesis +27,5% rendimiento</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006200</Id>
+					<Id>3699000006616</Id>
 					<Name>tituloPoliticaUI</Name>
 					<X>662</X><Y>214</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41351,7 +40795,7 @@ hipotesis +27,5% rendimiento</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006201</Id>
+					<Id>3699000006617</Id>
 					<Name>campoLatigoLabel</Name>
 					<X>662</X><Y>258</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41372,7 +40816,7 @@ hipotesis +27,5% rendimiento</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006202</Id>
+					<Id>3699000006618</Id>
 					<Name>campoLatigo</Name>
 					<X>662</X><Y>283</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41392,7 +40836,7 @@ hipotesis +27,5% rendimiento</Text>
 						<Link>uiLatigo</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006203</Id>
+					<Id>3699000006619</Id>
 					<Name>esperaLabel</Name>
 					<X>662</X><Y>336</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41413,7 +40857,7 @@ hipotesis +27,5% rendimiento</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006204</Id>
+					<Id>3699000006620</Id>
 					<Name>campoEspera</Name>
 					<X>662</X><Y>361</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41433,7 +40877,7 @@ hipotesis +27,5% rendimiento</Text>
 						<Link>uiEspera</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006205</Id>
+					<Id>3699000006621</Id>
 					<Name>maxWipLabel</Name>
 					<X>662</X><Y>414</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41454,7 +40898,7 @@ hipotesis +27,5% rendimiento</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006206</Id>
+					<Id>3699000006622</Id>
 					<Name>campoMaxWip</Name>
 					<X>662</X><Y>439</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41474,7 +40918,7 @@ hipotesis +27,5% rendimiento</Text>
 						<Link>uiMaxWip</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006207</Id>
+					<Id>3699000006623</Id>
 					<Name>campoWarmupLabel</Name>
 					<X>662</X><Y>492</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41495,7 +40939,7 @@ hipotesis +27,5% rendimiento</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006208</Id>
+					<Id>3699000006624</Id>
 					<Name>campoWarmup</Name>
 					<X>662</X><Y>517</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41516,7 +40960,7 @@ hipotesis +27,5% rendimiento</Text>
 					</ExtendedProperties>
 				</Control><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006209</Id>
+					<Id>3699000006625</Id>
 					<Name>aplicarPoliticaUI</Name>
 					<X>662</X><Y>578</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41535,7 +40979,7 @@ hipotesis +27,5% rendimiento</Text>
 						<LabelText>Aplicar reglas y politica</LabelText>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006210</Id>
+					<Id>3699000006626</Id>
 					<Name>notaPoliticaUI</Name>
 					<X>662</X><Y>628</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41556,7 +41000,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006211</Id>
+					<Id>3699000006627</Id>
 					<Name>card_export_cfg</Name>
 					<X>40</X><Y>764</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41577,7 +41021,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006212</Id>
+					<Id>3699000006628</Id>
 					<Name>tituloExportUI</Name>
 					<X>60</X><Y>782</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41597,7 +41041,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006213</Id>
+					<Id>3699000006629</Id>
 					<Name>rutaCSVLabel</Name>
 					<X>60</X><Y>818</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41618,7 +41062,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006214</Id>
+					<Id>3699000006630</Id>
 					<Name>campoCarpeta</Name>
 					<X>60</X><Y>843</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41640,7 +41084,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 				</Control></Presentation>
 
 				<VisibleCode><![CDATA[subVistaConfig == 0]]></VisibleCode></Group><Group>
-					<Id>3699000006215</Id>
+					<Id>3699000006631</Id>
 					<Name>cfgDemanda</Name>
 					<X>0</X><Y>0</Y>
 					<PublicFlag>true</PublicFlag>
@@ -41653,7 +41097,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<Rotation>0</Rotation>
 
 			<Presentation><Rectangle>
-					<Id>3699000006216</Id>
+					<Id>3699000006632</Id>
 					<Name>card_demanda</Name>
 					<X>40</X><Y>194</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41674,7 +41118,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006217</Id>
+					<Id>3699000006633</Id>
 					<Name>tituloDemandaUI</Name>
 					<X>60</X><Y>214</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41694,7 +41138,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006218</Id>
+					<Id>3699000006634</Id>
 					<Name>subtituloCanalUI</Name>
 					<X>60</X><Y>252</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41715,7 +41159,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006219</Id>
+					<Id>3699000006635</Id>
 					<Name>canalUI0</Name>
 					<X>60</X><Y>276</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41734,7 +41178,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 						<LabelText>Maxiconsumo</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006220</Id>
+					<Id>3699000006636</Id>
 					<Name>canalBar0</Name>
 					<X>60</X><Y>310</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41756,7 +41200,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilCanal == 0]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006221</Id>
+					<Id>3699000006637</Id>
 					<Name>canalUI1</Name>
 					<X>236</X><Y>276</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41775,7 +41219,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 						<LabelText>Grandes cli.</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006222</Id>
+					<Id>3699000006638</Id>
 					<Name>canalBar1</Name>
 					<X>236</X><Y>310</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41797,7 +41241,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilCanal == 1]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006223</Id>
+					<Id>3699000006639</Id>
 					<Name>canalUI2</Name>
 					<X>412</X><Y>276</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41816,7 +41260,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 						<LabelText>Red propia</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006224</Id>
+					<Id>3699000006640</Id>
 					<Name>canalBar2</Name>
 					<X>412</X><Y>310</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41837,7 +41281,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilCanal == 2]]></VisibleCode></Rectangle><Text>
-					<Id>3699000006225</Id>
+					<Id>3699000006641</Id>
 					<Name>subtituloProdUI</Name>
 					<X>60</X><Y>342</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -41858,7 +41302,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006226</Id>
+					<Id>3699000006642</Id>
 					<Name>productoUI0</Name>
 					<X>60</X><Y>368</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41877,7 +41321,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 						<LabelText>Lavandina</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006227</Id>
+					<Id>3699000006643</Id>
 					<Name>productoBar0</Name>
 					<X>60</X><Y>404</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41899,7 +41343,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 0]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006228</Id>
+					<Id>3699000006644</Id>
 					<Name>productoUI1</Name>
 					<X>320</X><Y>368</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41918,7 +41362,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 						<LabelText>Desinfectante</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006229</Id>
+					<Id>3699000006645</Id>
 					<Name>productoBar1</Name>
 					<X>320</X><Y>404</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41940,7 +41384,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 1]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006230</Id>
+					<Id>3699000006646</Id>
 					<Name>productoUI2</Name>
 					<X>60</X><Y>416</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -41959,7 +41403,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 						<LabelText>Lavavajilla</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006231</Id>
+					<Id>3699000006647</Id>
 					<Name>productoBar2</Name>
 					<X>60</X><Y>452</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -41981,7 +41425,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 2]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006232</Id>
+					<Id>3699000006648</Id>
 					<Name>productoUI3</Name>
 					<X>320</X><Y>416</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42000,7 +41444,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 						<LabelText>Lavarropa</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006233</Id>
+					<Id>3699000006649</Id>
 					<Name>productoBar3</Name>
 					<X>320</X><Y>452</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42022,7 +41466,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 3]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006234</Id>
+					<Id>3699000006650</Id>
 					<Name>productoUI4</Name>
 					<X>60</X><Y>464</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42041,7 +41485,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 						<LabelText>Suavizante</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006235</Id>
+					<Id>3699000006651</Id>
 					<Name>productoBar4</Name>
 					<X>60</X><Y>500</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42063,7 +41507,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 4]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006236</Id>
+					<Id>3699000006652</Id>
 					<Name>productoUI5</Name>
 					<X>320</X><Y>464</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42082,7 +41526,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 						<LabelText>Detergente</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006237</Id>
+					<Id>3699000006653</Id>
 					<Name>productoBar5</Name>
 					<X>320</X><Y>500</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42103,7 +41547,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 5]]></VisibleCode></Rectangle><Text>
-					<Id>3699000006238</Id>
+					<Id>3699000006654</Id>
 					<Name>perfilFormUI</Name>
 					<X>60</X><Y>536</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42123,7 +41567,7 @@ El limite WIP debe ser mayor o igual al WIP presente.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA["Editando: " + perfilTexto()]]></TextCode></Text><Text>
-					<Id>3699000006239</Id>
+					<Id>3699000006655</Id>
 					<Name>notaDemandaUI</Name>
 					<X>60</X><Y>580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42148,7 +41592,7 @@ de los eventos de produccion.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Rectangle>
-					<Id>3699000006240</Id>
+					<Id>3699000006656</Id>
 					<Name>card_demanda_valores</Name>
 					<X>624</X><Y>194</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42169,7 +41613,7 @@ de los eventos de produccion.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006241</Id>
+					<Id>3699000006657</Id>
 					<Name>tituloDemandaValoresUI</Name>
 					<X>644</X><Y>214</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42189,7 +41633,7 @@ de los eventos de produccion.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006242</Id>
+					<Id>3699000006658</Id>
 					<Name>mediaLabel</Name>
 					<X>644</X><Y>266</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42210,7 +41654,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006243</Id>
+					<Id>3699000006659</Id>
 					<Name>campoMedia</Name>
 					<X>644</X><Y>291</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42230,7 +41674,7 @@ de los eventos de produccion.</Text>
 						<Link>uiMedia</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006244</Id>
+					<Id>3699000006660</Id>
 					<Name>sdLabel</Name>
 					<X>932</X><Y>266</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42251,7 +41695,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006245</Id>
+					<Id>3699000006661</Id>
 					<Name>campoDesvio</Name>
 					<X>932</X><Y>291</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42271,7 +41715,7 @@ de los eventos de produccion.</Text>
 						<Link>uiDesvio</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006246</Id>
+					<Id>3699000006662</Id>
 					<Name>varianzaLabel</Name>
 					<X>644</X><Y>344</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42292,7 +41736,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA["Varianza = " + numero(uiDesvio*uiDesvio)]]></TextCode></Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006247</Id>
+					<Id>3699000006663</Id>
 					<Name>aplicarDemandaUI</Name>
 					<X>644</X><Y>386</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42313,7 +41757,7 @@ de los eventos de produccion.</Text>
 				</Control></Presentation>
 
 				<VisibleCode><![CDATA[subVistaConfig == 1]]></VisibleCode></Group><Group>
-					<Id>3699000006248</Id>
+					<Id>3699000006664</Id>
 					<Name>cfgPlanta</Name>
 					<X>0</X><Y>0</Y>
 					<PublicFlag>true</PublicFlag>
@@ -42326,7 +41770,7 @@ de los eventos de produccion.</Text>
 					<Rotation>0</Rotation>
 
 			<Presentation><Rectangle>
-					<Id>3699000006249</Id>
+					<Id>3699000006665</Id>
 					<Name>card_inventario</Name>
 					<X>40</X><Y>194</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42347,7 +41791,7 @@ de los eventos de produccion.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006250</Id>
+					<Id>3699000006666</Id>
 					<Name>tituloInventarioUI</Name>
 					<X>60</X><Y>214</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42368,7 +41812,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006251</Id>
+					<Id>3699000006667</Id>
 					<Name>productoCfgUI0</Name>
 					<X>60</X><Y>246</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42387,7 +41831,7 @@ de los eventos de produccion.</Text>
 						<LabelText>Lavandina</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006252</Id>
+					<Id>3699000006668</Id>
 					<Name>productoCfgBar0</Name>
 					<X>60</X><Y>276</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42409,7 +41853,7 @@ de los eventos de produccion.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 0]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006253</Id>
+					<Id>3699000006669</Id>
 					<Name>productoCfgUI1</Name>
 					<X>244</X><Y>246</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42428,7 +41872,7 @@ de los eventos de produccion.</Text>
 						<LabelText>Desinfectante</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006254</Id>
+					<Id>3699000006670</Id>
 					<Name>productoCfgBar1</Name>
 					<X>244</X><Y>276</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42450,7 +41894,7 @@ de los eventos de produccion.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 1]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006255</Id>
+					<Id>3699000006671</Id>
 					<Name>productoCfgUI2</Name>
 					<X>428</X><Y>246</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42469,7 +41913,7 @@ de los eventos de produccion.</Text>
 						<LabelText>Lavavajilla</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006256</Id>
+					<Id>3699000006672</Id>
 					<Name>productoCfgBar2</Name>
 					<X>428</X><Y>276</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42491,7 +41935,7 @@ de los eventos de produccion.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 2]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006257</Id>
+					<Id>3699000006673</Id>
 					<Name>productoCfgUI3</Name>
 					<X>60</X><Y>284</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42510,7 +41954,7 @@ de los eventos de produccion.</Text>
 						<LabelText>Lavarropa</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006258</Id>
+					<Id>3699000006674</Id>
 					<Name>productoCfgBar3</Name>
 					<X>60</X><Y>314</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42532,7 +41976,7 @@ de los eventos de produccion.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 3]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006259</Id>
+					<Id>3699000006675</Id>
 					<Name>productoCfgUI4</Name>
 					<X>244</X><Y>284</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42551,7 +41995,7 @@ de los eventos de produccion.</Text>
 						<LabelText>Suavizante</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006260</Id>
+					<Id>3699000006676</Id>
 					<Name>productoCfgBar4</Name>
 					<X>244</X><Y>314</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42573,7 +42017,7 @@ de los eventos de produccion.</Text>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 4]]></VisibleCode></Rectangle><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006261</Id>
+					<Id>3699000006677</Id>
 					<Name>productoCfgUI5</Name>
 					<X>428</X><Y>284</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42592,7 +42036,7 @@ de los eventos de produccion.</Text>
 						<LabelText>Detergente</LabelText>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006262</Id>
+					<Id>3699000006678</Id>
 					<Name>productoCfgBar5</Name>
 					<X>428</X><Y>314</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42613,7 +42057,7 @@ de los eventos de produccion.</Text>
 					<FillColor>-14381747</FillColor>
 					<FillMaterial>null</FillMaterial>
 				<VisibleCode><![CDATA[perfilProducto == 5]]></VisibleCode></Rectangle><Text>
-					<Id>3699000006263</Id>
+					<Id>3699000006679</Id>
 					<Name>perfilPlantaUI</Name>
 					<X>60</X><Y>326</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42633,7 +42077,7 @@ de los eventos de produccion.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				<TextCode><![CDATA["Producto seleccionado: " + nombreProducto(perfilProducto)]]></TextCode></Text><Text>
-					<Id>3699000006264</Id>
+					<Id>3699000006680</Id>
 					<Name>campoHorasLabel</Name>
 					<X>60</X><Y>360</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42654,7 +42098,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006265</Id>
+					<Id>3699000006681</Id>
 					<Name>campoHoras</Name>
 					<X>60</X><Y>385</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42674,7 +42118,7 @@ de los eventos de produccion.</Text>
 						<Link>uiHoras</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006266</Id>
+					<Id>3699000006682</Id>
 					<Name>campoLeadLabel</Name>
 					<X>60</X><Y>450</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42695,7 +42139,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006267</Id>
+					<Id>3699000006683</Id>
 					<Name>campoLead</Name>
 					<X>60</X><Y>475</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42715,7 +42159,7 @@ de los eventos de produccion.</Text>
 						<Link>uiLead</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006268</Id>
+					<Id>3699000006684</Id>
 					<Name>campoCoberturaLabel</Name>
 					<X>60</X><Y>540</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42736,7 +42180,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006269</Id>
+					<Id>3699000006685</Id>
 					<Name>campoCobertura</Name>
 					<X>60</X><Y>565</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42756,7 +42200,7 @@ de los eventos de produccion.</Text>
 						<Link>uiCobertura</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006270</Id>
+					<Id>3699000006686</Id>
 					<Name>campoRateLabel</Name>
 					<X>60</X><Y>630</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42777,7 +42221,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006271</Id>
+					<Id>3699000006687</Id>
 					<Name>campoRate</Name>
 					<X>60</X><Y>655</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42797,7 +42241,7 @@ de los eventos de produccion.</Text>
 						<Link>uiRate</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006272</Id>
+					<Id>3699000006688</Id>
 					<Name>campoCapacidadLabel</Name>
 					<X>60</X><Y>720</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42818,7 +42262,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006273</Id>
+					<Id>3699000006689</Id>
 					<Name>campoCapacidad</Name>
 					<X>60</X><Y>745</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42838,7 +42282,7 @@ de los eventos de produccion.</Text>
 						<Link>uiCapacidad</Link>
 					</ExtendedProperties>
 				</Control><Rectangle>
-					<Id>3699000006274</Id>
+					<Id>3699000006690</Id>
 					<Name>card_proceso</Name>
 					<X>650</X><Y>194</Y>
 					<Label><X>10</X><Y>10</Y></Label>
@@ -42859,7 +42303,7 @@ de los eventos de produccion.</Text>
 					<FillColor>-658189</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle><Text>
-					<Id>3699000006275</Id>
+					<Id>3699000006691</Id>
 					<Name>tituloProcesoUI</Name>
 					<X>670</X><Y>214</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42879,7 +42323,7 @@ de los eventos de produccion.</Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text><Text>
-					<Id>3699000006276</Id>
+					<Id>3699000006692</Id>
 					<Name>campoMermaLavLabel</Name>
 					<X>670</X><Y>256</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42900,7 +42344,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006277</Id>
+					<Id>3699000006693</Id>
 					<Name>campoMermaLav</Name>
 					<X>670</X><Y>281</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42920,7 +42364,7 @@ de los eventos de produccion.</Text>
 						<Link>uiMermaLav</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006278</Id>
+					<Id>3699000006694</Id>
 					<Name>campoMermaLiqLabel</Name>
 					<X>670</X><Y>348</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42941,7 +42385,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006279</Id>
+					<Id>3699000006695</Id>
 					<Name>campoMermaLiq</Name>
 					<X>670</X><Y>373</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -42961,7 +42405,7 @@ de los eventos de produccion.</Text>
 						<Link>uiMermaLiq</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006280</Id>
+					<Id>3699000006696</Id>
 					<Name>campoTiempoLabel</Name>
 					<X>670</X><Y>440</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -42982,7 +42426,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006281</Id>
+					<Id>3699000006697</Id>
 					<Name>campoTiempo</Name>
 					<X>670</X><Y>465</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -43002,7 +42446,7 @@ de los eventos de produccion.</Text>
 						<Link>uiTiempo</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006282</Id>
+					<Id>3699000006698</Id>
 					<Name>campoReactoresLabel</Name>
 					<X>670</X><Y>532</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -43023,7 +42467,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006283</Id>
+					<Id>3699000006699</Id>
 					<Name>campoReactores</Name>
 					<X>670</X><Y>557</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -43043,7 +42487,7 @@ de los eventos de produccion.</Text>
 						<Link>uiReactores</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006284</Id>
+					<Id>3699000006700</Id>
 					<Name>campoColaLabel</Name>
 					<X>670</X><Y>624</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -43064,7 +42508,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006285</Id>
+					<Id>3699000006701</Id>
 					<Name>campoCola</Name>
 					<X>670</X><Y>649</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -43084,7 +42528,7 @@ de los eventos de produccion.</Text>
 						<Link>uiCola</Link>
 					</ExtendedProperties>
 				</Control><Text>
-					<Id>3699000006286</Id>
+					<Id>3699000006702</Id>
 					<Name>tanqueLabel</Name>
 					<X>670</X><Y>716</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -43105,7 +42549,7 @@ de los eventos de produccion.</Text>
 					<Alignment>LEFT</Alignment>
 				</Text><Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006287</Id>
+					<Id>3699000006703</Id>
 					<Name>campoTanque</Name>
 					<X>670</X><Y>741</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -43126,7 +42570,7 @@ de los eventos de produccion.</Text>
 					</ExtendedProperties>
 				</Control><Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>3699000006288</Id>
+					<Id>3699000006704</Id>
 					<Name>aplicarPlantaUI</Name>
 					<X>40</X><Y>864</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
@@ -43149,14 +42593,14 @@ de los eventos de produccion.</Text>
 				<VisibleCode><![CDATA[subVistaConfig == 2]]></VisibleCode></Group></Presentation>
 
 				<VisibleCode><![CDATA[vistaActiva == 3]]></VisibleCode></Group><Camera3D>
-					<Id>3699000006289</Id>
+					<Id>3699000006705</Id>
 					<Name><![CDATA[camaraMain]]></Name>
 					<X>920</X><Y>1515.2697996726229</Y><Z>1300</Z>
 					<ShowLabel>false</ShowLabel>
 					<RotationX>55.0</RotationX>
 					<RotationZ>-90.0</RotationZ>
 				</Camera3D><Text>
-					<Id>3699000006290</Id>
+					<Id>3699000006706</Id>
 					<Name>mensajeUItexto</Name>
 					<X>24</X><Y>986</Y>
 					<Label><X>10</X><Y>0</Y></Label>
@@ -43498,7 +42942,7 @@ de los eventos de produccion.</Text>
     		</RunConfigurationOutput>
     		<RunConfigurationOutput>
 				<Id>1794425844422</Id>
-				<Name><![CDATA[ESTADISTICAS | Series de las 100 semanas]]></Name>
+				<Name>Plot demanda y ordenes</Name>
 				<OutputReference>
 					<PackageName><![CDATA[domitec_interactivo]]></PackageName>
 					<ClassName><![CDATA[Main]]></ClassName>

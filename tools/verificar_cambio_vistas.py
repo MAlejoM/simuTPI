@@ -27,8 +27,6 @@ public class TestVistasFijas extends Agent {
     com.anylogic.engine.markup.Level nivelPlanta3D;
     TestVistasFijas domitecPlant;
     int vistaActiva;
-    boolean mostrarGuia3D;
-    ShapeWindow3D ventanaPlanta3D;
     public ShapeTopLevelPresentationGroup getPresentationShape(){return presentation;}
 ''' + method[:method.index('public double stockProducto(')] + '\nvoid crearVistas(){\n' + setup + '''}
     public static void main(String[] args){
