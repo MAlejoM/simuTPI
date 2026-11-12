@@ -184,7 +184,6 @@
 \newcommand{\BacklogTardioSinPanico}{49.461}
 \newcommand{\BacklogTempranoIntegral}{6.163}
 \newcommand{\BacklogTardioIntegral}{9.544}
-\newcommand{\PaqueteResultados}{comparacion\_\allowbreak{}20261111\_\allowbreak{}194531\_\allowbreak{}208}
 % FIN_MACROS_RESULTADOS_24X7
 
 \setlength{\emergencystretch}{2em}
@@ -279,7 +278,7 @@ Período & Pedidos & Despachadas & Canceladas & Pendientes \\
 
 Para las seis familias de 2025, las cancelaciones representan 249.034 pedidos no despachados, equivalentes al 8,35\% del volumen solicitado. Es una referencia histórica para contrastar el modelo, no una probabilidad de cancelación impuesta al simulador. La ausencia de pendientes en esas cohortes antiguas no identifica cuánto esperó cada cliente; en el corte de 2026 sí se registran pendientes.
 
-Se usa \texttt{prod.csv} como fuente principal de producción; \texttt{prod1.csv} contiene registros superpuestos y no se suma a la primera. Para calibrar ritmos se toman enero--agosto y se excluye septiembre por su aparente parcialidad. El archivo no identifica el año, de modo que no permite una validación cronológica directa contra la demanda de 2025. \texttt{prod3.csv} se conserva como contraste de tasas y recursos, sin equiparar sus 330 horas mensuales por línea con las horas de apertura de toda la planta.
+Para calibrar los ritmos de producción se tomó el registro histórico principal de enero--agosto, excluyendo septiembre por su aparente parcialidad y evitando sumar registros superpuestos. Este registro no identifica el año, de modo que no permite una validación cronológica directa contra la demanda de 2025. Los datos complementarios de horas por línea (330 horas mensuales por línea) se utilizaron solo como referencia conceptual de tasas y recursos, sin equipararlos con las horas de apertura de toda la planta.
 
 \begin{figure}[htbp]
 \centering
@@ -349,7 +348,7 @@ Si $P_p$ es la producción registrada de una familia, el ritmo de referencia es 
 
 \begin{table}[htbp]
 \centering
-\caption{Producción observada y tasa efectiva de apertura continua calibrada con enero--agosto de prod.csv. La tasa divide las cajas por 5.840 horas de apertura (8 meses por 730 h); su equivalente semanal usa 168 h. El año de prod.csv no está identificado.}
+\caption{Producción observada y tasa efectiva de apertura continua calibrada con enero--agosto del registro histórico de producción. La tasa divide las cajas por 5.840 horas de apertura (8 meses por 730 h); su equivalente semanal usa 168 h. El año del registro de producción no está identificado.}
 \label{tab:produccion_calibrada}
 \small
 \begin{tabularx}{\textwidth}{Xrrr}
@@ -480,8 +479,8 @@ Los intervalos marginales de cada escenario se calculan de forma análoga sobre 
 \section{Resultados y discusión}
 % INICIO_RESULTADOS_24X7
 \subsection{Resultados de las 100 ternas del modelo actual}
-Se analizó el paquete \texttt{\PaqueteResultados}, con 300 corridas de la versión
-\texttt{operacion-24x7-v2}. Cada escenario tiene 100 réplicas de 100 semanas;
+Se analizaron las 300 corridas de la versión
+\texttt{operacion-24x7-v2} ejecutadas en AnyLogic (\texttt{Comparacion\_100x3}). Cada escenario tiene 100 réplicas de 100 semanas;
 se emplea un calentamiento provisional de 15 semanas. Se verificaron las 100
 firmas de demanda comunes entre escenarios y las 30.000 observaciones semanales.
 Los resultados siguientes corresponden a este modelo y no a las corridas anteriores
@@ -655,13 +654,10 @@ S.~Wu, W.~Gan y F.~Wei,
 \emph{Procedia Engineering}, vol.~15, pp.~4276--4281, 2011.
 
 \bibitem{datos-demanda}
-Domitec S.A., planilla comercial facilitada para el trabajo,
-\path{demanda/demanda - Sheet1.csv}, registros 2025--2026; consulta del 11 de noviembre de 2026.
+Domitec S.A., planilla comercial de demanda facilitada para el trabajo (registros 2025--2026).
 
 \bibitem{datos-produccion}
-Domitec S.A., planillas de producción facilitadas para el trabajo,
-\path{produccion/prod.csv}, \path{produccion/prod1.csv} y \path{produccion/prod3.csv};
-año no identificado en el archivo principal; consulta del 11 de noviembre de 2026.
+Domitec S.A., planillas históricas de producción y dotación facilitadas para el trabajo (año no identificado en el registro principal).
 
 \bibitem{anylogic-paramvariation}
 The AnyLogic Company, ``Parameter variation experiment,'' documentación oficial,
