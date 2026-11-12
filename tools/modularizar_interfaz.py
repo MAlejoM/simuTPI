@@ -16,8 +16,8 @@ ALP = ROOT / 'domitec_interactivo/Domitec_Interactivo.alp'
 
 INK = -15193551
 TEAL = -14381747
-ACCENT = -11546643
-BG = -658189
+ACCENT = -14381747
+BG = -328966
 BORDER = -1906964
 MUTED = -9603453
 WHITE = -1
@@ -57,6 +57,8 @@ def modularizar(d):
     agents = {text(a, 'Name'): a for a in children(children(model, 'ActiveObjectClasses')[0], 'ActiveObjectClass')}
     main = agents['Main']
     scene = children(children(children(main, 'Presentation')[0], 'Level')[0], 'Presentation')[0]
+    original_ids = {text(n, 'Name'): text(n, 'Id') for n in scene.getElementsByTagName('*')
+                    if text(n, 'Name') and text(n, 'Id')}
 
     def byname(name):
         return next(n for n in scene.getElementsByTagName('*') if text(n, 'Name') == name)
@@ -86,7 +88,6 @@ def modularizar(d):
     tpl_txt = byname('mediaLabel').cloneNode(True)
     tpl_btn = byname_any(['editarLogicaUI', 'restablecerCamaraUI']).cloneNode(True)
     tpl_edit = byname('campoMedia').cloneNode(True)
-    tpl_check = byname('operariosUI').cloneNode(True)
     tpl_window3d = byname('ventanaPlanta3D').cloneNode(True)
     tpl_camera = byname('camaraMain').cloneNode(True)
     tpl_group = byname('cuerpoVista1').cloneNode(True)
@@ -95,8 +96,6 @@ def modularizar(d):
         p.removeChild(p.firstChild)
 
     plots = {name: byname(name).cloneNode(True) for name in ['plot', 'plot1', 'plot2', 'plotWip']}
-    plano_parent = byname('planoFondo').parentNode
-    plano_nodes = [n.cloneNode(True) for n in children(plano_parent) if text(n, 'Name').startswith('plano')]
 
     while scene.firstChild:
         scene.removeChild(scene.firstChild)
@@ -106,11 +105,11 @@ def modularizar(d):
             if c.tagName.endswith('Code'):
                 n.removeChild(c)
 
-    def group(parent, name, visible=None):
+    def group(parent, name, visible=None, editor_x=0, editor_y=0):
         n = tpl_group.cloneNode(True)
         fresh(n)
         strip_codes(n)
-        for k, v in {'Name': name, 'X': 0, 'Y': 0, 'Z': 0, 'Rotation': 0,
+        for k, v in {'Name': name, 'X': editor_x, 'Y': editor_y, 'Z': 0, 'Rotation': 0,
                      'DrawMode': 'SHAPE_DRAW_2D', 'PublicFlag': 'true',
                      'PresentationFlag': 'true', 'ShowLabel': 'false'}.items():
             put(n, k, v)
@@ -142,7 +141,7 @@ def modularizar(d):
             put(n, k, v)
         font = children(n, 'Font')[0]
         put(font, 'Name', 'SansSerif')
-        put(font, 'Size', size)
+        put(font, 'Size', max(16, size + 2 if size >= 16 else size))
         put(font, 'Style', 0)
         if expr:
             code(n, 'TextCode', expr)
@@ -156,9 +155,12 @@ def modularizar(d):
             put(n, k, v)
         bp = children(n, 'BasicProperties')[0]
         bp.setAttribute('Width', str(w))
-        bp.setAttribute('Height', str(h))
+        bp.setAttribute('Height', str(max(34, h)))
         code(bp, 'ActionCode', action)
         put(children(n, 'ExtendedProperties')[0], 'LabelText', value)
+        for font in children(children(n, 'ExtendedProperties')[0], 'Font'):
+            font.setAttribute('Name', 'SansSerif')
+            font.setAttribute('Size', '16')
         parent.appendChild(n)
         return n
 
@@ -169,12 +171,12 @@ def modularizar(d):
             put(n, k, v)
         bp = children(n, 'BasicProperties')[0]
         bp.setAttribute('Width', str(w))
-        bp.setAttribute('Height', '30')
+        bp.setAttribute('Height', '34')
         ex = children(n, 'ExtendedProperties')[0]
         put(ex, 'Link', link)
         for font in children(ex, 'Font'):
             font.setAttribute('Name', 'SansSerif')
-            font.setAttribute('Size', '13')
+            font.setAttribute('Size', '16')
         parent.appendChild(n)
         return n
 
@@ -185,57 +187,53 @@ def modularizar(d):
     # ------------------------------------------------------------------
     # Persistent chrome: Header (4 tabs) + 1 slim status strip + message
     # ------------------------------------------------------------------
-    panel(scene, 'fondoUI', 0, 0, 1280, 1010, BG)
-    panel(scene, 'cabeceraUI', 0, 0, 1280, 64, INK)
-    label(scene, 'marcaUI', 24, 19, 'DOMITEC | SIMULACION DE PLANTA', 19, WHITE)
+    panel(scene, 'fondoUI', 0, 0, 1280, 1010, WHITE)
+    panel(scene, 'cabeceraUI', 0, 0, 1280, 64, WHITE)
+    label(scene, 'marcaUI', 28, 20, 'DOMITEC', 20, INK)
+    label(scene, 'submarcaUI', 150, 25, 'Simulación de planta', 13, MUTED)
 
     top_tabs = [
         ('vista3D', 'Planta 3D'),
-        ('vista2D', 'Flujo 2D'),
-        ('estadisticas', 'Estadisticas'),
-        ('logica', 'Configuracion'),
+        ('vista2D', 'Proceso 2D'),
+        ('estadisticas', 'Estadísticas'),
+        ('logica', 'Configuración'),
     ]
     for i, (ctrl_name, title) in enumerate(top_tabs):
-        x = 620 + i * 158
-        button(scene, ctrl_name, x, 17, 144, 30, title, f'mostrarVista({i});')
-        bar = panel(scene, f'tabActiva{i}', x, 55, 144, 4, ACCENT)
+        x = 28 + i * 250
+        button(scene, ctrl_name, x, 70, 232, 36, title, f'mostrarVista({i});')
+        bar = panel(scene, f'tabActiva{i}', x, 110, 232, 4, ACCENT)
         code(bar, 'VisibleCode', f'vistaActiva == {i}')
 
-    panel(scene, 'statusBarUI', 24, 74, 1232, 34, WHITE, BORDER)
     label(
-        scene, 'tiempoUI', 40, 84, 'Tiempo', 12, INK,
+        scene, 'tiempoUI', 28, 132, 'Tiempo', 13, INK,
         expr='"Semana " + String.format(java.util.Locale.ROOT,"%.2f",time()) + " / 100  |  Semilla " + semillaReplica',
     )
     label(
-        scene, 'escenarioActivoUI', 330, 84, 'Escenario', 12, TEAL,
-        expr='"Escenario: " + escenarioTexto() + "  |  alfa=" + cfg.factLatigo + "  |  " + numero(cfg.horas) + " h/sem"',
+        scene, 'escenarioActivoUI', 620, 132, 'Escenario', 13, MUTED,
+        expr='"Escenario " + escenarioTexto() + "  ·  " + numero(cfg.horas) + " h/semana"',
     )
-    label(
-        scene, 'resumenRapidoUI', 855, 84, 'Resumen', 12, INK,
-        expr='"Fill Rate: " + (time()<cfg.calentamiento ? "Calent." : String.format(java.util.Locale.ROOT,"%.1f%%",100*registro.fillRate(cfg.calentamiento))) + "  |  Backlog: " + numero(backlogActual()) + "  |  WIP: " + numero(wipActual())',
-    )
+    panel(scene, 'separadorEstadoUI', 28, 164, 1224, 1, BORDER)
 
     # ------------------------------------------------------------------
     # Tab 0: Planta 3D (Default landing screen, clean viewport)
     # ------------------------------------------------------------------
     v0 = group(scene, 'cuerpoVista0', 'vistaActiva == 0')
-    panel(v0, 'fondoCuerpo0', 24, 120, 1232, 854, WHITE, BORDER)
-    label(v0, 'tituloPlanta3D', 40, 139, 'PLANTA 3D | Vista en vivo', 13, TEAL)
-
-    chk = tpl_check.cloneNode(True)
-    fresh(chk)
-    for k, v in {'Name': 'operariosUI', 'X': 450, 'Y': 137, 'DrawMode': 'SHAPE_DRAW_2D'}.items():
-        put(chk, k, v)
-    put(children(chk, 'ExtendedProperties')[0], 'Link', 'domitecPlant.animarOperarios')
-    put(children(chk, 'ExtendedProperties')[0], 'LabelText', 'Recorridos de operarios')
-    v0.appendChild(chk)
-
-    button(v0, 'vistaSuperiorUI', 840, 132, 190, 30, 'Vista superior', 'vistaSuperior();')
-    button(v0, 'restablecerCamaraUI', 1044, 132, 202, 30, 'Perspectiva general', 'restablecerCamara();')
+    button(v0, 'vistaSuperiorUI', 792, 322, 200, 36, 'Vista superior', 'vistaSuperior();')
+    button(v0, 'restablecerCamaraUI', 1006, 322, 248, 36, 'Perspectiva general', 'restablecerCamara();')
+    label(v0, 'referenciasParque3D', 28, 184, 'Parque · Lavandina', 17, TEAL)
+    label(v0, 'referenciasVicentin3D', 620, 184, 'Vicentin · Líquidos', 17, TEAL)
+    for number, x, y, title in [
+        (1,28,222,'Recepción'), (2,28,250,'Dilución y calidad'),
+        (3,28,278,'Envasado'), (4,320,222,'Depósito'),
+        (5,620,222,'Recepción'), (6,620,250,'Reactores y calidad'),
+        (7,620,278,'Tanques pulmón'), (8,930,222,'Envasado'),
+        (9,930,250,'Depósito'),
+    ]:
+        label(v0, 'referencia3D' + str(number), x, y, f'{number}  {title}', 14, INK)
 
     win = tpl_window3d.cloneNode(True)
     fresh(win)
-    for k, v in {'Name': 'ventanaPlanta3D', 'X': 34, 'Y': 172, 'Width': 1212, 'Height': 790,
+    for k, v in {'Name': 'ventanaPlanta3D', 'X': 0, 'Y': 374, 'Width': 1280, 'Height': 636,
                  'MakeDefaultViewArea': 'false', 'Camera': 'camaraMain', 'FarClippingDistance': 4000}.items():
         put(win, k, v)
     v0.appendChild(win)
@@ -245,237 +243,306 @@ def modularizar(d):
     # ------------------------------------------------------------------
     # Tab 1: Flujo 2D (Clean process schematic)
     # ------------------------------------------------------------------
-    v1 = group(scene, 'cuerpoVista1', 'vistaActiva == 1')
-    panel(v1, 'fondoCuerpo1', 24, 120, 1232, 854, WHITE, BORDER)
-    label(v1, 'tituloPlano2DHeader', 40, 136, 'FLUJO 2D | Recorrido de lotes en tiempo real', 14, TEAL)
-    label(v1, 'subtituloPlano2DHeader', 40, 162,
-          'Cada lote equivale a 1.000 cajas. Parque elabora Lavandina; Vicentin procesa cinco liquidos.',
-          12, MUTED)
-    label(
-        v1, 'resumenPlano2DHeader', 760, 138, 'Totales', 12, INK,
-        expr='"Stock: " + numero(stockActual()) + "  |  Produccion: " + numero(registro.produccionTotal(cfg.calentamiento)) + "  |  Canceladas: " + numero(canceladasActual())',
-    )
-    for node in plano_nodes:
-        fresh(node)
-        v1.appendChild(node)
-    label(v1, 'notaPlano2DFooter', 40, 924,
-          'Los contadores dentro de cada etapa indican lotes activos en cola, proceso, control de calidad o tanque pulmon.',
-          11, MUTED)
+    v1 = group(scene, 'cuerpoVista1', 'vistaActiva == 1', editor_x=1400)
+    label(v1, 'tituloPlano2DHeader', 28, 184, 'Proceso de producción', 18, INK)
+    label(v1, 'subtituloPlano2DHeader', 28, 220,
+          'Seguí las flechas. Los contadores muestran lotes activos; cada lote equivale a 1.000 cajas.',
+          13, MUTED)
+    from plano_2d_resumido import crear_plano_resumido
+    def label_2d(parent, name, x, y, value, size=16, color=INK, expr=None):
+        n = label(parent, name, x, y, value, size, color, expr)
+        put(children(n, 'Font')[0], 'Size', max(15, size - 1))
+        return n
+    crear_plano_resumido(v1, panel, label_2d)
+    for n in children(v1):
+        if text(n, 'Name').startswith('plano'):
+            put(n, 'Y', 252 + (float(text(n, 'Y')) - 200) * .90)
+            if n.tagName == 'Rectangle':
+                put(n, 'Height', float(text(n, 'Height')) * .90)
+                if text(n, 'Name') == 'planoFondo':
+                    put(n, 'LineWidth', 0)
 
     # ------------------------------------------------------------------
     # Tab 2: Estadisticas (Sub-tab 0: Series 2x2 | Sub-tab 1: KPIs & 100x3 CI)
     # ------------------------------------------------------------------
-    v2 = group(scene, 'cuerpoVista2', 'vistaActiva == 2')
-    panel(v2, 'fondoCuerpo2', 24, 120, 1232, 854, WHITE, BORDER)
-    label(v2, 'tituloStats', 40, 138, 'ESTADISTICAS', 14, TEAL)
+    v2 = group(scene, 'cuerpoVista2', 'vistaActiva == 2', editor_x=2800)
+    label(v2, 'tituloStats', 28, 184, 'Estadísticas', 18, INK)
     for i, (ctrl_name, title, x, w) in enumerate([
-        ('subTabStats0', 'Series temporales', 220, 210),
-        ('subTabStats1', 'KPIs y Estudio 100x3', 444, 230),
+        ('subTabStats0', 'Gráficos', 260, 200),
+        ('subTabStats1', 'Indicadores', 474, 200),
+        ('subTabStats2', 'Comparar escenarios', 688, 230),
     ]):
-        button(v2, ctrl_name, x, 132, w, 30, title, f'subVistaStats={i};')
-        bar = panel(v2, f'subTabStatsBar{i}', x, 164, w, 3, TEAL)
+        x -= 232
+        button(v2, ctrl_name, x, 222, w, 34, title, f'subVistaStats={i};')
+        bar = panel(v2, f'subTabStatsBar{i}', x, 260, w, 3, TEAL)
         code(bar, 'VisibleCode', f'subVistaStats == {i}')
-    panel(v2, 'lineaStatsHeader', 40, 172, 1200, 1, BORDER)
+    panel(v2, 'lineaStatsHeader', 28, 272, 1224, 1, BORDER)
 
     # Sub-tab 2.0: Series temporales
     s0 = group(v2, 'statsSeries', 'subVistaStats == 0')
-    label(s0, 'warmupStatsBadge', 880, 139, 'Warm-up', 12, MUTED,
-          expr='"Ventana post warm-up: desde semana " + cfg.calentamiento')
-    for name, (x, y, w, h) in [
-        ('plot', (40, 190, 588, 350)),
-        ('plot1', (652, 190, 588, 350)),
-        ('plot2', (40, 560, 588, 350)),
-        ('plotWip', (652, 560, 588, 350)),
+    for name, title, unit, (x, y, w, h) in [
+        ('plot', 'Demanda y compras al proveedor', 'Cajas / semana', (40, 212, 588, 324)),
+        ('plot1', 'Producción terminada', 'Cajas / semana', (652, 212, 588, 324)),
+        ('plot2', 'Pedidos pendientes', 'Cajas pendientes', (40, 588, 588, 324)),
+        ('plotWip', 'Cajas en proceso', 'Cajas en proceso', (652, 588, 588, 324)),
     ]:
         p = fresh(plots[name])
         for k, v in {'X': x, 'Y': y, 'Width': w, 'Height': h, 'DrawMode': 'SHAPE_DRAW_2D'}.items():
             put(p, k, v)
         chart = children(p, 'ChartArea')[0]
-        put(chart, 'Width', w - 82)
-        put(chart, 'Height', h - 88)
+        put(chart, 'XOffset', 76)
+        put(chart, 'YOffset', 32)
+        put(chart, 'Width', w - 98)
+        put(chart, 'Height', h - 116)
+        put(chart, 'BorderColor', BORDER)
+        put(chart, 'GridColor', -1513240)
+        put(children(p, 'Legend')[0], 'TextColor', INK)
+        put(children(p, 'Legend')[0], 'Size', 24)
+        put(children(p, 'Labels')[0], 'TextColor', MUTED)
+        for dataset in children(p, 'DatasetExpression'):
+            expr = text(dataset, 'Expression')
+            put(dataset, 'Title', {
+                'dsDemanda': 'Demanda de clientes', 'dsOrdenes': 'Compras al proveedor',
+                'dsProduccionSemanal': 'Producción', 'dsBacklog': 'Pedidos pendientes',
+                'dsWip': 'En proceso',
+            }[expr])
+            palette = {'dsDemanda': 0x3473A5, 'dsOrdenes': 0xC2873E,
+                       'dsProduccionSemanal': 0x26806E, 'dsBacklog': 0xB4753B,
+                       'dsWip': 0x8E52A5}
+            put(dataset, 'Color', palette[expr] - 0x1000000)
+            put(dataset, 'LineWidth', 2)
         s0.appendChild(p)
+        label(s0, name + 'Titulo', x, y - 26, title, 15, INK)
+        # Axis names are ordinary supported Text shapes, placed outside tick labels
+        # and above the native legend. No unsupported TimePlot XML tags are used.
+        label(s0, name + 'EjeY', x + 6, y + 8, unit, 12, MUTED)
+        label(s0, name + 'EjeX', x + 228, y + h - 56, 'Tiempo (semanas)', 12, MUTED)
     label(s0, 'notaEstacionariaUI', 40, 932,
-          'Calentamiento no implica estacionariedad: revisar las series semanales y su tendencia.',
-          11, MUTED)
+          'Las series muestran toda la corrida. Los indicadores excluyen las semanas iniciales de calentamiento.',
+          13, MUTED)
 
     # Sub-tab 2.1: KPIs y Estudio 100x3
-    s1 = group(v2, 'statsResumen', 'subVistaStats == 1')
-    label(s1, 'tituloKpisStats', 40, 190, 'INDICADORES DE LA CORRIDA ACTUAL (POST WARM-UP)', 13, TEAL)
+    s1 = group(v2, 'statsResumen', 'subVistaStats == 1', editor_y=1100)
+    label(s1, 'tituloKpisStats', 40, 200, 'Resultado de esta corrida', 18, INK)
+    label(s1, 'periodoIndicadoresUI', 40, 234, 'Período de medición', 13, MUTED,
+          expr='"Servicio, producción y efecto látigo: desde la semana " + numero(cfg.calentamiento) + ". Los demás valores muestran el estado actual."')
     kpis = [
-        ('Fill Rate', 'time()<cfg.calentamiento ? "Calentando" : String.format(java.util.Locale.ROOT,"%.2f%%",100*registro.fillRate(cfg.calentamiento))'),
-        ('Backlog actual (cajas)', 'numero(backlogActual())'),
-        ('Stock actual (cajas)', 'numero(stockActual())'),
-        ('WIP en planta (cajas)', 'numero(wipActual())'),
-        ('Produccion acumulada', 'numero(registro.produccionTotal(cfg.calentamiento))'),
-        ('Razon Efecto Latigo (BW)', 'String.format(java.util.Locale.ROOT,"%.3f",registro.bw(cfg.calentamiento))'),
+        ('Demanda atendida (%)', 'time()<cfg.calentamiento ? "Calentando" : String.format(java.util.Locale.ROOT,"%.2f%%",100*registro.fillRate(cfg.calentamiento))',
+         'Porcentaje entregado, incluso con demora.\nNo mide puntualidad de entrega.'),
+        ('Pedidos pendientes (cajas)', 'numero(backlogActual())',
+         'Demanda que todavía espera entrega.\nNo incluye pedidos ya cancelados.'),
+        ('Stock terminado (cajas)', 'numero(stockActual())',
+         'Cajas listas para entregar\nque permanecen en el depósito.'),
+        ('Cajas en proceso', 'numero(wipActual())',
+         'Lotes liberados que aún no terminaron.\nIncluye colas y tanques; excluye insumos.'),
+        ('Producción terminada (cajas)', 'numero(registro.produccionTotal(cfg.calentamiento))',
+         'Cajas producidas desde el inicio\ndel período de medición.'),
+        ('Efecto látigo (razón)', 'String.format(java.util.Locale.ROOT,"%.3f",registro.bw(cfg.calentamiento))',
+         'Varianza de compras / varianza de demanda.\nMayor que 1: las compras varían más.'),
     ]
-    for i, (title, expr) in enumerate(kpis):
+    for i, (title, expr, meaning) in enumerate(kpis):
         col, row = i % 3, i // 3
         kx = 40 + col * 404
-        ky = 218 + row * 94
-        panel(s1, f'kpiCard{i}', kx, ky, 386, 80, BG, BORDER)
-        label(s1, f'kpiTitulo{i}', kx + 16, ky + 14, title, 11, MUTED)
-        label(s1, f'kpiValor{i}', kx + 16, ky + 40, '0', 21, TEAL, expr=expr)
+        ky = 280 + row * 194
+        panel(s1, f'kpiCard{i}', kx, ky, 386, 174, BG)
+        label(s1, f'kpiTitulo{i}', kx + 18, ky + 18, title, 14, INK)
+        label(s1, f'kpiValor{i}', kx + 18, ky + 52, '0', 26, TEAL, expr=expr)
+        label(s1, f'kpiAyuda{i}', kx + 18, ky + 109, meaning, 13, MUTED)
 
-    panel(s1, 'panelOperacion24x7', 40, 410, 1194, 38, BG, BORDER)
+    panel(s1, 'panelOperacion24x7', 40, 686, 1194, 84, BG)
     label(
-        s1, 'resumenOperacionUI', 56, 421, 'Operacion 24x7', 12, INK,
-        expr='"24x7 | Canceladas: "+numero(canceladasActual())+" | Insumos almacenados: "+numero(insumosActual())+" | WIP liberado: "+numero(wipActual())',
+        s1, 'resumenOperacionUI', 58, 704, 'Otros valores', 14, INK,
+        expr='"Pedidos cancelados: " + numero(canceladasActual()) + " cajas  ·  Insumos almacenados: " + numero(insumosActual()) + " cajas equivalentes"',
     )
+    label(s1, 'otrosIndicadoresNota', 58, 738,
+          'Cancelaciones: desde el inicio de la corrida. Insumos: saldo actual, expresado como cajas que permitirían producir.', 13, MUTED)
+    label(s1, 'notaIndicadoresUI', 40, 814,
+          'Cada corrida es un resultado posible. Para comparar políticas usá la pestaña Comparar escenarios.', 13, MUTED)
 
-    panel(s1, 'panelPareados', 40, 466, 1194, 488, BG, BORDER)
-    label(s1, 'tituloPareadosUI', 60, 486, 'ESTUDIO PAREADO | 100 SEMILLAS x 3 ESCENARIOS (IC 95%)', 13, TEAL)
-    button(s1, 'estudioUI', 762, 478, 260, 30, 'Guardar parametros para estudio', 'ejecutarComparacion();')
-    button(s1, 'detenerEstudioUI', 1036, 478, 178, 30, 'Leer ultimos IC', 'cargarUltimosIC();')
-    label(s1, 'estadoEstudioUI', 60, 522, 'Estado', 12, MUTED,
-          expr='SesionEstudio.estado + " | " + SesionEstudio.progreso + "/300"')
-    for j, (title, metric) in enumerate([('Servicio', 0), ('Backlog', 1), ('Latigo', 2)]):
-        bx = 60 + j * 136
-        button(s1, f'metricaIC{j}', bx, 556, 124, 30, title, f'metricaIC={metric};')
-        mbar = panel(s1, f'metricaICBar{j}', bx, 588, 124, 3, TEAL)
+    s2 = group(v2, 'statsComparacion', 'subVistaStats == 2', editor_y=2200)
+    label(s2, 'tituloPareadosUI', 28, 292, 'Comparar los tres escenarios', 18, INK)
+    label(s2, 'textoGuiaEstudio', 28, 330,
+          'Cargar resultados muestra el último estudio completo guardado.\n'
+          'Para uno nuevo, abrí Comparacion_100x3; si guardaste cambios, elegí Usar guardados y ejecutar.',
+          13, MUTED)
+    button(s2, 'estudioUI', 28, 382, 350, 36, 'Guardar ajustes para el estudio', 'ejecutarComparacion();')
+    button(s2, 'detenerEstudioUI', 394, 382, 266, 36, 'Cargar resultados', 'cargarUltimosIC();')
+    label(s2, 'estadoEstudioUI', 690, 392, 'Estado', 13, MUTED,
+          expr='SesionEstudio.ultimoResultado == null ? "Sin resultados cargados" : "Estudio completo · 100 pares por comparación"')
+    for j, (title, metric) in enumerate([('Demanda atendida', 0), ('Pedidos pendientes', 1), ('Efecto látigo', 2)]):
+        bx = 28 + j * 244
+        button(s2, f'metricaIC{j}', bx, 454, 228, 34, title, f'metricaIC={metric};')
+        mbar = panel(s2, f'metricaICBar{j}', bx, 492, 228, 3, TEAL)
         code(mbar, 'VisibleCode', f'metricaIC == {metric}')
-    label(s1, 'tablaPareadosUI', 60, 608, 'IC pareados', 13, INK, expr='tablaIC()')
-    panel(s1, 'panelGuiaEstudio', 630, 556, 584, 376, WHITE, BORDER)
-    label(s1, 'tituloGuiaEstudio', 650, 578, 'FLUJO DE COMPARACION 100 x 3', 13, TEAL)
-    label(
-        s1, 'textoGuiaEstudio', 650, 616,
-        '1. En AnyLogic, abrir el experimento Comparacion_100x3.\n\n'
-        '2. Para usar los escenarios estandar 24x7, ejecutarlo directo.\n'
-        '   Si modificaste parametros aqui, pulsar antes\n'
-        '   "Guardar parametros para estudio".\n\n'
-        '3. Al completar las 300 corridas, volver a esta pestana y\n'
-        '   pulsar "Leer ultimos IC" para ver las diferencias pareadas.\n\n'
-        'Nota: los intervalos se calculan sobre las 100 ternas\n'
-        'pareadas por semilla (CRN) despues del calentamiento.',
-        12, MUTED,
-    )
+    label(s2, 'metricaComparacionUI', 28, 520, 'Métrica', 17, INK, expr='tituloComparacionIC()')
+    label(s2, 'sentidoComparacionUI', 28, 554, 'Cómo leer', 13, MUTED, expr='sentidoComparacionIC()')
+    panel(s2, 'cabeceraTablaIC', 28, 596, 1224, 34, BG)
+    for col, (title, x) in enumerate([('Escenarios (A − B)',44), ('Diferencia media',390), ('Intervalo del 95%',650), ('Lectura',960)]):
+        label(s2, 'cabeceraIC'+str(col), x, 604, title, 14, INK)
+    for row, y in enumerate([642, 710, 778]):
+        panel(s2, 'lineaIC'+str(row), 28, y+57, 1224, 1, BORDER)
+        for col, x in enumerate([44,390,650,960]):
+            label(s2, 'celdaIC'+str(row)+str(col), x, y+8, '—', 16 if col==0 else 14,
+                  INK if col<3 else TEAL, expr=f'celdaComparacionIC({row},{col})')
+    label(s2, 'notaLecturaIC', 28, 858,
+          'Si el intervalo incluye 0, no hay diferencia estadística clara. Una diferencia detectable puede ser pequeña.',
+          13, MUTED)
+    label(s2, 'rutaCSVLabel', 28, 904, 'Carpeta de resultados', 13, INK)
+    edit(s2, 'campoCarpeta', 28, 930, 1224, 'carpetaResultados')
 
     # ------------------------------------------------------------------
     # Tab 3: Configuracion (Sub-tabs: Politica | Demanda | Planta)
     # ------------------------------------------------------------------
-    v3 = group(scene, 'cuerpoVista3', 'vistaActiva == 3')
-    panel(v3, 'fondoCuerpo3', 24, 120, 1232, 854, WHITE, BORDER)
-    label(v3, 'tituloConfigUI', 40, 138, 'CONFIGURACION', 14, TEAL)
+    v3 = group(scene, 'cuerpoVista3', 'vistaActiva == 3', editor_x=4200)
+    label(v3, 'tituloConfigUI', 28, 184, 'Configuración', 18, INK)
     for i, (ctrl_name, title, x, w) in enumerate([
-        ('subTabCfg0', '1. Escenario y Politica', 220, 220),
-        ('subTabCfg1', '2. Demanda por Perfil', 454, 220),
-        ('subTabCfg2', '3. Planta y Capacidad', 688, 220),
+        ('subTabCfg0', 'Escenarios', 260, 200),
+        ('subTabCfg1', 'Demanda', 474, 200),
+        ('subTabCfg2', 'Planta', 688, 200),
     ]):
-        button(v3, ctrl_name, x, 132, w, 30, title, f'subVistaConfig={i};')
-        bar = panel(v3, f'subTabCfgBar{i}', x, 164, w, 3, TEAL)
+        x -= 232
+        button(v3, ctrl_name, x, 222, w, 34, title, f'subVistaConfig={i};')
+        bar = panel(v3, f'subTabCfgBar{i}', x, 260, w, 3, TEAL)
         code(bar, 'VisibleCode', f'subVistaConfig == {i}')
-    panel(v3, 'lineaCfgHeader', 40, 172, 1200, 1, BORDER)
+    panel(v3, 'lineaCfgHeader', 28, 272, 1224, 1, BORDER)
 
     # Sub-tab 3.0: Escenario y Politica
     c0 = group(v3, 'cfgPolitica', 'subVistaConfig == 0')
-    panel(c0, 'card_escenarios_cfg', 40, 194, 578, 550, BG, BORDER)
-    label(c0, 'tituloEscenarios', 60, 214, 'ESCENARIO ACTIVO', 14, TEAL)
+    panel(c0, 'card_escenarios_cfg', 40, 204, 560, 600, BG)
+    label(c0, 'tituloEscenarios', 60, 228, 'Elegí una política', 17, INK)
+    label(c0, 'notaEscenariosUI', 60, 264, 'Los tres escenarios mantienen la planta abierta 24×7.', 13, MUTED)
     scenarios_ui = [
-        ('0 - Base 24x7', 'Operacion continua 168 h/sem\nFactor latigo alfa = 1.5'),
-        ('1 - Sin panico', 'Elimina amplificacion (alfa = 1.0)\nMantiene operacion 24x7'),
-        ('2 - Rendim. +27.5%', 'Sin panico (alfa = 1.0) +\nhipotesis +27,5% rendimiento'),
+        ('0 · Base', 'Amplifica las compras ante faltantes (α = 1,5).'),
+        ('1 · Sin pánico', 'Repone sin amplificar las compras (α = 1).'),
+        ('2 · Mejora integral', 'Sin pánico y 27,5% más cajas por hora.\nEs una mejora de rendimiento supuesta;\nla planta sigue abierta 24×7.'),
     ]
     for i, (title, desc) in enumerate(scenarios_ui):
-        sy = 258 + i * 82
-        button(c0, f'escenarioUI{i}', 60, sy, 236, 34, title, f'elegirEscenario({i});')
-        sbar = panel(c0, f'escenarioBar{i}', 60, sy + 36, 236, 3, ACCENT)
+        sy = 320 + i * 126
+        button(c0, f'escenarioUI{i}', 60, sy, 510, 36, title, f'elegirEscenario({i});')
+        sbar = panel(c0, f'escenarioBar{i}', 60, sy + 39, 510, 3, ACCENT)
         code(sbar, 'VisibleCode', f'escenarioActivo == {i}')
-        label(c0, f'escenarioDesc{i}', 312, sy, desc, 12, MUTED)
+        label(c0, f'escenarioDesc{i}', 60, sy + 56, desc, 13, MUTED)
+    label(c0, 'escenarioResumenCfgUI', 60, 744, 'Escenario', 13, TEAL,
+          expr='"Activo: " + escenarioTexto()')
 
-    panel(c0, 'card_escenario_resumen', 60, 520, 538, 120, WHITE, BORDER)
-    label(
-        c0, 'escenarioResumenCfgUI', 76, 536, 'Resumen', 12, INK,
-        expr='"Escenario activo: " + escenarioTexto() + "\\nAlfa (latigo): " + cfg.factLatigo + "  |  Apertura: " + numero(cfg.horas) + " h/sem\\nWarm-up: " + cfg.calentamiento + " sem  |  Espera cancelacion: " + cfg.esperaPedidoDias + " d"',
-    )
-
-    panel(c0, 'card_politica_cfg', 642, 194, 594, 550, BG, BORDER)
-    label(c0, 'tituloPoliticaUI', 662, 214, 'REGLAS DE FLUJO Y POLITICA', 14, TEAL)
-    labeled_edit(c0, 'campoLatigoLabel', 'campoLatigo', 662, 258, 550, 'Factor latigo (alfa)', 'uiLatigo')
-    labeled_edit(c0, 'esperaLabel', 'campoEspera', 662, 336, 550, 'Cancelacion: espera SUPUESTA (dias)', 'uiEspera')
-    labeled_edit(c0, 'maxWipLabel', 'campoMaxWip', 662, 414, 550, 'Limite PROVISIONAL de lotes liberados (WIP max)', 'uiMaxWip')
-    labeled_edit(c0, 'campoWarmupLabel', 'campoWarmup', 662, 492, 550, 'Calentamiento (0 a <100 semanas)', 'uiWarmup')
-    button(c0, 'aplicarPoliticaUI', 662, 578, 550, 34, 'Aplicar reglas y politica', 'guardarPlanta();')
-    label(c0, 'notaPoliticaUI', 662, 628,
-          'Los lotes ya iniciados conservan sus tiempos sorteados.\nEl limite WIP debe ser mayor o igual al WIP presente.',
-          11, MUTED)
-
-    panel(c0, 'card_export_cfg', 40, 764, 1196, 150, BG, BORDER)
-    label(c0, 'tituloExportUI', 60, 782, 'EXPORTACION DE RESULTADOS CSV (COMPARACION 100 x 3)', 13, TEAL)
-    labeled_edit(c0, 'rutaCSVLabel', 'campoCarpeta', 60, 818, 1152, 'Carpeta de resultados CSV', 'carpetaResultados')
+    panel(c0, 'card_politica_cfg', 624, 204, 612, 600, BG)
+    label(c0, 'tituloPoliticaUI', 646, 228, 'Ajustes de la política', 17, INK)
+    labeled_edit(c0, 'campoLatigoLabel', 'campoLatigo', 646, 282, 566, 'Amplificación de compras (α)', 'uiLatigo')
+    label(c0, 'latigoAyudaUI', 646, 346, '1 = sin amplificación; valores mayores aumentan las compras.', 12, MUTED)
+    labeled_edit(c0, 'esperaLabel', 'campoEspera', 646, 390, 566, 'Espera antes de cancelar un pedido (días)', 'uiEspera')
+    labeled_edit(c0, 'maxWipLabel', 'campoMaxWip', 646, 476, 566, 'Máximo de lotes en proceso (1 lote = 1.000 cajas)', 'uiMaxWip')
+    labeled_edit(c0, 'campoWarmupLabel', 'campoWarmup', 646, 562, 566, 'Calentamiento: semanas iniciales excluidas', 'uiWarmup')
+    label(c0, 'warmupAyudaUI', 646, 626, 'Excluidas de servicio, producción y efecto látigo; la planta sigue operando.', 12, MUTED)
+    button(c0, 'aplicarPoliticaUI', 646, 688, 566, 36, 'Aplicar ajustes', 'guardarPlanta();')
+    label(c0, 'notaPoliticaUI', 646, 748,
+          'La espera de 30 días y el límite de 36 lotes son supuestos.\nEl límite no puede ser menor que los lotes ya presentes.',
+          12, MUTED)
+    label(c0, 'notaAplicacionUI', 40, 848,
+          'Los cambios rigen para los próximos pedidos y procesos. Los lotes iniciados conservan sus tiempos.',
+          13, MUTED)
 
     # Sub-tab 3.1: Demanda por Perfil
-    c1 = group(v3, 'cfgDemanda', 'subVistaConfig == 1')
-    panel(c1, 'card_demanda', 40, 194, 560, 660, BG, BORDER)
-    label(c1, 'tituloDemandaUI', 60, 214, 'PERFIL CANAL x PRODUCTO', 14, TEAL)
-    label(c1, 'subtituloCanalUI', 60, 252, '1. Canal comercial', 12, MUTED)
-    for c, title in enumerate(['Maxiconsumo', 'Grandes cli.', 'Red propia']):
+    c1 = group(v3, 'cfgDemanda', 'subVistaConfig == 1', editor_y=1100)
+    panel(c1, 'card_demanda', 40, 204, 560, 650, BG)
+    label(c1, 'tituloDemandaUI', 60, 228, 'Elegí qué demanda modificar', 17, INK)
+    label(c1, 'subtituloCanalUI', 60, 280, 'Canal comercial', 13, MUTED)
+    for c, title in enumerate(['Maxiconsumo', 'Grandes clientes', 'Red propia']):
         cx = 60 + c * 176
-        button(c1, f'canalUI{c}', cx, 276, 166, 32, title, f'seleccionarPerfil({c},perfilProducto);')
-        cbar = panel(c1, f'canalBar{c}', cx, 310, 166, 3, TEAL)
+        button(c1, f'canalUI{c}', cx, 308, 166, 34, title, f'seleccionarPerfil({c},perfilProducto);')
+        cbar = panel(c1, f'canalBar{c}', cx, 346, 166, 3, TEAL)
         code(cbar, 'VisibleCode', f'perfilCanal == {c}')
 
-    label(c1, 'subtituloProdUI', 60, 342, '2. Producto', 12, MUTED)
+    label(c1, 'subtituloProdUI', 60, 388, 'Producto', 13, MUTED)
     products = ['Lavandina', 'Desinfectante', 'Lavavajilla', 'Lavarropa', 'Suavizante', 'Detergente']
     for p, title in enumerate(products):
         px = 60 + (p % 2) * 260
-        py = 368 + (p // 2) * 48
+        py = 418 + (p // 2) * 54
         button(c1, f'productoUI{p}', px, py, 248, 34, title, f'seleccionarPerfil(perfilCanal,{p});')
         pbar = panel(c1, f'productoBar{p}', px, py + 36, 248, 3, TEAL)
         code(pbar, 'VisibleCode', f'perfilProducto == {p}')
 
-    label(c1, 'perfilFormUI', 60, 536, 'Perfil', 14, TEAL, expr='"Editando: " + perfilTexto()')
-    label(c1, 'notaDemandaUI', 60, 580,
-          'Meses de 2025 remuestreados.\nVariacion mensual; no mide picos diarios.\n\n'
-          'El sorteo depende de semilla, canal,\nproducto y semana; no del orden\nde los eventos de produccion.',
-          12, MUTED)
+    label(c1, 'perfilFormUI', 60, 600, 'Perfil', 14, TEAL, expr='"Seleccionado: " + perfilTexto()')
+    label(c1, 'notaDemandaUI', 60, 660,
+          'Base: pedidos mensuales de 2025.\nSe sortean meses con reposición y se convierten\na demanda semanal, compartida entre escenarios.\n\n'
+          'La variación es entre meses; no representa picos diarios.',
+          13, MUTED)
 
-    panel(c1, 'card_demanda_valores', 624, 194, 612, 660, BG, BORDER)
-    label(c1, 'tituloDemandaValoresUI', 644, 214, 'PARAMETROS DE DEMANDA DEL PERFIL', 14, TEAL)
-    labeled_edit(c1, 'mediaLabel', 'campoMedia', 644, 266, 260, 'Media (cajas / semana)', 'uiMedia')
-    labeled_edit(c1, 'sdLabel', 'campoDesvio', 932, 266, 260, 'Desvio estandar', 'uiDesvio')
-    label(c1, 'varianzaLabel', 644, 344, 'Varianza', 12, MUTED,
-          expr='"Varianza = " + numero(uiDesvio*uiDesvio)')
-    button(c1, 'aplicarDemandaUI', 644, 386, 548, 34, 'Aplicar demanda al perfil seleccionado', 'guardarDemanda();')
+    panel(c1, 'card_demanda_valores', 624, 204, 612, 650, BG)
+    label(c1, 'tituloDemandaValoresUI', 646, 228, 'Valores del perfil seleccionado', 17, INK)
+    labeled_edit(c1, 'mediaLabel', 'campoMedia', 646, 304, 566, 'Media (cajas / semana)', 'uiMedia')
+    label(c1, 'mediaAyudaUI', 646, 370, 'Cantidad promedio pedida por este canal y producto.', 13, MUTED)
+    labeled_edit(c1, 'sdLabel', 'campoDesvio', 646, 430, 566, 'Desvío estándar (cajas / semana)', 'uiDesvio')
+    label(c1, 'desvioAyudaUI', 646, 496,
+          'Mide cuánto cambia el perfil mensual.\nUn valor mayor genera más variación respecto de la media.', 13, MUTED)
+    button(c1, 'aplicarDemandaUI', 646, 586, 566, 36, 'Aplicar al perfil seleccionado', 'guardarDemanda();')
 
     # Sub-tab 3.2: Planta y Capacidad
-    c2 = group(v3, 'cfgPlanta', 'subVistaConfig == 2')
-    panel(c2, 'card_inventario', 40, 194, 586, 650, BG, BORDER)
-    label(c2, 'tituloInventarioUI', 60, 214, 'INVENTARIO Y CAPACIDAD', 14, TEAL)
+    c2 = group(v3, 'cfgPlanta', 'subVistaConfig == 2', editor_y=2200)
+    panel(c2, 'card_inventario', 40, 204, 586, 650, BG)
+    label(c2, 'tituloInventarioUI', 60, 228, 'Inventario y capacidad', 17, INK)
     for p, title in enumerate(products):
         px = 60 + (p % 3) * 184
-        py = 246 + (p // 3) * 38
+        py = 270 + (p // 3) * 50
         button(c2, f'productoCfgUI{p}', px, py, 176, 28, title, f'seleccionarPerfil(perfilCanal,{p});')
-        pbar = panel(c2, f'productoCfgBar{p}', px, py + 30, 176, 3, TEAL)
+        pbar = panel(c2, f'productoCfgBar{p}', px, py + 36, 176, 3, TEAL)
         code(pbar, 'VisibleCode', f'perfilProducto == {p}')
-    label(c2, 'perfilPlantaUI', 60, 326, 'Producto', 12, TEAL,
+    label(c2, 'perfilPlantaUI', 60, 374, 'Producto', 13, TEAL,
           expr='"Producto seleccionado: " + nombreProducto(perfilProducto)')
 
     for j, (lab, name, link) in enumerate([
-        ('Horas de apertura / semana (max. 168)', 'campoHoras', 'uiHoras'),
-        ('Lead time (dias, producto)', 'campoLead', 'uiLead'),
-        ('Cobertura (semanas, producto)', 'campoCobertura', 'uiCobertura'),
-        ('Ritmo efectivo (cajas/h de apertura)', 'campoRate', 'uiRate'),
-        ('Multiplicador de capacidad', 'campoCapacidad', 'uiCapacidad'),
+        ('Apertura de la planta (horas / semana; máximo 168)', 'campoHoras', 'uiHoras'),
+        ('Plazo de entrega del proveedor (días, por producto)', 'campoLead', 'uiLead'),
+        ('Stock objetivo (semanas de demanda, por producto)', 'campoCobertura', 'uiCobertura'),
+        ('Ritmo de envasado (cajas / hora abierta, por producto)', 'campoRate', 'uiRate'),
+        ('Multiplicador de rendimiento (1 = base)', 'campoCapacidad', 'uiCapacidad'),
     ]):
-        labeled_edit(c2, name + 'Label', name, 60, 360 + j * 90, 546, lab, link)
+        labeled_edit(c2, name + 'Label', name, 60, 412 + j * 86, 546, lab, link)
 
-    panel(c2, 'card_proceso', 650, 194, 586, 650, BG, BORDER)
-    label(c2, 'tituloProcesoUI', 670, 214, 'PROCESO, MERMAS Y RECURSOS', 14, TEAL)
+    panel(c2, 'card_proceso', 650, 204, 586, 650, BG)
+    label(c2, 'tituloProcesoUI', 670, 228, 'Ajustes del proceso', 17, INK)
     for j, (lab, label_name, name, link) in enumerate([
-        ('Rechazo adicional lavandina (%)', 'campoMermaLavLabel', 'campoMermaLav', 'uiMermaLav'),
-        ('Rechazo adicional liquidos (%)', 'campoMermaLiqLabel', 'campoMermaLiq', 'uiMermaLiq'),
-        ('Factor de tiempos de proceso', 'campoTiempoLabel', 'campoTiempo', 'uiTiempo'),
+        ('Rechazo adicional de lavandina (%)', 'campoMermaLavLabel', 'campoMermaLav', 'uiMermaLav'),
+        ('Rechazo adicional de líquidos (%)', 'campoMermaLiqLabel', 'campoMermaLiq', 'uiMermaLiq'),
+        ('Multiplicador de duración (1 = base; mayor = más lento)', 'campoTiempoLabel', 'campoTiempo', 'uiTiempo'),
         ('Reactores en paralelo', 'campoReactoresLabel', 'campoReactores', 'uiReactores'),
-        ('Capacidad cola de elaboracion (lotes)', 'campoColaLabel', 'campoCola', 'uiCola'),
-        ('Capacidad de cada tanque (lotes)', 'tanqueLabel', 'campoTanque', 'uiTanque'),
+        ('Espacio en la cola de elaboración (lotes)', 'campoColaLabel', 'campoCola', 'uiCola'),
+        ('Espacio en cada tanque (lotes)', 'tanqueLabel', 'campoTanque', 'uiTanque'),
     ]):
-        labeled_edit(c2, label_name, name, 670, 256 + j * 92, 546, lab, link)
+        labeled_edit(c2, label_name, name, 670, 282 + j * 86, 546, lab, link)
 
-    button(c2, 'aplicarPlantaUI', 40, 864, 1196, 34, 'Aplicar parametros de planta y medicion', 'guardarPlanta();')
+    button(c2, 'aplicarPlantaUI', 40, 874, 1196, 36, 'Aplicar cambios de planta', 'guardarPlanta();')
+    label(c2, 'notaAjustesPlantaUI', 40, 930,
+          'Los rechazos son adicionales al rendimiento histórico. Apertura, multiplicadores y recursos rigen para toda la planta.', 12, MUTED)
+
+    # A separate row for each navigation level; content starts below all headers.
+    # Compress only vertical spacing, preserving font and control sizes.
+    for content in [s0, s1, c0, c1, c2]:
+        for n in children(content):
+            if children(n, 'Y'):
+                put(n, 'Y', 292 + (float(text(n, 'Y')) - 204) * .88)
+            if n.tagName in ['Rectangle', 'TimePlot']:
+                put(n, 'Height', float(text(n, 'Height')) * .88)
+            if n.tagName == 'TimePlot':
+                chart = children(n, 'ChartArea')[0]
+                for tag in ['YOffset', 'Height']:
+                    put(chart, tag, float(text(chart, tag)) * .88)
+    for bar_prefix, control_prefix, count in [
+        ('escenarioBar','escenarioUI',3), ('canalBar','canalUI',3),
+        ('productoBar','productoUI',6), ('productoCfgBar','productoCfgUI',6),
+    ]:
+        for i in range(count):
+            bar, control = byname(bar_prefix+str(i)), byname(control_prefix+str(i))
+            height = float(children(control,'BasicProperties')[0].getAttribute('Height'))
+            put(bar, 'Y', float(text(control,'Y')) + height + 3)
 
     # 3D camera + quiet footer message
-    scene.appendChild(fresh(tpl_camera))
-    label(scene, 'mensajeUItexto', 24, 986, 'Mensaje', 11, MUTED, expr='mensajeUI')
+    camera = fresh(tpl_camera)
+    import math
+    for k, v in {'X':920, 'Y':605+1100/math.tan(math.radians(55)), 'Z':1100, 'RotationX':55, 'RotationZ':-90}.items():
+        put(camera,k,v)
+    scene.appendChild(camera)
+    message = label(scene, 'mensajeUItexto', 24, 986, 'Mensaje', 11, MUTED, expr='mensajeUI')
+    code(message, 'VisibleCode', 'vistaActiva != 0')
 
     # Update Main AdditionalClassCode cleanly, keeping GUIA_PLANTA helpers.
     additional = _strip_var_decls((ROOT / 'tools/MainInterfaz.code.java.txt').read_text(encoding='utf8'))
@@ -487,14 +554,44 @@ def modularizar(d):
         if '|' in name or name.startswith('ESTADISTICAS'):
             put(rco, 'Name', 'Plot demanda y ordenes')
 
+    # Keep the study's return instruction aligned with the renamed UI action.
+    for experiment in children(children(model, 'Experiments')[0]):
+        if text(experiment, 'Name') == 'Comparacion_100x3':
+            for n in experiment.getElementsByTagName('Text'):
+                value = text(n, 'Text')
+                renamed = value.replace('Main > Estadisticas > Leer ultimos IC',
+                    'Main > Estadísticas > Comparar escenarios > Cargar resultados')
+                renamed = renamed.replace('Cargar últimos resultados', 'Cargar resultados')
+                if renamed != value:
+                    put(n, 'Text', renamed)
+
+    # Preserve identities used by the IDE and existing model outputs.
+    for n in scene.getElementsByTagName('*'):
+        if text(n, 'Name') in original_ids and children(n, 'Id'):
+            put(n, 'Id', original_ids[text(n, 'Name')])
+
 
 def main():
     backup = Path(tempfile.mkdtemp(prefix='domitec-antes-modularizar-'))
-    shutil.copy2(ALP, backup / ALP.name)
-    d = D.parse(str(ALP))
-    modularizar(d)
-    ALP.write_bytes(d.toxml(encoding='UTF-8'))
-    print('Updated', ALP)
+    paths = [ALP]
+    autosave = ALP.with_suffix('.alp.autosave')
+    if autosave.exists():
+        paths.append(autosave)
+    # Capture both versions first. Never replace the newer editor recovery
+    # version with the older saved model; transform each version independently.
+    originals = {p: p.read_bytes() for p in paths}
+    for p, contents in originals.items():
+        (backup / p.name).write_bytes(contents)
+    updated = {}
+    for p, contents in originals.items():
+        d = D.parseString(contents)
+        modularizar(d)
+        updated[p] = d.toxml(encoding='UTF-8')
+    if any(p.read_bytes() != originals[p] for p in paths):
+        raise RuntimeError('El modelo cambió durante la preparación; no se escribió ningún archivo.')
+    for p, contents in updated.items():
+        p.write_bytes(contents)
+        print('Updated', p)
     print('Backup:', backup)
 
 

@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-12",
+  "file": "domitec_interactivo/Domitec_Interactivo.alp",
+  "sha256": "80af6e22f09317519911ffae75e59da2f67769b7de9f25a881e25da08dde3d41",
+  "preserved": {
+    "Id": "bb165c28150ece171531f812ccc3a65d0b1b74892cf5b264343250b38a898cf0",
+    "Name": "a63d60cc1ca2227d995e0669ead2cb43ca493f996d8b228212b66ac30127ed76",
+    "Description": "809dcdd11072c7a6ace598bfc7353de428819846c61f9106f4b1d3930aa00ca3",
+    "EngineVersion": "ed817f836ad112ae1a3d6a3e97de74ad59a059457976c9f0039c9edd9f0e113e",
+    "JavaPackageName": "e9a5dab55937e3e23182143327705621b1d5003ef39c7e382987a50909f9eea1",
+    "ModelTimeUnit": "e5bacf0a4469d20d33782c144e1d2c5b6cb4e6e3ab94c5ae86dfcc16fc244127",
+    "OptionLists": "4a6830b5cfd595d91fef7f38857608c2220d71c4f954b91b232b71f05fad0e9b",
+    "Folders": "32ec05b37d8b9ae66556f69b7a3f336ab9acb076a1357356e22c2fffc4cf73b6",
+    "Batch": "b4c426c34faef47af0d7c649c923066e904564d93d069f0cba5091ba2b0bf3d2",
+    "Client": "c94912af0687ff07dd5fe55ae4cd9ab19585be68c211ad7b12b786c0194a33e0",
+    "DomitecPlant": "fa544edc3cc2191cc178727d426927cf075511fb41c5583e0f13f60b3ee5a4dd",
+    "Main_logic_elements": "unchanged (variables, events, datasets, embedded agents, connections)",
+    "Supplier": "3b8a10d8d25aaa31bbb90de554b2193b51f267783352986d1ae723e0fbe4411a",
+    "DifferentialEquationsMethod": "39250fa42687f0d3214f1727d84a0508ec9867dd1e626ce4e9e2f557b222f690",
+    "MixedEquationsMethod": "5654bdf982184206028c236fac9b9459a27c1dc0dc04876e86376d955a183b34",
+    "AlgebraicEquationsMethod": "b472638bfb7ad9a2f84e5a5770121f92c74e1715fd745fbe174292f07cd8e9d6",
+    "AbsoluteAccuracy": "53018caa22920b3a504e3e40ea934a8e85ad91eaf1e48b1ccb1b5cbe3af65118",
+    "FixedTimeStep": "0d89c2b92e753fea82261a213dbbf07a7a0a8b1802ede883c9a4a980b15a2c9e",
+    "RelativeAccuracy": "1e5f6602d88f46857b2d714577d7465f1acb8ec2607a6ccca2533cad2f5a75f5",
+    "TimeAccuracy": "8c112439500159e5c21fb2bb1c7e573e9625ac9e692530ed5da31efdd4b2658c",
+    "Frame": "423d1d567a325dcd3919dfac76283ea7869147a3fcde06c377ae0089d83b38b1",
+    "Database": "a9c4f9a5ddd9d204b8cd808089d8cbc2a641e0eef9ddf97acc08f8c6e359182a",
+    "RunConfiguration": "0ea09440bd99d6543aaeb5bd3cb42af1252a6bfc9eb09e489d330bd56b8984ce",
+    "Experiments": "all simulation settings and experiment code unchanged; only return instruction renamed",
+    "JavaClasses": "dc7f6b45c9dd11ee0301285e1232e7460f939eb824b5d0e042dc92def4a483f3",
+    "ModelResources": "0e16660ee872c7332e6a53e851a8e50d0dd021fe9792032bd86b6bfc59eb6b8a",
+    "RequiredLibraryReference": "4e70d9ecc82376aa02f656619cdc9997459c96b1b3eb98801d32cab6eabf7948",
+    "CloudModelUuid": "1ae58d39f9ce3788974d2160041b47fccbd5a0436a3b3e8d220e4ddd1f03aac6"
+  },
+  "ui_changes": [
+    "stacked_rows_for_brand_navigation_status_heading_subtabs_content",
+    "no_shared_status_or_outer_body_container",
+    "full_width_3d_animation",
+    "moderately_smaller_2d_labels",
+    "comparison_grid_with_three_pairs_four_columns_and_plain_language_reading",
+    "closer_perspective_camera_height_1100",
+    "operator_checkbox_and_bottom_caption_removed",
+    "scenario_percentage_in_description_only",
+    "four_plots_with_named_axes",
+    "separate_editor_boards_repositioned_at_runtime",
+    "three_row_four_column_number_legend_requested_by_user"
+  ],
+  "checks": {
+    "sdk_compilation": "passed",
+    "real_shape_tab_transitions": 40,
+    "layout_previews": 8,
+    "native_visual_validation": "pending: Computer Use native pipe unavailable",
+    "logic_preservation_vs_previous_ui": "passed",
+    "comparison_reading": "passed: A-B sign, service, backlog, BW, zero-inclusive CI, empty and insufficient pairs"
+  },
+  "axis_labels": {
+    "plotEjeY": "Cajas / semana",
+    "plotEjeX": "Tiempo (semanas)",
+    "plot1EjeY": "Cajas / semana",
+    "plot1EjeX": "Tiempo (semanas)",
+    "plot2EjeY": "Cajas pendientes",
+    "plot2EjeX": "Tiempo (semanas)",
+    "plotWipEjeY": "Cajas en proceso",
+    "plotWipEjeX": "Tiempo (semanas)"
+  },
+  "editor_boards": {
+    "cuerpoVista0": [
+      0.0,
+      0.0
+    ],
+    "cuerpoVista1": [
+      1400.0,
+      0.0
+    ],
+    "cuerpoVista2": [
+      2800.0,
+      0.0
+    ],
+    "statsSeries": [
+      0.0,
+      0.0
+    ],
+    "statsResumen": [
+      0.0,
+      1100.0
+    ],
+    "statsComparacion": [
+      0.0,
+      2200.0
+    ],
+    "cuerpoVista3": [
+      4200.0,
+      0.0
+    ],
+    "cfgPolitica": [
+      0.0,
+      0.0
+    ],
+    "cfgDemanda": [
+      0.0,
+      1100.0
+    ],
+    "cfgPlanta": [
+      0.0,
+      2200.0
+    ]
+  },
+  "Main_additional_code_review": "UI captions, camera, panel positioning and comparison-table formatting only; demand, production, accounting and exported statistics unchanged",
+  "viewport_3d": {
+    "X": "0",
+    "Y": "374",
+    "Width": "1280",
+    "Height": "636"
+  },
+  "number_legend_rows": [
+    [
+      1,
+      4,
+      5,
+      8
+    ],
+    [
+      2,
+      null,
+      6,
+      9
+    ],
+    [
+      3,
+      null,
+      7,
+      null
+    ]
+  ]
+}

@@ -3,7 +3,7 @@
 This is a compatibility/unit check, not a substitute for an AnyLogic run.
 """
 from pathlib import Path
-import json, os, subprocess, tempfile, zipfile
+import hashlib, json, os, subprocess, tempfile, zipfile
 import xml.etree.ElementTree as E
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -51,7 +51,7 @@ def main():
     assert 'nivelPlanta3D.add(vistaPlanta3D)' in ui_code
     assert 'presentation.add(nivelPlanta3D)' in ui_code
     assert 'vistaPlanta3D.setVisible(vista == 0)' in ui_code
-    for subgroup in ['statsSeries', 'statsResumen', 'cfgPolitica', 'cfgDemanda', 'cfgPlanta']:
+    for subgroup in ['statsSeries', 'statsResumen', 'statsComparacion', 'cfgPolitica', 'cfgDemanda', 'cfgPlanta']:
         assert any(n.findtext('Name')==subgroup for n in main.findall('.//Group')), subgroup
     for rco in model.findall('.//RunConfigurationOutput'):
         assert '|' not in rco.findtext('Name',''), rco.findtext('Name','')
@@ -62,6 +62,11 @@ def main():
     assert 'validarCorridaCompleta' in study.findtext('AfterSimulationRunCode')
     assert 'SesionEstudio.configuracionPreparada()' in E.tostring(study,encoding='unicode')
     assert len(main.findall('.//TimePlot'))==4
+    for plot in main.findall('.//TimePlot'):
+        name=plot.findtext('Name')
+        for suffix in ['EjeX','EjeY']:
+            caption=next(n for n in main.findall('.//Text') if n.findtext('Name')==name+suffix)
+            assert caption.findtext('Text'), (name, suffix)
     wip_plot=next(n for n in main.findall('.//TimePlot') if n.findtext('Name')=='plotWip')
     assert [n.findtext('Expression') for n in wip_plot.findall('DatasetExpression')]==['dsWip']
     floor=next(n for n in plant.findall('.//Rectangle') if n.findtext('Name')=='piso_planta')
@@ -82,8 +87,25 @@ def main():
                 assert n.findtext('PresentationFlag')=='false',(a.findtext('Name'),tag,n.findtext('Name'))
     for n in main.findall('EmbeddedObjects/EmbeddedObject'):
         assert float(n.findtext('X'))>=1500
-    for name in ['planoParqueRecepcion','planoParqueDilucion','planoParqueEnvasado','planoParqueDeposito','planoVicentinRecepcion','planoVicentinQc','planoVicentinPulmon','planoVicentinEnvasado','planoVicentinDeposito']:
-        assert any(n.findtext('Name')==name for n in main.findall('.//Rectangle')),name
+    flow=next(n for n in main.findall('.//Group') if n.findtext('Name')=='cuerpoVista1')
+    assert any(n.findtext('Name')=='planoFondo' for n in flow.findall('.//Rectangle'))
+    for product in range(5):
+        for metric in ['Pulmon','Envasado','Stock','Pendientes']:
+            name='planoTabla'+metric+str(product)
+            assert any(n.findtext('Name')==name and n.findtext('TextCode') for n in flow.findall('.//Text')),name
+    assert not any('Pallet' in n.findtext('Name','') or 'Equipo' in n.findtext('Name','') for n in flow.findall('.//*'))
+    view3d=next(n for n in main.findall('.//Group') if n.findtext('Name')=='cuerpoVista0')
+    window=view3d.find('.//Control[@Type="Window3D"]')
+    assert float(window.findtext('X'))==0 and float(window.findtext('Width'))==1280
+    assert not any(n.findtext('Name') in ['operariosUI','tituloPlanta3D','notaPlanta3D'] for n in main.findall('.//*'))
+    assert all(float(n.findtext('Y'))<float(window.findtext('Y')) for n in view3d.findall('.//Text') if n.find('Name') is not None)
+    assert all(any(n.findtext('Name')=='referencia3D'+str(i) for n in view3d.findall('.//Text')) for i in range(1,10))
+    comparison=next(n for n in main.findall('.//Group') if n.findtext('Name')=='statsComparacion')
+    for row in range(3):
+        for col in range(4):
+            cell=next(n for n in comparison.findall('.//Text') if n.findtext('Name')=='celdaIC'+str(row)+str(col))
+            assert cell.findtext('TextCode')==f'celdaComparacionIC({row},{col})'
+    assert not any(n.findtext('Name') in ['statusBarUI','fondoCuerpo1','fondoCuerpo2','fondoCuerpo3','tablaPareadosUI'] for n in main.findall('.//*'))
     # ClientAreaTopLeft may be omitted once saved natively in AnyLogic IDE.
     if plant.findtext('ClientAreaTopLeft/X') is not None:
         assert plant.findtext('ClientAreaTopLeft/X')=='-1400'
@@ -107,6 +129,13 @@ def main():
     native=Path.home()/'.AnyLogicPLE/Workspace8.8/Domitec_Main_3D_BUILD/classes'
     native_interactive=Path.home()/'.AnyLogicPLE/Workspace8.8/Domitec_Interactivo_BUILD/classes'
     use_interactive = not (native/'domitec_main_3d/Main.class').is_file() and (native_interactive/'domitec_interactivo/Main.class').is_file()
+    work=ROOT/'tools/_workspace_interfaz_verificacion';work.mkdir(exist_ok=True)
+    # A clean/rebuild in the IDE can temporarily remove both classes folders.
+    # Choose the package actually present in the retained compatibility cache.
+    if not (native/'domitec_main_3d/Main.class').is_file() and not (native_interactive/'domitec_interactivo/Main.class').is_file():
+        assert (work/'native.jar').is_file(), 'Open/build Domitec_Interactivo once to provide its native API'
+        with zipfile.ZipFile(work/'native.jar') as z:
+            use_interactive = 'domitec_interactivo/Main.class' in z.namelist()
     base_pkg = 'domitec_interactivo' if use_interactive else 'domitec_main_3d'
     target_pkg = 'domitec_interactivo_check' if use_interactive else 'domitec_interactivo'
     imports=f'''package {target_pkg};
@@ -114,7 +143,6 @@ import com.anylogic.engine.*;import com.anylogic.engine.presentation.*;
 import com.anylogic.libraries.processmodeling.*;
 import {base_pkg}.*;import {base_pkg}.ProductType;import {base_pkg}.ProductState;
 '''
-    work=ROOT/'tools/_workspace_interfaz_verificacion';work.mkdir(exist_ok=True)
     src_classes = native_interactive if use_interactive else native
     if (src_classes/(f'{base_pkg}/Main.class')).is_file():
         with zipfile.ZipFile(work/'native.jar','w',zipfile.ZIP_DEFLATED) as z:
@@ -136,10 +164,8 @@ import {base_pkg}.*;import {base_pkg}.ProductType;import {base_pkg}.ProductState
         jmain+='public Camera3D camaraMain; public EventTimeout muestrearWip;\n'
         jmain+=main.findtext('AdditionalClassCode')+'\n'
     else:
-        jmain+='public boolean animarOperarios; public int vistaActiva=0, subVistaStats=0, subVistaConfig=0, sector3DActivo=0, metricaIC=0;\n'
-        jmain+='public boolean mostrarGuia3D=false;\n'
-        jmain+='public void mostrarVista(int vista){if(vista<0||vista>3)throw new IllegalArgumentException(); vistaActiva=vista;}\n'
-        jmain+='public void alternarGuia3D(){mostrarGuia3D=!mostrarGuia3D;}\n'
+        jmain+='public ShapeGroup statsComparacion;\n'
+        jmain+=main.findtext('AdditionalClassCode')+'\n'
     types={'TextCode':'String','VisibleCode':'boolean','XCode':'double','YCode':'double','WidthCode':'double','FillColorCode':'java.awt.Color'}
     for i,n in enumerate(main.findall('Presentation/Level/Presentation//*')):
         if n.tag in types and n.text:jmain+=f'{types[n.tag]} property{i}(){{return {n.text};}}\n'
@@ -198,7 +224,14 @@ import {base_pkg}.*;import {base_pkg}.ProductType;import {base_pkg}.ProductState
     p=subprocess.run([str(INSTALL/'jre/bin/javac.exe'),'-encoding','UTF-8','-Xmaxerrs','10','-cp',os.pathsep.join(map(str,cp)),'-d',str(work/'classes'),*[str(f) for f in work.glob('*.java')]],text=True,capture_output=True)
     assert p.returncode==0,p.stdout+p.stderr
     print('PASS: exact UI methods, expressions, controls, event actions, stochastic properties and paired experiment actions compile against AnyLogic API')
-    report={'structure':'passed','java_action_compatibility':'passed','model_version':'operacion-24x7-v2','native_300_run':'pending_new_operating_model','native_visual_validation':'pending_reload_of_24x7_model','delivery_speed_override':'removed','logic_element_presentation':'hidden','view_2d':'native_flow_diagram','batch_launch':'direct_defaults_or_optional_saved_parameters'}
+    report={'structure':'passed','java_action_compatibility':'passed','model_version':'operacion-24x7-v2','native_300_run':'not_repeated_for_presentation_change','native_visual_validation':'pending_minimal_ui_reload_in_anylogic','chart_axes':'four_plots_with_time_and_quantity_labels','editor_layout':'separate_boards_repositioned_at_runtime','statistics_subtabs':['graphs','indicators','comparison'],'delivery_speed_override':'removed','logic_element_presentation':'hidden','view_2d':'native_flow_diagram','batch_launch':'direct_defaults_or_optional_saved_parameters'}
+    current_audit=ROOT/'docs/auditoria_resultados_24x7.json'
+    if current_audit.exists():
+        current=json.loads(current_audit.read_text(encoding='utf8'))
+        package=ROOT/current['package']['path']
+        available=all((package/name).is_file() and hashlib.sha256((package/name).read_bytes()).hexdigest()==digest
+                      for name,digest in current['package']['sha256'].items())
+        report['operating_model_results']={'audit':'docs/auditoria_resultados_24x7.json','package':current['package']['path'],'source_hashes_match':available}
     audit=ROOT/'tools/auditoria_estudio_real.json'
     if audit.exists():
         report['previous_model_native_results_audit']=json.loads(audit.read_text(encoding='utf8'))

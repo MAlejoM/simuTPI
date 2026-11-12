@@ -30,7 +30,7 @@ def render(tab, sub=0, guia=False, agent_name='Main'):
         if name == 'guia3D_grupo':
             return guia
         if name.startswith('stats'):
-            return name == ('statsSeries' if sub == 0 else 'statsResumen')
+            return name == ['statsSeries', 'statsResumen', 'statsComparacion'][sub]
         if name.startswith('cfg'):
             return name == ['cfgPolitica', 'cfgDemanda', 'cfgPlanta'][sub]
         return True
@@ -56,23 +56,35 @@ def render(tab, sub=0, guia=False, agent_name='Main'):
 
     def mock_expr(name, fallback):
         mocks = {
-            'perfilFormUI': 'Editando: Maxiconsumo / Lavandina',
+            'perfilFormUI': 'Seleccionado: Maxiconsumo / Lavandina',
             'perfilPlantaUI': 'Producto seleccionado: Lavandina',
             'perfilActivoUI': 'Maxiconsumo / Lavandina',
             'tiempoUI': 'Semana 4.32 / 100  |  Semilla 1',
-            'escenarioActivoUI': 'Escenario: 0 - Base 24x7  |  alfa=1.5  |  168 h/sem',
+            'escenarioActivoUI': 'Escenario 2 · Mejora integral  ·  168 h/semana',
             'resumenRapidoUI': 'Fill Rate: 94.2%  |  Backlog: 12,400  |  WIP: 18,000',
             'resumenPlano2DHeader': 'Stock: 146,000  |  Produccion: 320,000  |  Canceladas: 0',
             'warmupHeader': 'Warm-up: 15.0 sem',
             'warmupStatsBadge': 'Ventana post warm-up: desde semana 15.0',
             'varianzaLabel': 'Varianza = 124,590,944',
             'guia3D_seleccion': '1. Recepcion Parque',
-            'resumenOperacionUI': '24x7 | Canceladas: 0 | Insumos almacenados: 36,000 | WIP liberado: 18,000',
+            'resumenOperacionUI': 'Pedidos cancelados: 0 cajas  ·  Insumos almacenados: 83,960 cajas equivalentes',
+            'periodoIndicadoresUI': 'Servicio, producción y efecto látigo: desde la semana 15. Los demás valores muestran el estado actual.',
             'estadoEstudioUI': 'Sin estudio ejecutado | 0/300',
-            'tablaPareadosUI': 'Sin estudio completo.\nEjecutar las 100 ternas.\nLos IC se publican con 100 pares.',
-            'escenarioResumenCfgUI': 'Escenario activo: 0 - Base 24x7\nAlfa (latigo): 1.5  |  Apertura: 168 h/sem\nWarm-up: 15.0 sem  |  Espera cancelacion: 30.0 d',
-            'mensajeUItexto': 'Los cambios se aplican a los proximos pedidos y procesos.',
+            'metricaComparacionUI': 'Demanda atendida · diferencia en puntos porcentuales',
+            'sentidoComparacionUI': 'Más servicio es mejor. Diferencia = primer escenario (A) menos segundo (B).',
+            'tablaPareadosUI': 'Demanda atendida (puntos porcentuales)\nDiferencia e intervalo de confianza del 95%\n\nEscenario 0 menos 1  ·  100 pares\nDiferencia media: -0.011\nIntervalo: [-0.017 ; -0.006]\nDiferencia detectable (no incluye cero)\n\nEscenario 0 menos 2  ·  100 pares\nDiferencia media: -3.609\nIntervalo: [-3.919 ; -3.298]\nDiferencia detectable (no incluye cero)\n\nEscenario 1 menos 2  ·  100 pares\nDiferencia media: -3.598\nIntervalo: [-3.908 ; -3.287]\nDiferencia detectable (no incluye cero)',
+            'escenarioResumenCfgUI': 'Activo: 2 · Mejora integral',
+            'mensajeUItexto': '',
         }
+        if name == 'estadoEstudioUI':
+            return 'Estudio completo · 100 pares por comparación'
+        if name.startswith('celdaIC'):
+            row, col = map(int, name[-2:])
+            return [
+                ['0 Base − 1 Sin pánico','−0,011','[−0,017; −0,006]','Más servicio: Sin pánico\n(el intervalo no incluye 0)'],
+                ['0 Base − 2 Integral','−3,609','[−3,919; −3,298]','Más servicio: Integral\n(el intervalo no incluye 0)'],
+                ['1 Sin pánico − 2 Integral','−3,598','[−3,908; −3,287]','Más servicio: Integral\n(el intervalo no incluye 0)'],
+            ][row][col]
         if name.startswith('planoLote'):
             return 'Lotes: 0'
         if name.startswith('planoStock'):
@@ -93,6 +105,8 @@ def render(tab, sub=0, guia=False, agent_name='Main'):
             y = float(n.findtext('Y', '0')) + dy
             if n.tag == 'Group':
                 if group_visible(name):
+                    if name.startswith(('cuerpoVista', 'stats', 'cfg')):
+                        x, y = dx, dy  # organizarPanelesUI() calls setPos(0,0).
                     visit(n.find('Presentation'), x, y)
             elif n.findtext('DrawMode') == 'SHAPE_DRAW_3D':
                 continue
@@ -101,24 +115,44 @@ def render(tab, sub=0, guia=False, agent_name='Main'):
                     continue
                 w = float(n.findtext('Width', '0'))
                 h = float(n.findtext('Height', '0'))
-                draw.rectangle((x, y, x + w, y + h), fill=color(n.findtext('FillColor')), outline=color(n.findtext('LineColor')))
+                outline=color(n.findtext('LineColor')) if float(n.findtext('LineWidth','0')) > 0 else None
+                draw.rectangle((x, y, x + w, y + h), fill=color(n.findtext('FillColor')), outline=outline)
             elif n.tag == 'TimePlot':
                 w = float(n.findtext('Width', '580'))
                 h = float(n.findtext('Height', '350'))
-                draw.rectangle((x, y, x + w, y + h), fill='#f7f9fa', outline='#c5d0d5')
-                font = ImageFont.truetype(str(FONT), 13)
-                draw.text((x + 16, y + 14), f'TimePlot: {name}', font=font, fill='#263740')
+                # Layout preview only; chart curves are not fabricated results.
+                chart = n.find('ChartArea')
+                ax = x + float(chart.findtext('XOffset'))
+                ay = y + float(chart.findtext('YOffset'))
+                cw = float(chart.findtext('Width'))
+                ch = float(chart.findtext('Height'))
+                draw.rectangle((ax, ay, ax + cw, ay + ch), fill='white', outline='#c5d0d5')
+                font = ImageFont.truetype(str(FONT), 12)
+                for tick in range(5):
+                    yy = ay + tick * ch / 4
+                    draw.line((ax, yy, ax + cw, yy), fill='#e7eaec')
+                    draw.text((ax - 62, yy - 6), f'{(4-tick)*25000:,}', font=font, fill='#687680')
+                for tick in range(6):
+                    xx = ax + tick * cw / 5
+                    draw.text((xx - 8, ay + ch + 6), str(tick * 20), font=font, fill='#687680')
+                legend_x = x + 76
+                for ds in n.findall('DatasetExpression'):
+                    title = ds.findtext('Title')
+                    draw.line((legend_x, y + h - 15, legend_x + 18, y + h - 15), fill=color(ds.findtext('Color')), width=2)
+                    draw.text((legend_x + 24, y + h - 22), title, font=font, fill='#263740')
+                    legend_x += draw.textlength(title, font=font) + 54
             elif n.tag == 'Text':
+                if name == 'mensajeUItexto' and tab == 0:
+                    continue
                 value = n.findtext('Text', '')
                 if n.find('TextCode') is not None:
                     value = mock_expr(name, value)
                 font = ImageFont.truetype(str(FONT), int(n.findtext('Font/Size', '12')))
                 draw.multiline_text((x, y), value, font=font, fill=color(n.findtext('Color')), spacing=2)
-                if name.endswith('Label') or name in ['mediaLabel', 'sdLabel', 'tanqueLabel']:
-                    texts.append((name, draw.multiline_textbbox((x, y), value, font=font, spacing=2)))
+                texts.append((name, draw.multiline_textbbox((x, y), value, font=font, spacing=2)))
             elif n.tag == 'Control':
                 if n.get('Type') == 'Window3D':
-                    w = 918.0 if guia else float(n.findtext('Width', '1212'))
+                    w = float(n.findtext('Width', '1212'))
                     h = float(n.findtext('Height', '790'))
                     draw.rectangle((x, y, x + w, y + h), fill='#e4eaec', outline='#9aabad')
                     font = ImageFont.truetype(str(FONT), 18)
@@ -135,13 +169,13 @@ def render(tab, sub=0, guia=False, agent_name='Main'):
                 else:
                     draw.rectangle((x, y, x + w, y + h), fill='white' if edit else '#dddddd', outline='#aaaaaa')
                 value = n.findtext('ExtendedProperties/Link', '') if edit else n.findtext('ExtendedProperties/LabelText', '')
-                font = ImageFont.truetype(str(FONT), 13 if edit else 11)
-                draw.text((x + 6 + (18 if check else 0), y + 7), value, font=font, fill='#263740')
-                if edit:
-                    controls.append((name, (x, y, x + w, y + h)))
+                font = ImageFont.truetype(str(FONT), int(n.find('ExtendedProperties/Font').get('Size','16')))
+                draw.text((x + (w-draw.textlength(value,font=font))/2 if not edit and not check else x+6+(18 if check else 0), y + 7), value, font=font, fill='#263740')
+                controls.append((name, (x, y, x + w, y + h)))
 
     visit(scene, -float(main.findtext('ClientAreaTopLeft/X', '0')), -float(main.findtext('ClientAreaTopLeft/Y', '0')))
     for name, (x1, y1, x2, y2) in texts:
+        assert x1 >= 0 and y1 >= 0 and x2 <= 1280 and y2 <= 1010, (name, 'text outside viewport')
         for control, (a, b, c, d) in controls:
             assert min(x2, c) <= max(x1, a) or min(y2, d) <= max(y1, b), (name, control, 'overlapping caption/input')
 
@@ -163,6 +197,7 @@ if __name__ == '__main__':
     render(1)
     render(2, sub=0)
     render(2, sub=1)
+    render(2, sub=2)
     render(3, sub=0)
     render(3, sub=1)
     render(3, sub=2)

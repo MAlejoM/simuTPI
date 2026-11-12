@@ -2,7 +2,7 @@ public ConfiguracionDomitec cfg = new ConfiguracionDomitec();
 public RegistroCorrida registro = new RegistroCorrida();
 public int vistaActiva = 0, subVistaStats = 0, subVistaConfig = 0, escenarioActivo = 0, perfilCanal = 0, perfilProducto = 0;
 public int metricaIC = 0;
-public String mensajeUI = "Los cambios se aplican a los proximos pedidos y procesos.";
+public String mensajeUI = "";
 public String carpetaResultados = java.nio.file.Paths.get(System.getProperty("user.dir"), "resultados_operativos_v2").toAbsolutePath().toString();
 public double uiMedia=9379, uiDesvio=11162, uiLead=30, uiCobertura=5.5, uiRate=667;
 public double uiLatigo=1.5, uiHoras=168, uiMermaLav=0, uiMermaLiq=0, uiTiempo=1, uiCapacidad=1, uiWarmup=15;
@@ -22,6 +22,7 @@ public void iniciarInterfaz() {
     escenarioActivo = numeroEscenario >= 0 ? numeroEscenario : (cfg.factLatigo <= 1 ? 1 : 0);
     aplicarConfiguracion(cfg, false);
     if (esComparacion) { muestrearWip.reset(); return; }
+    organizarPanelesUI();
     nivelPlanta3D = new com.anylogic.engine.markup.Level(this, "planta3D", SHAPE_DRAW_3D, 0);
     vistaPlanta3D = new com.anylogic.engine.presentation.ShapeEmbeddedObjectPresentation(
         this, SHAPE_DRAW_3D, true, 0, 0, 0, 0, false, false, domitecPlant);
@@ -40,6 +41,14 @@ public void mostrarVista(int vista) {
     vistaActiva = vista;
     // Draw modes are fixed at construction in AnyLogic. Tabs only change visibility.
     if (vistaPlanta3D != null) vistaPlanta3D.setVisible(vista == 0);
+}
+
+public void organizarPanelesUI() {
+    // In the editor each view has its own board. Runtime uses one viewport.
+    cuerpoVista0.setPos(0,0); cuerpoVista1.setPos(0,0);
+    cuerpoVista2.setPos(0,0); cuerpoVista3.setPos(0,0);
+    statsSeries.setPos(0,0); statsResumen.setPos(0,0); statsComparacion.setPos(0,0);
+    cfgPolitica.setPos(0,0); cfgDemanda.setPos(0,0); cfgPlanta.setPos(0,0);
 }
 
 public double stockProducto(int producto) {
@@ -196,7 +205,7 @@ public ComparacionEscenarios.Resultado resultadoFinal(int escenario){
 public String nombreProducto(int i){return new String[]{"Lavandina","Desinfectante","Lavavajilla","Lavarropa","Suavizante","Detergente"}[i];}
 public String nombreCanal(int i){return new String[]{"Maxiconsumo","Grandes clientes","Red propia"}[i];}
 public String numero(double x){return String.format(java.util.Locale.ROOT,"%,.0f",x);}
-public String escenarioTexto(){return escenarioActivo==3?"Personalizado":new String[]{"0 - Base 24x7","1 - Sin panico 24x7","2 - Rendimiento +27.5% (hipotesis)"}[escenarioActivo];}
+public String escenarioTexto(){return escenarioActivo==3?"Personalizado":new String[]{"0 · Base","1 · Sin pánico","2 · Mejora integral"}[escenarioActivo];}
 public String perfilTexto(){return nombreCanal(perfilCanal)+" / "+nombreProducto(perfilProducto);}
 
 public void ejecutarComparacion() {
@@ -204,7 +213,7 @@ public void ejecutarComparacion() {
         SesionEstudio.preparar(cfg,carpetaResultados);
         mensajeUI="Configuracion guardada. Ejecutar Comparacion_100x3 desde el menu Run de AnyLogic.";
         getExperiment().getExperimentHost().showMessageDialog(
-            "Parametros personalizados guardados.\n\n1. Cerra esta ejecucion.\n2. Abri Comparacion_100x3 y pulsa Usar guardados y ejecutar.\n3. Al terminar, volve a Estadisticas > KPIs y Estudio 100x3 y pulsa Leer ultimos IC.\n\nPara comparar los escenarios predeterminados podes abrir Comparacion_100x3 directamente, sin preparar nada.");
+            "Configuración guardada.\n\n1. Cerrá esta ejecución.\n2. Abrí Comparacion_100x3 y elegí Usar guardados y ejecutar.\n3. Al terminar, volvé a Estadísticas > Comparar escenarios y pulsá Cargar resultados.\n\nPara los valores predeterminados podés ejecutar Comparacion_100x3 directamente.");
     } catch(RuntimeException error){mensajeUI=error.getMessage();}
 }
 public void cargarUltimosIC(){
@@ -212,7 +221,7 @@ public void cargarUltimosIC(){
     catch(RuntimeException error){mensajeUI=error.getMessage();}
 }
 public void restablecerCamara(){
-    double altura=1300;
+    double altura=1100;
     double inclinacion=Math.toRadians(55);
     ventanaPlanta3D.setCamera(new com.anylogic.engine.presentation.Camera3D(
         920,605+altura/Math.tan(inclinacion),altura,inclinacion,-Math.PI/2),false,0L);
@@ -222,15 +231,44 @@ public void vistaSuperior(){
 }
 public String tablaIC(){
     ComparacionEscenarios datos=SesionEstudio.ultimoResultado;
-    if(datos==null)return "Sin estudio completo.\nEjecutar las 100 ternas.\nLos IC se publican con 100 pares.\nNo se fuerza que excluyan el cero.";
+    if(datos==null)return "Todavía no hay resultados cargados.\nEjecutá Comparacion_100x3 y luego\npulsá Cargar resultados.";
     String metrica=new String[]{"fillRate","backlog","bw","stock","produccion"}[metricaIC];
-    StringBuilder s=new StringBuilder("IC 95% PAREADOS | "+metrica+"\n\n");
+    String titulo=new String[]{"Demanda atendida (puntos porcentuales)","Pedidos pendientes (cajas)","Efecto látigo (razón)","Stock (cajas)","Producción (cajas)"}[metricaIC];
+    StringBuilder s=new StringBuilder(titulo+"\nDiferencia e intervalo de confianza del 95%\n\n");
     for(int[] par:new int[][]{{0,1},{0,2},{1,2}}){
         ComparacionEscenarios.PairCI95 c=datos.pairCI95(par[0],par[1],metrica);
-        s.append("Esc ").append(par[0]).append(" - ").append(par[1]).append(" | n=").append(c.n).append("\n");
-        s.append(String.format(java.util.Locale.ROOT,"Delta: %.3f\n[%.3f ; %.3f]\n",c.media,c.inferior,c.superior));
-        s.append(c.inferior>0||c.superior<0?"Excluye cero\n\n":"Incluye cero\n\n");
+        s.append("Escenario ").append(par[0]).append(" menos ").append(par[1]).append("  ·  ").append(c.n).append(" pares\n");
+        s.append(String.format(java.util.Locale.ROOT,"Diferencia media: %.3f\nIntervalo: [%.3f ; %.3f]\n",c.media,c.inferior,c.superior));
+        s.append(c.inferior>0||c.superior<0?"Diferencia detectable (no incluye cero)\n\n":"Sin diferencia detectable (incluye cero)\n\n");
     }return s.toString();
+}
+
+public String tituloComparacionIC(){
+    return new String[]{"Demanda atendida · diferencia en puntos porcentuales",
+        "Pedidos pendientes · diferencia en cajas", "Efecto látigo · diferencia de razones"}[metricaIC];
+}
+public String sentidoComparacionIC(){
+    return new String[]{"Más servicio es mejor.", "Menos pedidos pendientes es mejor.",
+        "Una razón menor indica menos amplificación de las compras."}[metricaIC]
+        + "  Diferencia = primer escenario (A) menos segundo (B).";
+}
+public String celdaComparacionIC(int fila,int columna){
+    int[][] pares={{0,1},{0,2},{1,2}};
+    int a=pares[fila][0], b=pares[fila][1];
+    String[] nombres={"Base","Sin pánico","Integral"};
+    if(columna==0)return a+" "+nombres[a]+" − "+b+" "+nombres[b];
+    ComparacionEscenarios datos=SesionEstudio.ultimoResultado;
+    if(datos==null)return columna==3?"Sin cargar":"—";
+    String metrica=new String[]{"fillRate","backlog","bw"}[metricaIC];
+    ComparacionEscenarios.PairCI95 c=datos.pairCI95(a,b,metrica);
+    if(c.n<2)return "Sin pares suficientes";
+    java.util.Locale idioma=new java.util.Locale("es","AR");
+    if(columna==1)return String.format(idioma,"%+,.3f",c.media);
+    if(columna==2)return String.format(idioma,"[%,.3f; %,.3f]",c.inferior,c.superior);
+    if(c.inferior<=0 && c.superior>=0)return "Sin diferencia clara\n(el intervalo incluye 0)";
+    int elegido=metricaIC==0?(c.media>0?a:b):(c.media<0?a:b);
+    String lectura=new String[]{"Más servicio: ","Menos pendientes: ","Menor razón: "}[metricaIC];
+    return lectura+nombres[elegido]+"\n(el intervalo no incluye 0)";
 }
 public void registrarPedido(ProductType tipo,double cantidad,double inmediato){
     int p=ConfiguracionDomitec.indice(tipo.name());

@@ -19,6 +19,14 @@ def main():
     assert '.setDrawMode(' not in method
     # Read the actual constructor statements and transforms from the model too.
     setup = body[body.index('    nivelPlanta3D = new '):body.index('    seleccionarPerfil(0, 0);')]
+    groups = [n for n in agent.findall('.//Group')
+              if n.findtext('Name','').startswith(('cuerpoVista','stats','cfg'))]
+    declarations = '\n'.join(
+        '    ShapeGroup '+n.findtext('Name')+'=new ShapeGroup(this,SHAPE_DRAW_2D,true,'
+        +n.findtext('X')+','+n.findtext('Y')+',0,0);'
+        for n in groups)
+    predicates = '\n'.join('boolean visible'+str(i)+'(){return '+n.findtext('VisibleCode')+';}'
+                            for i,n in enumerate(n for n in groups if n.findtext('Name','').startswith('cuerpoVista')))
     java = '''import com.anylogic.engine.*;
 import com.anylogic.engine.presentation.*;
 public class TestVistasFijas extends Agent {
@@ -26,12 +34,16 @@ public class TestVistasFijas extends Agent {
     ShapeEmbeddedObjectPresentation vistaPlanta3D;
     com.anylogic.engine.markup.Level nivelPlanta3D;
     TestVistasFijas domitecPlant;
-    int vistaActiva;
+    int vistaActiva, subVistaStats, subVistaConfig;
     public ShapeTopLevelPresentationGroup getPresentationShape(){return presentation;}
-''' + method[:method.index('public double stockProducto(')] + '\nvoid crearVistas(){\n' + setup + '''}
+''' + declarations + '\n' + predicates + '\n' + method[:method.index('public double stockProducto(')] + '\nvoid crearVistas(){\n' + setup + '''}
     public static void main(String[] args){
         TestVistasFijas main=new TestVistasFijas();
         main.domitecPlant=new TestVistasFijas();
+        main.organizarPanelesUI();
+        for(ShapeGroup panel:new ShapeGroup[]{''' + ','.join('main.'+n.findtext('Name') for n in groups) + '''})
+            if(panel.getX()!=0 || panel.getY()!=0)
+                throw new AssertionError("Panel fuera del viewport de ejecucion");
         main.crearVistas();
         if(main.vistaPlanta3D.getLevel()!=main.nivelPlanta3D)
             throw new AssertionError("La planta debe estar registrada en un nivel 3D");
@@ -40,12 +52,14 @@ public class TestVistasFijas extends Agent {
             throw new AssertionError("La planta debe pertenecer al nivel y a la presentacion");
         for(int j=0;j<10;j++) for(int i=0;i<4;i++){
             main.mostrarVista(i);
+            int visibles=(main.visible0()?1:0)+(main.visible1()?1:0)+(main.visible2()?1:0)+(main.visible3()?1:0);
+            if(visibles!=1)throw new AssertionError("Vistas superpuestas");
             if(main.vistaPlanta3D.getDrawMode()!=SHAPE_DRAW_3D)
                 throw new AssertionError("El modo debe permanecer fijo");
             if(main.vistaPlanta3D.isVisible()!=(i==0))
                 throw new AssertionError("Visibilidad incorrecta");
         }
-        System.out.println("PASS: 40 tab transitions with real AnyLogic shapes; no simulation engine");
+        System.out.println("PASS: 40 tab transitions, one body visible, editor boards repositioned with real AnyLogic shapes; no simulation engine");
     }
 }'''
     work = ROOT/'tools/_workspace_vistas_fijas'

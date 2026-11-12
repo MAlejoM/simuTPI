@@ -2,12 +2,24 @@
   "structure": "passed",
   "java_action_compatibility": "passed",
   "model_version": "operacion-24x7-v2",
-  "native_300_run": "pending_new_operating_model",
-  "native_visual_validation": "pending_reload_of_24x7_model",
+  "native_300_run": "not_repeated_for_presentation_change",
+  "native_visual_validation": "pending_minimal_ui_reload_in_anylogic",
+  "chart_axes": "four_plots_with_time_and_quantity_labels",
+  "editor_layout": "separate_boards_repositioned_at_runtime",
+  "statistics_subtabs": [
+    "graphs",
+    "indicators",
+    "comparison"
+  ],
   "delivery_speed_override": "removed",
   "logic_element_presentation": "hidden",
   "view_2d": "native_flow_diagram",
   "batch_launch": "direct_defaults_or_optional_saved_parameters",
+  "operating_model_results": {
+    "audit": "docs/auditoria_resultados_24x7.json",
+    "package": "domitec_interactivo/resultados_operativos_v2/comparacion_20261111_194531_208",
+    "source_hashes_match": true
+  },
   "previous_model_native_results_audit": {
     "package": "domitec_interactivo\\resultados_domitec\\comparacion_20261106_002510_679",
     "result_rows": 300,
