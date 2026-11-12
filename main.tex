@@ -372,7 +372,7 @@ La relación \texttt{Cajas}/(\texttt{Tiempo}/60) se usa solo como contraste, int
 
 \section{Modelo conceptual e implementación}
 \subsection{Arquitectura híbrida y flujo físico}
-La arquitectura combina agentes para los clientes, el proveedor y la planta con eventos discretos para los lotes internos~\cite{lawkelton,banks}. Los clientes emiten pedidos por producto; el proveedor entrega insumos equivalentes después de un retardo parametrizado. La representación de insumos es agregada en cajas equivalentes de producto: no se simulan por separado todas las restricciones de una lista de materiales químicos y de envases.
+La arquitectura combina agentes para los clientes, el proveedor y la planta con eventos discretos para los lotes internos~\cite{lawkelton,banks,wu2011}. Los clientes emiten pedidos por producto; el proveedor entrega insumos equivalentes después de un retardo parametrizado. La representación de insumos es agregada en cajas equivalentes de producto: no se simulan por separado todas las restricciones de una lista de materiales químicos y de envases.
 
 El recorrido distingue recepción y almacén de insumos, liberación a producción, elaboración, control de calidad, tanques pulmón, envasado y producto terminado. Lavandina tiene una rama propia; los cinco líquidos comparten reactores antes de ingresar a líneas de envasado diferenciadas. Un lote representa 1.000 cajas equivalentes. Las estaciones 3D ilustran partes de esas etapas: no todas son servidores productivos independientes. El movimiento de operarios y vehículos es ilustrativo y no agrega capacidad al proceso.
 
@@ -420,7 +420,7 @@ donde $I_p$ es producto terminado, $O_p$ insumos pedidos en tránsito, $A_p$ ins
 La referencia semanal usada para ese límite es $168\,r_p\,k\,\gamma/f_t$, con multiplicador de capacidad $k$, factor de escenario $\gamma$ y factor de tiempos $f_t$. En la base $k=f_t=\gamma=1$. Esta referencia no garantiza la producción efectivamente obtenida: el flujo sigue condicionado por demanda, abastecimiento, buffers y procesos anteriores.
 
 \subsection{Interfaz y alcance visual}
-El agente principal presenta pestañas de Vista 2D, Vista 3D, Estadísticas y Lógica. La vista 2D resume recepción, procesos, pulmones, envasado y depósitos; la 3D incluye nueve sectores identificados y cámaras de aproximación. La interfaz permite seleccionar escenarios y modificar demanda, abastecimiento, ritmos, espera de pedidos y límite de liberación. El pie diferencia insumos, WIP y cancelaciones.
+El agente principal inicia directamente en la vista \texttt{Planta 3D} y organiza la navegación en cuatro pestañas superiores: \texttt{Planta 3D}, \texttt{Flujo 2D}, \texttt{Estadísticas} (con subpestañas de series temporales e indicadores de estudio) y \texttt{Configuración} (con subpestañas de escenario y política, demanda por perfil y parámetros de planta y capacidad). La vista 3D dispone de vista general y vista superior, mientras que \texttt{Flujo 2D} resume recepción, procesos, pulmones, envasado y depósitos. La interfaz permite seleccionar escenarios y modificar demanda, abastecimiento, ritmos, espera de pedidos y límite de liberación; la barra de estado diferencia insumos, WIP y cancelaciones.
 
 Los cambios interactivos afectan las decisiones siguientes; los lotes en curso conservan su duración ya calculada. Para reproducir la comparación estadística se utilizan experimentos nuevos con configuración común fija, no cambios de parámetros durante una corrida.
 
@@ -630,19 +630,7 @@ Los coeficientes $c_I$ y $c_B$ tienen unidades monetarias por caja-semana; $m_C$
 
 Las próximas verificaciones deben priorizar: sensibilidad a esperas de 0, 7 y 30 días; capacidad y ubicación real de buffers; datos semanales o diarios de pedidos; inventarios iniciales; identificación del año de producción; evaluación de calentamiento y horizonte; y costos incrementales de la mejora. Cada configuración debe repetir las mismas 100 semillas y conservar sus metadatos, sin mezclar resultados de distintas versiones.
 
-\section{Reproducibilidad y recursos}
-El archivo activo es \path{domitec_interactivo/Domitec_Interactivo.alp}. Los experimentos interactivos \texttt{Simulation\_Escenario0\_AsIs}, \texttt{Simulation\_Escenario1\_SinPanico} y \texttt{Simulation\_Escenario2\_Integral} sirven para explorar cada configuración. El estudio conjunto se ejecuta mediante \texttt{Comparacion\_100x3}; su opción de predeterminados no requiere preparar antes una simulación normal.
-
-Los resultados del informe se encuentran en la siguiente carpeta y paquete:
-\begin{quote}\small
-\path{domitec_interactivo/resultados_operativos_v2/}\\
-\texttt{\PaqueteResultados}
-\end{quote}
-El paquete contiene \texttt{resultados.csv}, \texttt{series\_semanales.csv}, \texttt{ic\_pareados.csv}, \texttt{metadata.txt} y el marcador \texttt{COMPLETO}. Las firmas, dimensiones del estudio, configuración y huellas de archivos se documentan en \path{docs/auditoria_resultados_24x7.json}. La auditoría no modifica las fuentes.
-
-Las figuras del presente informe se generan con \path{tools/generar_figuras_informe.py}; las tablas estadísticas y sus referencias numéricas se actualizan con \path{tools/actualizar_resultados_informe.py}. Los resultados anteriores con otro calendario se conservan en el repositorio, pero no se utilizan como evidencia de esta versión.
-
-\begin{thebibliography}{9}
+\begin{thebibliography}{10}
 \bibitem{lawkelton}
 A.~M. Law y W.~D. Kelton,
 \emph{Simulation Modeling and Analysis}, 3ra ed., McGraw-Hill, 2000.
@@ -660,6 +648,11 @@ Irwin/McGraw-Hill, 2000.
 H.~L. Lee, V.~Padmanabhan y S.~Whang,
 ``Information distortion in a supply chain: The bullwhip effect,''
 \emph{Management Science}, vol.~43, no.~4, pp.~546--558, 1997.
+
+\bibitem{wu2011}
+S.~Wu, W.~Gan y F.~Wei,
+``Analysis of Bullwhip Effect Based on ABMS,''
+\emph{Procedia Engineering}, vol.~15, pp.~4276--4281, 2011.
 
 \bibitem{datos-demanda}
 Domitec S.A., planilla comercial facilitada para el trabajo,
