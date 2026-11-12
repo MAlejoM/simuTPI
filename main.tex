@@ -607,16 +607,87 @@ La espera de 30 días acota la antigüedad de la deuda y transforma faltantes pe
 
 La referencia comercial de 8,35\% de cancelaciones en las seis familias de 2025 no es directamente intercambiable con la tasa simulada de cohortes posteriores al calentamiento. Cambian el horizonte, los estados iniciales y la generación intramensual. Además, la producción histórica no tiene año. Se requieren períodos compatibles y datos de fechas de pedido, entrega y cancelación para validar el plazo y el nivel de servicio.
 
-\subsection{Alcance de una evaluación económica}
-Las planillas disponibles no contienen precios, márgenes, costos de posesión, penalizaciones por mora ni inversión necesaria para aumentar el ritmo. No corresponde trasladar al modelo 24$\times$7 los costos de horas extra calculados para jornadas de 40/51 horas, ni presentar ahorros monetarios como resultados observados.
+\subsection{Alcance de una evaluación económica y parametrización teórica}
+Las planillas disponibles no contienen precios internos, márgenes contables, costos de posesión ni el monto de inversión necesario para elevar el ritmo de envasado. Tampoco corresponde trasladar al modelo $24\times 7$ los costos de horas extra calculados para jornadas de 40/51 horas, ni presentar ahorros monetarios como resultados contables observados.
 
-Una evaluación posterior puede separar costo de inventario, costo de demora, margen perdido por cancelaciones y costo de la mejora. Para un horizonte poscalentamiento $[\tau,T]$, un esquema dimensionalmente consistente es
+Para un horizonte poscalentamiento $[\tau,T]$ de $W = 85$ semanas, un esquema dimensionalmente consistente separa costo de inventario, costo de demora, margen perdido por cancelaciones, sobrecosto logístico por variabilidad y costo de la mejora:
 \begin{equation}
     C=c_I\int_{\tau}^{T}I(t)\,dt
       +c_B\int_{\tau}^{T}B(t)\,dt
-      +m_C\,C_{\text{cancelado}}+C_{\text{mejora}}.
+      +m_C\,C_{\text{cancelado}}
+      +W\,c_{bw}\max(0,BW-1)
+      +C_{\text{mejora}}.
 \end{equation}
-Los coeficientes $c_I$ y $c_B$ tienen unidades monetarias por caja-semana; $m_C$ es margen unitario perdido. No se estima el backlog medio dividiendo el backlog final por semanas: se necesita integrar la trayectoria, preferentemente registrando sus cambios en eventos. Tampoco se atribuye un costo de horas extra a una mejora que no amplía el calendario de apertura. Sin esos datos no se establece una alternativa económicamente dominante.
+Los coeficientes $c_I$ y $c_B$ tienen unidades monetarias por caja-semana; $m_C$ es el margen unitario perdido por venta cancelada; y $c_{bw}$ representa el sobrecosto semanal por compras de urgencia cuando $BW>1$. En rigor, $\overline{I}$ y $\overline{B}$ deben obtenerse integrando las trayectorias temporales; no obstante, como \textbf{ejercicio teórico ilustrativo} basado en la teoría clásica de inventarios de Law y Kelton~\cite{lawkelton,sterman}, se parametriza el costo semanal variable equivalente tomando los valores finales medios de la Tabla~\ref{tab:resultados_comparativos} como aproximación de estado ($\overline{I}$ y $\overline{B}$) y las cancelaciones acumuladas divididas por 85 semanas.
+
+Para anclar los precios unitarios a referencias de mercado actuales, se parte de un precio minorista observado de \textbf{USD 0,70 por botella de 1 L de lavandina} ($\text{USD } 8{,}40$ por caja estándar de 12 unidades al público). Descontando un margen típico de comercialización minorista ($\approx 28{,}6\%$), resulta un valor de salida de fábrica de $\text{USD } 6{,}00/\text{caja}$ para la lavandina, a partir del cual se escalan las seis familias ponderadas por su participación en la demanda calibrada de 2025 (Tabla~\ref{tab:precios_mercado}).
+
+\begin{table}[htbp]
+\centering\small
+\caption{Precios mayoristas ilustrativos de salida de fábrica por familia (cajas de 12 unidades), anclados en la referencia de mercado de USD 0,70 por lavandina de 1 L.}
+\label{tab:precios_mercado}
+\begin{tabularx}{\textwidth}{Xrrr}
+\toprule
+Familia & Participación 2025 (\%) & Precio público est. (USD/u.) & Valor salida fábrica (USD/caja) \\
+\midrule
+Lavandina & 40,05\% & 0,70 & 6,00 \\
+Líquido desinfectante & 24,81\% & 0,85 & 7,20 \\
+Lavavajilla & 18,92\% & 1,05 & 9,00 \\
+Líquido para lavar ropa & 6,78\% & 1,40 & 12,00 \\
+Suavizante & 6,84\% & 1,20 & 10,20 \\
+Detergente concentrado & 2,60\% & 1,25 & 10,80 \\
+\midrule
+\textbf{Promedio ponderado} & \textbf{100,00\%} & --- & \textbf{7,68} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Sobre el valor mayorista promedio ponderado de $\text{USD } 7{,}68/\text{caja}$, se adoptan los cuatro parámetros teóricos de referencia:
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Mantenimiento de inventario ($c_I = \text{USD } 0{,}04/\text{caja-sem}$):} Equivalente a una tasa anual de tenencia cercana al $27\%$ sobre el valor mayorista ($\text{USD } 7{,}68$), cubriendo capital inmovilizado, seguro y almacenamiento.
+    \item \textbf{Penalización por mora ($c_B = \text{USD } 0{,}20/\text{caja-sem}$):} Proporción $5:1$ respecto del costo de posesión ($c_B / c_I = 5$), acorde a modelos de inventarios~\cite{lawkelton} y equivalente a $\approx 13\%$ del margen unitario por semana de atraso.
+    \item \textbf{Margen perdido por cancelación ($m_C = \text{USD } 1{,}50/\text{caja}$):} Aproximadamente el $20\%$ de contribución marginal perdida sobre cada caja cancelada por vencimiento de plazo.
+    \item \textbf{Sobrecosto por efecto látigo ($c_{bw} = \text{USD } 1.300/\text{sem}$):} Penalización logística por compras de urgencia y fletes sin descuento por volumen cuando $BW>1$, escalada proporcionalmente al valor medio de la caja.
+\end{itemize}
+
+Dado que los tres escenarios comparten la misma apertura base de $168\text{ h/semana}$, el costo fijo de dotación ordinaria se cancela en la comparación relativa. La Tabla~\ref{tab:analisis_costos} resume los costos logísticos variables teóricos resultantes y el presupuesto semanal máximo admisible ($\Delta C_{\text{mejora}}^*$) disponible para financiar la mejora técnica del Escenario 2 sin ampliar turnos.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Evaluación económica teórica ilustrativa de costos logísticos variables entre escenarios (USD constantes, régimen 24$\times$7).}
+\label{tab:analisis_costos}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{5.0cm}RRR}
+\toprule
+Rubro de costo variable semanal & Esc. 0 (Base) & Esc. 1 (Sin pánico) & Esc. 2 (Mejora ritmo) \\
+\midrule
+1. Mantenimiento de stock ($c_I \cdot \overline{I}$) & USD 1.831 & USD 1.736 & USD 2.542 \\
+2. Penalización por backlog ($c_B \cdot \overline{B}$) & USD 10.138 & USD 10.176 & \textbf{USD 2.168} \\
+3. Margen perdido canceladas ($m_C \cdot C_{\text{canc.}}/85$) & USD 2.485 & USD 2.472 & \textbf{USD 58} \\
+4. Sobrecosto látigo ($c_{bw}\max(0,BW-1)$) & USD 1.046 & USD 165 & \textbf{USD 19} \\
+\midrule
+\textbf{Costo variable semanal} & \textbf{USD 15.500} & \textbf{USD 14.549} & \textbf{USD 4.787} \\
+\textbf{Proyección ciclo (85 sem.)} & \textbf{USD 1.317.500} & \textbf{USD 1.236.665} & \textbf{USD 406.895} \\
+\textbf{Diferencial vs. Escenario 0} & \textit{Base} & \textbf{$-$USD 80.835 ($-6{,}1\%$)} & \textbf{$-$USD 910.605 ($-69{,}1\%$)} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Bajo esta parametrización ilustrativa (sobre una facturación estimada cercana a $\text{USD } 439.000/\text{semana}$ para 57.168 cajas semanales), suprimir el pánico decisional (Escenario 1) reduce el costo variable en $\text{USD } 80.835$ en 85 semanas ($-6{,}1\%$), al contraer el sobrecosto de variabilidad de $\text{USD } 1.046/\text{sem}$ a $\text{USD } 165/\text{sem}$, sin resolver la mora ni las cancelaciones. Al combinar compras disciplinadas con la mejora del $27{,}5\%$ en envasado (Escenario 2), el costo variable semanal desciende a $\text{USD } 4.787$ ($\approx 1{,}1\%$ de la facturación), liberando un margen bruto de equilibrio de $\Delta C_{\text{mejora}}^* \approx \text{USD } 9.762/\text{semana}$ frente al Escenario 1 ($\text{USD } 829.770$ en 85 semanas) para amortizar mejoras operativas o tecnológicas en planta. La Tabla~\ref{tab:sensibilidad_costos} verifica este margen ante tres escalas de penalización $c_B$ ($0{,}10$, $0{,}20$ y $0{,}40\text{ USD/caja-sem}$); en todos los casos, el beneficio potencial supera los $\text{USD } 5.758/\text{semana}$, sujeto a validación con costos reales de Domitec S.A. e integración exacta de las trayectorias.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Sensibilidad ilustrativa del costo variable semanal y del margen de inversión $\Delta C_{\text{mejora}}^*$ frente a la penalización por mora $c_B$.}
+\label{tab:sensibilidad_costos}
+\begin{tabularx}{\textwidth}{lRRRL}
+\toprule
+Escala de $c_B$ & Esc. 0 & Esc. 1 & Esc. 2 & Margen $\Delta C_{\text{mejora}}^*$ (Esc. 1 vs. 2) \\
+\midrule
+$c_B = \text{USD } 0{,}10/\text{caja-sem}$ & USD 10.431 & USD 9.461 & \textbf{USD 3.703} & \textbf{USD 5.758 / sem} \\
+$c_B = \text{USD } 0{,}20/\text{caja-sem}$ (Base) & USD 15.500 & USD 14.549 & \textbf{USD 4.787} & \textbf{USD 9.762 / sem} \\
+$c_B = \text{USD } 0{,}40/\text{caja-sem}$ & USD 25.637 & USD 24.725 & \textbf{USD 6.956} & \textbf{USD 17.769 / sem} \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{Conclusiones y trabajo futuro}
 \begin{enumerate}[leftmargin=0.6cm]

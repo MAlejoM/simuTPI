@@ -1,0 +1,473 @@
+\documentclass[12pt, a4paper]{article}
+
+% ---------------------------------------------------------
+% Paquetes
+% ---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\addto\captionsspanish{\renewcommand{\abstractname}{Abstract}}
+\renewenvironment{abstract}{%
+    \begin{center}{\bfseries\large\color{azulUTN}\abstractname}\end{center}\vspace{-0.3em}
+    \begin{quote}\small\setlength{\parindent}{0pt}\setlength{\parskip}{0.5em}\selectfont}%
+    {\end{quote}}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+% ---------------------------------------------------------
+% Configuración de punto decimal
+% ---------------------------------------------------------
+\decimalpoint
+
+% ---------------------------------------------------------
+% Márgenes
+% ---------------------------------------------------------
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=2.5cm,
+    right=2.5cm
+}
+
+% ---------------------------------------------------------
+% Encabezados y pies de página
+% ---------------------------------------------------------
+\setlength{\headheight}{14.5pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{azulUTN}Trabajo Práctico Integrador --- Simulación}
+\fancyhead[R]{\small\color{azulUTN}UTN FRRo}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ---------------------------------------------------------
+% Colores
+% ---------------------------------------------------------
+\definecolor{azulUTN}{RGB}{0, 70, 127}
+\definecolor{codigoFondo}{RGB}{248, 248, 248}
+\definecolor{comentarioColor}{RGB}{100, 100, 100}
+\definecolor{stringColor}{RGB}{150, 0, 0}
+\definecolor{keywordColor}{RGB}{0, 0, 180}
+
+% ---------------------------------------------------------
+% Estilo de código
+% ---------------------------------------------------------
+\lstdefinestyle{java}{
+    backgroundcolor=\color{codigoFondo},
+    commentstyle=\color{comentarioColor}\itshape,
+    keywordstyle=\color{keywordColor}\bfseries,
+    stringstyle=\color{stringColor},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    numberstyle=\tiny\color{gray},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{gray!30},
+    language=Java
+}
+
+% ---------------------------------------------------------
+% Hipervínculos
+% ---------------------------------------------------------
+\hypersetup{
+    colorlinks=true,
+    linkcolor=azulUTN,
+    urlcolor=azulUTN,
+    citecolor=azulUTN
+}
+
+\lstset{style=java}
+
+% ---------------------------------------------------------
+% Macros de la cabecera
+% ---------------------------------------------------------
+\newcommand{\autor}[2]{%
+    \begin{minipage}[t]{0.32\textwidth}\centering
+        {\normalsize\bfseries #1}\\[1pt]
+        {\footnotesize\texttt{#2}}
+    \end{minipage}}
+
+% ---------------------------------------------------------
+% Documento
+% ---------------------------------------------------------
+\begin{document}
+
+% ---------------------------------------------------------
+% Cabecera estilo paper
+% ---------------------------------------------------------
+\begin{center}
+    \textcolor{azulUTN}{\rule{\textwidth}{1.2pt}}\\[0.5cm]
+    {\LARGE\bfseries\color{azulUTN} Análisis del efecto látigo y optimización operativa en la cadena de suministro de Domitec S.A. mediante simulación híbrida\par}
+    \vspace{0.3cm}
+    \textcolor{azulUTN}{\rule{\textwidth}{0.4pt}}
+
+    \vspace{0.5cm}
+    \autor{Berlanda, Octavio}{octaberlanda@gmail.com}\hfill
+    \autor{Martina, Alejo}{alejomartina477@gmail.com}\hfill
+    \autor{Tourne, Lautaro}{lautarotourne@gmail.com}
+
+    \vspace{0.4cm}
+    \autor{Tuccori, Renzo}{tuccorirenzo@gmail.com}\hspace{0.04\textwidth}
+    \autor{Lezcano, Diego}{diegolezcano209@gmail.com}
+
+    \vspace{0.5cm}
+    {\small
+    Cátedra de Simulación (4.º Año) --- Ingeniería en Sistemas de Información\\[2pt]
+    \textit{Universidad Tecnológica Nacional --- Facultad Regional Rosario}\\[2pt]
+    Docentes: Jorge A. Flamini (Teoría) $\cdot$ Juan Ignacio Torres (Práctica)\\[2pt]
+    Rosario, Santa Fe --- 2026\par}
+
+    \vspace{0.3cm}
+    \textcolor{azulUTN}{\rule{\textwidth}{0.4pt}}
+\end{center}
+
+\vspace{0.2cm}
+
+% ---------------------------------------------------------
+% Abstract
+% ---------------------------------------------------------
+\begin{abstract}
+El presente artículo expone el desarrollo, verificación, calibración, validación y experimentación de un modelo de simulación híbrido orientado a evaluar la resiliencia y el comportamiento dinámico de la cadena de suministro de Domitec S.A., empresa industrial dedicada a la formulación, envasado y distribución mayorista de artículos de limpieza y desinfección doméstica. A partir de una base empírica de 23.689 registros históricos de despacho, el estudio investiga los factores endógenos y exógenos que originan el fenómeno del efecto látigo (\textit{bullwhip effect}) en insumos críticos (polietileno soplado, film Doypack, preformas PET y materias primas químicas), analizando la distorsión propagada cuando se combinan demoras prolongadas de aprovisionamiento con políticas decisionales reactivas ante pedidos en mora (\textit{backlog}).
+
+La arquitectura computacional fue implementada en AnyLogic acoplando el modelado basado en agentes (ABM) para la interacción estocástica de los canales comerciales (Maxiconsumo S.A., Grandes Clientes y Red Propia atomizada) y la logística de entrega de proveedores, con el modelado de eventos discretos (DES) mediante la librería de procesos (\textit{Process Modeling Library}) para el flujo físico-químico interno (dilución, reactores en paralelo, inspecciones probabilísticas de calidad con scrap y líneas dedicadas de envasado). El mecanismo de planificación semanal computa la posición neta de inventario integrando de forma continua el trabajo en proceso real (WIP) y parametriza tanto la sobre-reacción humana ($\alpha$) como la capacidad horaria efectiva de máquina ($\text{escalaTurno}$).
+
+El diseño experimental evaluó la situación base (\textit{As-Is}) frente a la mitigación del pánico decisional y una estrategia de optimización integral bajo un horizonte de 100 semanas, estructurado en un plan multireplicación de 100 corridas estocásticas pareadas por escenario mediante la técnica de números pseudoaleatorios comunes (CRN, con semilla compartida $S_r = r$ en cada réplica $r \in [1..100]$, verificado criptográficamente mediante firmas SHA-256 de demanda) y un período de calentamiento de 15 semanas para aislar el transitorio inicial. Los resultados cuantitativos evidencian que la erradicación del multiplicador reactivo de compras, articulada con un incremento del 27,5\% en el régimen de turnos de envasado (elevando la jornada de 40 a 51 horas semanales), contrae la razón del efecto látigo de 1,57 ($\pm 0,05$) a 0,85 ($\pm 0,02$), contrae drásticamente el backlog final remanente de pedidos en mora de 1.210.794 a 520.291 cajas (reducción neta pareada de 690.503 cajas, caída del 57,0\%) y eleva el nivel de servicio global medio del 81,54\% al 92,42\% ($\pm 2,03\%$, con una mejora pareada de $+10,89\%$ y un intervalo de confianza al 95\% de $[+10,47\% ; +11,30\%]$), estabilizando la operación fabril e ingresando en un régimen productivo balanceado.
+
+\medskip
+\noindent\textbf{Palabras clave:} Simulación Híbrida, AnyLogic, Efecto Látigo, Cadena de Suministro, Modelado Basado en Agentes, Eventos Discretos, Nivel de Servicio, Cuellos de Botella.
+\end{abstract}
+
+\vspace{0.4cm}
+
+% ---------------------------------------------------------
+% 1. INTRODUCCIÓN
+% ---------------------------------------------------------
+\section{Introducción}
+
+\subsection{Contexto industrial}
+Domitec S.A. es una organización industrial especializada en la síntesis química, fraccionamiento y comercialización mayorista de productos de limpieza para el hogar. Su infraestructura fabril está estructurada en dos naves productivas diferenciadas: el \textbf{Sector Parque}, dedicado exclusivamente a la dilución y envasado continuo de lavandinas, y el \textbf{Sector Vicentin}, orientado a la manufactura en reactores batch de líquidos formulados (desinfectantes, lavavajillas, detergentes concentrados, jabones líquidos para ropa y suavizantes para prendas).
+
+La empresa atiende una demanda estocástica distribuida en tres grandes segmentos: mayoristas de cobertura masiva (con Maxiconsumo S.A. a la cabeza), grandes superficies comerciales concentradas (Makro, Treoland, Carrefour) y una amplia red de distribución atomizada compuesta por 428 distribuidores independientes. En este entorno, la continuidad de la operación industrial depende críticamente de la disponibilidad oportuna de insumos no sustituibles: resinas plásticas de alta densidad (HDPE), film bilaminado para envases flexibles (\textit{Doypack}), preformas de tereftalato de polietileno (PET), cajas corrugadas, etiquetas autoadhesivas y precursores químicos (hipoclorito de sodio, tensoactivos aniónicos y catiónicos, y esencias aromáticas).
+
+Cuando se presentan desfasajes entre la tasa de consumo de los canales comerciales y los prolongados tiempos de entrega de los proveedores (que oscilan entre 3 y más de 6 semanas debido a cuellos de botella en preformas y film laminado), la acumulación de pedidos pendientes suele inducir en los planificadores una conducta de sobrepedido o ``compras de pánico''. Dicha reacción humana busca recuperar aceleradamente el nivel de servicio emitiendo órdenes por encima de la demanda real, lo cual dispara una violenta amplificación de varianza aguas arriba en la cadena de suministros, fenómeno conocido universalmente como \textit{efecto látigo} (\textit{bullwhip effect}). El objetivo primordial de este trabajo es diagnosticar, modelar y optimizar dicha dinámica a través de la simulación computacional híbrida.
+
+\subsection{Fronteras y límites del sistema}
+Para asegurar representatividad estadística y viabilidad algorítmica, los límites del sistema modelado se establecieron del siguiente modo:
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Límite temporal:} Horizonte longitudinal de 100 semanas operativas ($\approx 2$ años de ciclo fabril) con avance de tiempo continuo por eventos discretos (\textit{Next-Event Time Advance}). La unidad temporal base del modelo es 1 semana.
+    \item \textbf{Límite espacial y eslabones de la cadena:}
+    \begin{enumerate}
+        \item \textit{Proveedores directos de insumos críticos:} Modelados como agentes externos con retardo de transporte y alistamiento condicionado por el insumo de entrega más lenta (cuello de botella de aprovisionamiento).
+        \item \textit{Fábrica central Domitec S.A.:} Depósitos de insumos, reactores de formulación química, líneas de dilución, estaciones de control de calidad estocásticas, pulmones intermedios de almacenamiento en tanques, líneas dedicadas de envasado/tapado/empaque y depósito central de producto terminado.
+        \item \textit{Canales comerciales de clientes:} Consolidados en 3 perfiles arquetípicos:
+        \begin{itemize}
+            \item \textbf{Maxiconsumo S.A.:} Mayorista núcleo que concentra el 34\% del volumen aggregate.
+            \item \textbf{Grandes Clientes:} Cadenas centralizadas con pedidos periódicos en bloques de gran volumen (Makro, Treoland, Carrefour).
+            \item \textbf{Red Propia:} Demanda atomizada representada por los 428 pequeños y medianos distribuidores zonales.
+        \end{itemize}
+        El consumidor final en góndola queda excluido del límite del modelo.
+    \end{enumerate}
+    \item \textbf{Catálogo de familias de productos:} El modelo agrupa el 100\% de las operaciones en las 6 familias comerciales esenciales de Domitec S.A.:
+    \begin{enumerate}
+        \item \textit{Lavandina} (38,2\% del volumen).
+        \item \textit{Líquido desinfectante} (25,5\%).
+        \item \textit{Lavavajilla} (18,6\%).
+        \item \textit{Líquido para lavar ropa} (7,9\%).
+        \item \textit{Suavizante para ropa} (6,6\%).
+        \item \textit{Detergente concentrado} (3,2\%).
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Preguntas de simulación}
+El modelo de simulación híbrido fue diseñado para responder formalmente a cuatro interrogantes operacionales y económicos clave:
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \textit{Cuantificación y erradicación del Efecto Látigo:} ¿En qué proporción la regla reactiva de sobrepedido ante atrasos ($\alpha = 1,5$) amplifica la varianza de las órdenes transmitidas a los proveedores frente a la demanda final, y en qué medida se mitiga dicha distorsión al adoptar una reposición neutral basada estrictamente en la posición neta ($\alpha = 1,0$)?
+    \item \textit{Persistencia del cuello de botella fabril:} ¿Resulta suficiente disciplinar la política de compras de insumos para recuperar el nivel de servicio y abatir los pedidos en mora, o la restricción horaria en las líneas de envasado induce un comportamiento divergente no estacionario en el backlog?
+    \item \textit{Régimen de turnos y desahogo productivo:} ¿Qué impacto operativo produce una flexibilización del 27,5\% en las horas efectivas de envasado (elevando la jornada de 40 a 51 horas semanales) sobre la contracción de pedidos en mora y la estabilización del nivel de servicio global por encima del 90\%?
+    \item \textit{Compromiso económico y robustez ante penalizaciones:} ¿Es financieramente conveniente asumir mayores costos fijos de mano de obra (horas extra) y capital inmovilizado en stock de seguridad para mitigar el backlog, y cuál es el umbral de penalización unitaria por mora ($c_b$) a partir del cual la inversión en capacidad resulta costo-eficiente?
+\end{enumerate}
+
+% ---------------------------------------------------------
+% 2. OBJETIVOS
+% ---------------------------------------------------------
+\section{Objetivos}
+
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Objetivo General:} Desarrollar, calibrar, validar y experimentar un modelo de simulación híbrido (Agentes y Eventos Discretos) en AnyLogic para evaluar la cadena de suministro de Domitec S.A., cuantificando el efecto látigo y formulando estrategias integradas de abastecimiento y capacidad que maximicen el nivel de servicio y minimicen el capital inmovilizado.
+    \item \textbf{Objetivos Específicos:}
+    \begin{itemize}
+        \item Modelar el comportamiento estocástico de demanda de los 3 canales de clientes a partir del análisis estadístico de 23.689 despachos históricos reales.
+        \item Representar con fidelidad físico-química el flujo interno de planta mediante bloques de la librería de procesos de AnyLogic (\textit{Process Modeling Library}), incluyendo reactores de mezcla, tiempos de inspección en calidad, descartes por merma y líneas de envasado a velocidades calibradas.
+        \item Implementar la lógica decisional de reposición semanal basada en la posición neta de inventario, computando de forma analítica el inventario en tránsito (\texttt{onOrder}) y el trabajo en proceso físico real (\texttt{wipReal}).
+        \item Integrar protocolos rigurosos de verificación algorítmica (conservación de masa, balance de materiales y pruebas de estrés) y validación operacional histórica frente a datos reales de fábrica (Test de Turing).
+        \item Diseñar un plan experimental riguroso que contraste la línea base actual frente a la mitigación aislada del pánico de compras y la estrategia integral de abastecimiento y flexibilización horaria.
+    \end{itemize}
+\end{itemize}
+
+% ---------------------------------------------------------
+% 3. METODOLOGÍA
+% ---------------------------------------------------------
+\newpage
+\section{Metodología}
+
+\subsection{Recolección, tratamiento de datos y parámetros del sistema}
+A partir de la serie empírica de 23.689 despachos históricos reales proporcionada por la empresa (abarcando 20 meses de operación comercial consolidada), la demanda semanal de cada canal y familia de producto se modeló en AnyLogic mediante distribuciones normales truncadas en cero ($D_i = \max(0, \mathcal{N}(\mu_i, \sigma_i))$) para reflejar la no-negatividad física de los pedidos comerciales. En la Tabla~\ref{tab:demanda_calibrada} se detallan las medias ($\mu$) y desvíos estándar ($\sigma$) semanales nominales calibrados para cada uno de los tres perfiles de cliente.
+
+Cabe destacar una precisión matemática fundamental sobre el proceso generador de demanda: la suma directa de las medias nominales semanales totaliza $68.705\text{ cajas/semana}$. Sin embargo, debido al truncamiento probabilístico en cero ($\max(0, X)$), el valor esperado efectivo generado por el modelo para cada combinación canal-producto viene dado analíticamente por:
+\begin{equation}
+    E[D_i] = \mu_i \cdot \Phi\left(\frac{\mu_i}{\sigma_i}\right) + \sigma_i \cdot \phi\left(\frac{\mu_i}{\sigma_i}\right)
+\end{equation}
+donde $\Phi(\cdot)$ y $\phi(\cdot)$ representan la distribución acumulada y la densidad normal estándar, respectivamente. Dado que los canales concentrados (Maxiconsumo y Grandes Clientes) exhiben una variabilidad severa ($\sigma \approx \mu$), la demanda semanal efectiva agregada que ingresa al sistema asciende a $\approx \mathbf{74.438\text{ cajas/semana}}$ (un $+8,3\%$ superior a la nominal). Este volumen efectivo intensifica el estrangulamiento sobre las líneas de envasado en el régimen ordinario de 40 horas, cuya capacidad máxima teórica es de $\approx 65.000\text{ a }68.000\text{ cajas/semana}$.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Parámetros de demanda semanal calibrada por canal comercial y familia de producto (cajas).}
+\label{tab:demanda_calibrada}
+\begin{tabularx}{\textwidth}{l l R R}
+\toprule
+\textbf{Canal de Cliente} & \textbf{Familia de Producto} & \textbf{Media Semanal ($\mu$)} & \textbf{Desvío Semanal ($\sigma$)} \\
+\midrule
+Maxiconsumo S.A.        & Lavandina              & 9.379  & 11.162 \\
+(Mayorista núcleo, 34\%) & Líquido desinfectante  & 6.171  & 8.216  \\
+                         & Lavavajilla            & 5.104  & 6.055  \\
+                         & Líquido lavar ropa     & 2.184  & 3.587  \\
+                         & Suavizante             & 1.765  & 2.348  \\
+                         & Detergente concentrado & 1.046  & 1.825  \\
+\midrule
+Grandes Clientes        & Lavandina              & 3.073  & 2.665  \\
+(Makro, Treoland,        & Líquido desinfectante  & 4.568  & 5.515  \\
+Carrefour, 15\%)         & Lavavajilla            & 2.081  & 2.215  \\
+                         & Líquido lavar ropa     & 312    & 482    \\
+                         & Suavizante             & 516    & 809    \\
+                         & Detergente concentrado & 0      & 0      \\
+\midrule
+Red Propia              & Lavandina              & 13.829 & 6.751  \\
+(428 distribuidores,     & Líquido desinfectante  & 6.780  & 3.723  \\
+51\%)                    & Lavavajilla            & 5.575  & 2.569  \\
+                         & Líquido lavar ropa     & 2.931  & 2.206  \\
+                         & Suavizante             & 2.222  & 1.238  \\
+                         & Detergente concentrado & 1.169  & 1.082  \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Diseño experimental, números pseudoaleatorios comunes (CRN) y período de calentamiento}
+El protocolo experimental fue estructurado mediante un diseño multireplicación pareado implementado en AnyLogic PLE a través de un experimento de \textit{Parameter Variation}~\cite{anylogic-editions,anylogic-paramvariation}. Para garantizar la comparabilidad rigurosa y minimizar la varianza muestral entre alternativas, se adoptó la técnica de números pseudoaleatorios comunes (\textit{Common Random Numbers}, CRN). El diseño contempló un plan de 100 iteraciones con 3 réplicas pareadas por iteración ($100 \times 3 = 300$ simulaciones en total), evaluando los tres escenarios bajo un horizonte longitudinal de 100 semanas operativas.
+
+Bajo este esquema, la iteración $r \in [1..100]$ inicializa el generador estocástico con la semilla $S_r = r$ (\texttt{new Random(getCurrentReplication())}), asegurando que la réplica $r$ de cada uno de los tres escenarios enfrente idéntica secuencia de pedidos generados a lo largo de las 1.800 combinaciones semanales de canal y producto (Maxiconsumo S.A., Grandes Clientes y Red Propia). Para verificar matemáticamente la sincronización estocástica, el modelo calcula una firma SHA-256 canónica sobre el vector completo de demandas por réplica; en las 100 ternas simuladas se constató una coincidencia exacta del 100\% en las firmas criptográficas de demanda entre escenarios.
+
+Asimismo, al iniciar la simulación en la semana 0, los tanques, reactores y pulmones de proceso parten de un estado de reposo nominal (condición inicial fría o \textit{cold start}). Dado que los tiempos de reposición de insumos críticos con proveedores conllevan demoras prolongadas de aprovisionamiento que oscilan entre 3 y más de 6 semanas (desde 21 días para precursores químicos hasta 45 días para film flexible Doypack), el sistema atraviesa una fase transitoria inicial de llenado de cañerías. Para amortiguar dicha distorsión transitoria, se incorporó un período de calentamiento (\textit{warm-up}) de 15 semanas antes de registrar los acumuladores de desempeño. No obstante, debe advertirse que en el Escenario 0, dado que la tasa de demanda efectiva excede a la capacidad nominal de empaque ($\lambda_{\text{ef}} > \mu_{\text{fab}}$), el backlog de pedidos en mora exhibe una trayectoria acumulativa linealmente creciente (régimen no estacionario por saturación estructural); únicamente mediante la expansión de turnos del Escenario 2 el sistema logra nivelar la tasa de servicio y acceder a un régimen de estabilidad estacionaria.
+
+Al completar las 100 ternas de corridas, se calcularon intervalos de confianza bilaterales al 95\% mediante la distribución $t$ de Student ($n = 100$, $gl = 99$, $t_{0{,}975;99} = 1{,}9842$) tanto para las medias marginales de cada escenario como para los contrastes pareados entre alternativas ($\Delta = \text{Escenario } a - \text{Escenario } b$).
+
+\newpage
+
+\subsection{Resultados comparativos y contrastes pareados}
+En la Tabla~\ref{tab:resultados_comparativos} se consolidan las medidas de rendimiento promedio y sus intervalos de confianza al 95\% tras la ejecución de las 100 corridas pareadas por escenario.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Resultados comparativos consolidados tras 100 réplicas pareadas por escenario (IC al 95\%).}
+\label{tab:resultados_comparativos}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.6cm} R R R}
+\toprule
+\textbf{Indicador Clave (KPI)} & \textbf{Esc. 0 (As-Is)} & \textbf{Esc. 1 (Sin Pánico)} & \textbf{Esc. 2 (Integral)} \\
+\midrule
+Nivel de Servicio Global & 81,54\% $\pm$ 1,82\% & 81,53\% $\pm$ 1,82\% & \textbf{92,42\%} $\pm$ 2,03\% \\
+\textit{IC 95\% Nivel de Servicio} & [79,72\% ; 83,36\%] & [79,72\% ; 83,35\%] & \textbf{[90,39\% ; 94,46\%]} \\
+Razón Efecto Látigo ($BW$)& 1,57 $\pm$ 0,05      & \textbf{0,85} $\pm$ 0,02 & 0,85 $\pm$ 0,02 \\
+\textit{IC 95\% Razón Bullwhip}    & [1,52 ; 1,62]        & \textbf{[0,83 ; 0,87]}   & [0,83 ; 0,87] \\
+Backlog Final Remanente (cajas)& 1.210.794 $\pm$ 132.997 & 1.211.124 $\pm$ 132.991 & \textbf{520.291} $\pm$ 146.255 \\
+\textit{IC 95\% Backlog Remanente}   & [1.077.797 ; 1.343.791]& [1.078.133 ; 1.344.115]& \textbf{[374.036 ; 666.546]} \\
+Stock en Depósito (cajas)& 6.502 $\pm$ 1.858    & 6.322 $\pm$ 1.837    & \textbf{40.999} $\pm$ 4.955 \\
+\textit{IC 95\% Stock Depósito}   & [4.644 ; 8.359]      & [4.485 ; 8.159]      & \textbf{[36.044 ; 45.953]} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Discusión y análisis de resultados}
+El contraste estadístico de los experimentos arroja conclusiones determinantes sobre la dinámica del sistema:
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \textbf{Aislamiento y erradicación del efecto látigo:} En el Escenario 1, al desactivar el multiplicador de pánico decisional en compras ($\alpha = 1{,}0$), la razón de efecto látigo colapsa de $1,57$ ($\pm 0,05$) a $0,85$ ($\pm 0,02$). El contraste pareado de Bullwhip entre el Escenario 0 y el Escenario 1 registra una reducción neta media de $-0,72$ puntos con un IC 95\% de $[-0,75 ; -0,69]$, demostrando formalmente que la amplificación de varianza aguas arriba en insumos era inducida por la sobre-reacción humana ante pedidos en mora.
+    \item \textbf{Persistencia del cuello de botella y régimen no estacionario del As-Is:} A pesar de suprimir la sobre-reacción en compras, el Escenario 1 mantiene un Fill Rate global estancado en 81,53\% ($\pm 1,82\%$) y un backlog final remanente de 1.211.124 cajas. La diferencia pareada en Fill Rate frente al Escenario 0 es de apenas $-0,005\%$ (con un IC 95\% de $[-0,008\% ; -0,002\%]$); si bien el estricto pareamiento CRN aísla esta diferencia como estadísticamente detectable, en términos operacionales su efecto es prácticamente nulo. Esto responde formalmente al segundo interrogante planteado: en el As-Is, la capacidad horaria nominal de envasado ($\approx 65.000\text{ cajas/sem}$) es rebasada por la tasa de demanda efectiva ($\approx 74.400\text{ cajas/sem}$). En consecuencia, el backlog acumula una tendencia lineal creciente no estacionaria. La disciplina de compras estabiliza los insumos pero no puede suplir la falta de horas-máquina de empaque.
+\newpage
+    \item \textbf{Efectividad de la estrategia integral (Escenario 2):} Al articular la eliminación del pánico con la expansión del 27,5\% en el régimen de turnos de envasado ($\text{escalaTurno} = 3{,}3$, elevando la jornada semanal de 40 a 51 horas efectivas), el sistema supera la restricción de flujo y estabiliza su régimen productivo. El nivel de servicio global se eleva al 92,42\% ($\pm 2,03\%$, IC 95\%: $[90,39\% ; 94,46\%]$), mientras que el backlog remanente se contrae drásticamente a 520.291 cajas. La comparación pareada ($\Delta = \text{Escenario 2} - \text{Escenario 0}$) arroja una mejora neta media en el Fill Rate de $+10,89$ puntos porcentuales (con un error estándar de apenas $0,21\%$ gracias al pareamiento CRN, e IC 95\%: $[+10,47\% ; +11,30\%]$) y una reducción neta de mora de 690.503 cajas (IC 95\%: $[-718.112 ; -662.894]$ cajas, caída del 57,0\%). Asimismo, el stock operativo en depósito se estabiliza en 40.999 cajas, amortiguando eficazmente la variabilidad de la demanda. Con un nivel de confianza del 95\% ($p < 0{,}05$), ninguno de los intervalos de confianza pareados contiene al cero, lo que ratifica la superioridad estadística indiscutible de la política combinada al superar el umbral del 90\% de servicio y responder al tercer interrogante de simulación.
+    \item \textbf{Comportamiento y absorción de la variabilidad comercial:} El contraste analítico de los parámetros de demanda histórica confirma una marcada asimetría entre segmentos: la demanda atomizada de la Red Propia (428 distribuidores con pedidos regulares) presenta una variabilidad moderada ($\sigma < \mu$) que la planta absorbe con fluidez. En contraposición, las grandes superficies comerciales (Maxiconsumo y cadenas de supermercados, donde $\sigma \approx \mu$ en familias críticas) introducen pedidos en grandes bloques que saturan las líneas dedicadas en el As-Is. La estrategia integral del Escenario 2 brinda el margen de capacidad indispensable para amortiguar dichos lotes concentrados sin desatender los contratos con la red capilar.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{series_comparativas.jpg}
+\caption{Evolución temporal comparativa a lo largo del horizonte de 100 semanas (trayectoria de una réplica estocástica representativa con semilla común compartida). Superior: órdenes emitidas a proveedores frente a demanda de clientes (cajas/semana), evidenciando la amplificación del Efecto Látigo en Escenario 0 vs. estabilización en Escenarios 1 y 2. Inferior: ritmo productivo de envasado terminado (cajas/semana) frente a la demanda agregada, ilustrando el estrangulamiento de capacidad en Escenario 0 ($\approx 65.000\text{ cajas/sem}$) frente al desahogo productivo en Escenario 2 ($\approx 80.000\text{ cajas/sem}$).}
+\label{fig:series_comparativas}
+\end{figure}
+
+\subsection{Evaluación económica y análisis de costos por escenario}
+Dado que los registros históricos suministrados por Domitec S.A. se encuentran expresados en volúmenes físicos (cajas solicitadas, despachadas, pendientes y canceladas) sin desagregación contable confidencial, para evaluar la viabilidad económico-financiera de las alternativas se parametrizó la función de Costo Operativo Relevante Semanal ($CT$) de la teoría clásica de inventarios~\cite{lawkelton,sterman}. Se adoptó como base de referencia el valor mayorista promedio de salida de fábrica de una caja de limpieza ($\text{USD } 15/\text{caja}$ de 12 a 15 envases), a partir del cual se definieron los cuatro componentes de costo en compromiso (\textit{trade-off}) aplicados sobre los indicadores físicos simulados en la Tabla~\ref{tab:resultados_comparativos}:
+\begin{equation}
+    CT = c_h \cdot \overline{I} + c_b \cdot \overline{B} + C_{\text{turnos}}(H) + c_{bw} \cdot \max(0, BW - 1)
+\end{equation}
+donde el origen y fundamento de cada parámetro unitario es el siguiente:
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Costo de penalización por mora y quiebre ($c_b = \text{USD } 1{,}50 / \text{caja-semana}$):} Fundamentado empíricamente en la auditoría de los 23.689 registros históricos de la empresa, donde sobre $5.853.595$ cajas pedidas un total de $589.511$ cajas resultaron canceladas ($10{,}07\%$ de pérdida directa de venta por mora), sumado a las penalizaciones comerciales en grandes cadenas. Aplicando dicho $10\%$ sobre el valor mayorista de $\text{USD } 15/\text{caja}$ se obtiene el valor de referencia de $\text{USD } 1{,}50/\text{caja}$ ponderado sobre la carga media semanal de pedidos pendientes ($\overline{B} = \text{Backlog Final Remanente} / 85\text{ semanas}$: $14.244{,}6$, $14.248{,}5$ y $6.121{,}1\text{ cajas/semana}$ en los Escenarios 0, 1 y 2 respectivamente).
+    \item \textbf{Costo de mantenimiento de inventario ($c_h = \text{USD } 0{,}15 / \text{caja-semana}$):} Siguiendo la proporción canónica $c_b / c_h = 10:1$ de los modelos de simulación de inventarios de Law y Kelton~\cite{lawkelton}, representa el $1\%$ semanal del valor de la caja ($\text{USD } 15$) en concepto de costo financiero del capital inmovilizado, seguro, deterioro de envases y espacio de racks en los depósitos Parque y Vicentin, aplicado sobre el stock medio ($\overline{I}$).
+\newpage
+    \item \textbf{Costo de operación fabril y mano de obra ($C_{\text{turnos}}(H)$):} Estimado a partir del costo operativo industrial (dotación de operarios de dilución, reactores, control de calidad, líneas de envasado, autoelevadores y consumo energético) de $\text{USD } 120/\text{hora de planta}$ para el régimen ordinario de $H = 40\text{ hs/sem}$ ($\text{USD } 4.800/\text{sem}$ en los Escenarios 0 y 1). Para el régimen extendido de $H = 51\text{ hs/sem}$ (Escenario 2), las $11\text{ hs/sem}$ suplementarias incorporan el recargo legal del $50\%$ por horas extra ($\text{USD } 180/\text{hora extra}$, sumando $+\text{USD } 1.980/\text{sem}$ hasta totalizar $\text{USD } 6.780/\text{sem}$).
+    \item \textbf{Sobrecosto logístico por efecto látigo ($c_{bw} = \text{USD } 2.500/\text{semana}$):} Cuantifica, ante variabilidad excesiva ($BW > 1$), los sobrecostos derivados de compras \textit{spot} de preformas PET y precursores químicos sin descuento por volumen, fletes urgentes y horas improductivas de recepción~\cite{lee,sterman}. Cuando el flujo se estabiliza ($BW \le 1$), dicho sobrecosto se anula.
+\end{itemize}
+
+En la Tabla~\ref{tab:analisis_costos} se expone la valorización económica semanal media y proyectada sobre las 85 semanas operativas posteriores al calentamiento para los tres escenarios.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Evaluación económica comparativa entre escenarios (en USD constantes).}
+\label{tab:analisis_costos}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.8cm} R R R}
+\toprule
+\textbf{Rubro de Costo Operativo} & \textbf{Esc. 0 (As-Is)} & \textbf{Esc. 1 (Sin Pánico)} & \textbf{Esc. 2 (Integral)} \\
+\midrule
+1. Mantenimiento de Stock ($c_h \cdot \overline{I}$) & USD 975 & USD 948 & USD 6.150 \\
+2. Penalización por Backlog ($c_b \cdot \overline{B}$) & USD 21.367 & USD 21.373 & \textbf{USD 9.182} \\
+3. Operación y Turnos ($C_{\text{turnos}}$) & USD 4.800 & USD 4.800 & USD 6.780 \\
+4. Ineficiencia por Látigo ($c_{bw}$) & USD 1.425 & \textbf{USD 0} & \textbf{USD 0} \\
+\midrule
+\textbf{Costo Total Semanal Medio} & \textbf{USD 28.567} & \textbf{USD 27.121} & \textbf{USD 22.112} \\
+\textbf{Costo Total Ciclo (85 sem.)} & \textbf{USD 2.428.195} & \textbf{USD 2.305.285} & \textbf{USD 1.879.520} \\
+\textbf{Ahorro Neto vs. Escenario 0} & \textit{Línea Base} & \textbf{$-$USD 122.910 ($-5{,}1\%$)} & \textbf{$-$USD 548.675 ($-22{,}6\%$)} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+El análisis económico revela que la eliminación del pánico en el Escenario 1 genera por sí sola un ahorro directo de $\text{USD } 122.910$ ($-5{,}1\%$) sin inversión adicional, al erradicar la penalización logística del efecto látigo ($BW = 0{,}85 \le 1$). Por su parte, al pasar al Escenario 2 (Estrategia Integral), si bien la empresa asume un incremento de $\text{USD } 1.980/\text{sem}$ en horas extra y de $\text{USD } 5.202/\text{sem}$ en mantenimiento de mayor stock de seguridad ($+\text{USD } 7.182/\text{sem}$ en costos directos suplementarios), la drástica caída de mora en un $57{,}0\%$ genera un ahorro en penalizaciones de $-\text{USD } 12.191/\text{sem}$ frente a la línea base y frente al Escenario 1. En consecuencia, el beneficio marginal por reducción de mora supera en una relación de $1{,}7\text{ a }1$ al costo incremental combinado de horas extra e inventario, consolidando un ahorro neto de $\text{USD } 548.675$ (reducción del $22{,}6\%$ en el ciclo evaluado).
+
+Para responder al cuarto interrogante operacional y dotar de robustez al análisis ante variaciones en el parámetro $c_b$, se evaluó la sensibilidad del Costo Total Semanal frente a tres escalas de penalización unitaria ($0{,}75$, $1{,}50$ y $3{,}00\text{ USD/caja}$), cuyos resultados se exponen en la Tabla~\ref{tab:sensibilidad_costos}.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Análisis de sensibilidad del Costo Total Semanal frente al costo unitario de mora ($c_b$).}
+\label{tab:sensibilidad_costos}
+\begin{tabularx}{\textwidth}{l R R R L}
+\toprule
+\textbf{Escala de Penalización ($c_b$)} & \textbf{Esc. 0 (As-Is)} & \textbf{Esc. 1 (Sin Pánico)} & \textbf{Esc. 2 (Integral)} & \textbf{Alternativa Óptima} \\
+\midrule
+$c_b = \text{USD } 0{,}75 / \text{caja-sem}$ & USD 17.884 & \textbf{USD 16.435} & USD 17.521 & Esc. 1 (Ahorro sin horas extra) \\
+$c_b = \text{USD } 1{,}50 / \text{caja-sem}$ (Base) & USD 28.567 & USD 27.121 & \textbf{USD 22.112} & \textbf{Esc. 2 (Ahorro neto de 22,6\%)} \\
+$c_b = \text{USD } 3{,}00 / \text{caja-sem}$ & USD 49.934 & USD 48.494 & \textbf{USD 31.293} & \textbf{Esc. 2 (Ahorro neto de 37,3\%)} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Asimismo, se dedujo analíticamente el punto de equilibrio o umbral crítico ($c_b^*$) a partir del cual el ahorro por mitigación de pedidos atrasados compensa el gasto de turnos extendidos e inmovilización de stock:
+\begin{equation}
+    c_b^* = \frac{\Delta C_{\text{turnos}} + c_h \cdot \Delta \overline{I}}{\overline{B}_1 - \overline{B}_2} = \frac{1.980 + 0{,}15 \times 34.677}{14.248{,}5 - 6.121{,}1} \approx \text{USD } 0{,}88 / \text{caja}
+\end{equation}
+frente al Escenario 1 (y $\approx \text{USD } 0{,}71 / \text{caja}$ frente al Escenario 0). Dado que cualquier multa contractual por quiebre o margen de venta perdido en el canal mayorista supera con holgura los $\text{USD } 0{,}88/\text{caja}$, la estrategia integral queda matemáticamente blindada como la opción costo-eficiente dominante.
+
+\section{Conclusiones y trabajo futuro}
+
+\subsection{Conclusiones operacionales}
+La experimentación pareada y la evaluación estadística del modelo de simulación híbrido brindan respuestas formales y cuantitativas a las cuatro preguntas planteadas:
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \textbf{Causalidad y erradicación del efecto látigo (Pregunta 1):} La sobre-reacción humana ante deudas de entrega ($\alpha = 1,5$) actúa como el inductor directo de la amplificación de varianza aguas arriba en insumos ($BW = 1,57$). Suprimir dicho factor reactivo mediante pedidos basados estrictamente en cobertura neta ($\alpha = 1,0$) contrae la razón Bullwhip a $0,85$ (reducción pareada neta de $-0,72$ puntos), erradicando las oscilaciones logísticas espurias.
+    \item \textbf{Insuficiencia del control aislado de compras (Pregunta 2):} Calmar las órdenes a proveedores sin expandir la capacidad de empaque no recupera el nivel de servicio. En el Escenario 1, el Fill Rate global permanece estancado en 81,53\% y la mora en 1.211.124 cajas (diferencia prácticamente nula frente al As-Is), confirmando que la insuficiencia horaria de envasado condena al sistema a un régimen acumulativo no estacionario.
+    \item \textbf{Efectividad del desahogo por turnos (Pregunta 3):} La flexibilización del 27,5\% en la jornada de envasado (51 horas efectivas semanales) resuelve la restricción de flujo fabril, elevando el nivel de servicio global al 92,42\% (mejora neta pareada de $+10,89$ puntos porcentuales, IC 95\%: $[+10,47\% ; +11,30\%]$), contrayendo el backlog en un 57,0\% y estabilizando el stock operativo de amortiguación en 40.999 cajas.
+    \item \textbf{Compromiso económico y robustez financiera (Pregunta 4):} La estrategia integral propuesta genera un ahorro neto de $\text{USD } 548.675$ (caída del $22,6\%$ en el costo total relevante). El análisis de sensibilidad probó que la política combinada es económicamente dominante para cualquier costo de mora superior al umbral de equilibrio $c_b^* \approx \text{USD } 0,88/\text{caja}$, superando con creces el costo del régimen de turnos extendidos.
+\end{enumerate}
+
+\subsection{Análisis de nuevos experimentos y trabajo futuro}
+Atendiendo a la exploración de escenarios complementarios y al análisis de sensibilidad de frontera, se definen las siguientes líneas de trabajo:
+\begin{enumerate}[leftmargin=0.6cm]
+    \item \textbf{Experimento de estrés severo por pánico extremo ($\alpha = 2,0$):} Modelar formalmente una conducta de duplicación agresiva de pedidos ante pedidos atrasados bajo expectativas hiperinflacionarias o rumores de escasez de insumos, evaluando el punto de quiebre operativo donde el efecto látigo colapsa el capital de trabajo de los depósitos.
+    \item \textbf{Desagregación y seguimiento estocástico por canal comercial:} Extender el runner automatizado de AnyLogic para registrar series y métricas de Fill Rate y mora desglosadas por cada uno de los tres perfiles de cliente (Maxiconsumo, Grandes Clientes y Red Propia), cuantificando con intervalos pareados la asimetría en la degradación de servicio.
+    \item \textbf{Validación formal de warm-up mediante el método de Welch:} Exportar las series temporales de 100 réplicas del dataset \texttt{dsBacklog} y aplicar el algoritmo de medias móviles centradas de Welch para validar analíticamente la longitud óptima del período transitorio inicial.
+    \item \textbf{Sensibilidad a contingencias logísticas de proveedores:} Evaluar escenarios donde los tiempos de entrega de film Doypack o preformas PET sufran interrupciones externas (demoras de 8 a 12 semanas por contingencias de importación), determinando el stock de seguridad requerido para prevenir paradas de línea.
+\end{enumerate}
+
+\vspace{0.4cm}
+\newpage
+\noindent\textbf{Recursos y Ejecución en AnyLogic:}
+\begin{itemize}[leftmargin=0.6cm]
+    \item \textbf{Modelo y Simulación en AnyLogic:} El modelo interactivo y su lógica completa se encuentran disponibles en el archivo de proyecto \texttt{Domitec\_Interactivo.alp}. La versión de nube ejecutable en línea para experimentación pública está radicada en el repositorio de modelos de AnyLogic Cloud (\url{https://cloud.anylogic.com/model/Domitec_Interactivo}).
+    \item \textbf{Instrucciones de corrida:} Abrir el modelo interactivo en AnyLogic 8.9+ (\texttt{Domitec\_Interactivo.alp}), explorar la dinámica en las pestañas 2D, 3D, Estadísticas y Lógica mediante el experimento de simulación interactiva, o ejecutar el experimento de variación de parámetros (\texttt{ParametersVariation}, \texttt{ParametersVariation1} o \texttt{ParametersVariation2}) para replicar en modo acelerado las 100 corridas separadas por escenario.
+\end{itemize}
+
+% ---------------------------------------------------------
+% REFERENCIAS
+% ---------------------------------------------------------
+\begin{thebibliography}{9}
+
+\bibitem{weitz}
+D.~Weitz,
+\emph{Simulación de Sistemas: Principios Básicos, Metodología y Aplicaciones en Ingeniería},
+Universidad Tecnológica Nacional, Facultad Regional Rosario, 2018.
+
+\bibitem{lawkelton}
+A.~M. Law y W.~D. Kelton,
+\emph{Simulation Modeling and Analysis},
+3ra ed., McGraw-Hill, Boston, 2000.
+
+\bibitem{garcia}
+E.~García Dunna, H.~García Reyes y L.~E.~Cárdenas Barrón,
+\emph{Simulación y Análisis de Sistemas con ProModel},
+Pearson Educación, México, 2006.
+
+\bibitem{banks}
+J.~Banks, J.~S. Carson, B.~L. Nelson y D.~M.~Nicol,
+\emph{Discrete-Event System Simulation},
+5ta ed., Prentice Hall, Upper Saddle River, NJ, 2010.
+
+\bibitem{sterman}
+J.~D. Sterman,
+\emph{Business Dynamics: Systems Thinking and Modeling for a Complex World},
+Irwin/McGraw-Hill, Boston, 2000.
+
+\bibitem{lee}
+H.~L. Lee, V.~Padmanabhan y S.~Whang,
+``Information distortion in a supply chain: The bullwhip effect,''
+\emph{Management Science}, vol.~43, no.~4, pp.~546--558, 1997.
+
+\bibitem{grigoryev}
+I.~Grigoryev,
+\emph{AnyLogic 7 in Three Days: A Quick Course in Simulation Modeling},
+2da ed., CreateSpace Independent Publishing, 2015.
+
+\bibitem{anylogic-editions}
+The AnyLogic Company,
+``AnyLogic editions comparison,'' documentación oficial, \url{https://anylogic.help/anylogic/ui/editions.html}.
+
+\bibitem{anylogic-paramvariation}
+The AnyLogic Company,
+``Parameter variation experiment,'' documentación oficial, \url{https://anylogic.help/anylogic/experiments/parameter-variation.html}.
+
+\end{thebibliography}
+
+\end{document}
