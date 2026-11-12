@@ -3,7 +3,7 @@ from pathlib import Path
 import subprocess,xml.etree.ElementTree as E
 
 ROOT=Path(__file__).resolve().parents[1]
-JAVA=Path(r'D:\AnyLogic 8.9 Personal Learning Edition/jre/bin')
+JAVA=next(p/'jre/bin' for p in [Path(r'C:\Program Files\AnyLogic 8.9 Personal Learning Edition'), Path(r'D:\AnyLogic 8.9 Personal Learning Edition')] if (p/'jre/bin/javac.exe').is_file())
 
 def main():
     model=E.parse(ROOT/'domitec_interactivo/Domitec_Interactivo.alp').getroot().find('Model')

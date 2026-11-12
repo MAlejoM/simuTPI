@@ -1,7 +1,8 @@
 public ConfiguracionDomitec cfg = new ConfiguracionDomitec();
 public RegistroCorrida registro = new RegistroCorrida();
-public int vistaActiva = 1, escenarioActivo = 0, perfilCanal = 0, perfilProducto = 0;
+public int vistaActiva = 0, subVistaStats = 0, subVistaConfig = 0, escenarioActivo = 0, perfilCanal = 0, perfilProducto = 0;
 public int metricaIC = 0;
+public boolean mostrarGuia3D = false;
 public String mensajeUI = "Los cambios se aplican a los proximos pedidos y procesos.";
 public String carpetaResultados = java.nio.file.Paths.get(System.getProperty("user.dir"), "resultados_operativos_v2").toAbsolutePath().toString();
 public double uiMedia=9379, uiDesvio=11162, uiLead=30, uiCobertura=5.5, uiRate=667;
@@ -31,15 +32,21 @@ public void iniciarInterfaz() {
     presentation.add(nivelPlanta3D);
     seleccionarPerfil(0, 0);
     sincronizarControles();
-    mostrarVista(1);
+    mostrarVista(0);
     restablecerCamara();
+    if (ventanaPlanta3D != null) ventanaPlanta3D.setWidth(mostrarGuia3D ? 918 : 1212);
 }
 
 public void mostrarVista(int vista) {
     if (vista < 0 || vista > 3) throw new IllegalArgumentException("Vista inexistente");
     vistaActiva = vista;
     // Draw modes are fixed at construction in AnyLogic. Tabs only change visibility.
-    if (vistaPlanta3D != null) vistaPlanta3D.setVisible(vista == 1);
+    if (vistaPlanta3D != null) vistaPlanta3D.setVisible(vista == 0);
+}
+
+public void alternarGuia3D() {
+    mostrarGuia3D = !mostrarGuia3D;
+    if (ventanaPlanta3D != null) ventanaPlanta3D.setWidth(mostrarGuia3D ? 918 : 1212);
 }
 
 public double stockProducto(int producto) {
@@ -204,7 +211,7 @@ public void ejecutarComparacion() {
         SesionEstudio.preparar(cfg,carpetaResultados);
         mensajeUI="Configuracion guardada. Ejecutar Comparacion_100x3 desde el menu Run de AnyLogic.";
         getExperiment().getExperimentHost().showMessageDialog(
-            "Parametros personalizados guardados.\n\n1. Cerra esta ejecucion.\n2. Abri Comparacion_100x3 y pulsa Usar guardados y ejecutar.\n3. Al terminar, volve a Estadisticas y pulsa Leer ultimos IC.\n\nPara comparar los escenarios predeterminados podes abrir Comparacion_100x3 directamente, sin preparar nada.");
+            "Parametros personalizados guardados.\n\n1. Cerra esta ejecucion.\n2. Abri Comparacion_100x3 y pulsa Usar guardados y ejecutar.\n3. Al terminar, volve a Estadisticas > KPIs y Estudio 100x3 y pulsa Leer ultimos IC.\n\nPara comparar los escenarios predeterminados podes abrir Comparacion_100x3 directamente, sin preparar nada.");
     } catch(RuntimeException error){mensajeUI=error.getMessage();}
 }
 public void cargarUltimosIC(){

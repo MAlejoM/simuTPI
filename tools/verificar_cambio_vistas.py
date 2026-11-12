@@ -7,7 +7,7 @@ from pathlib import Path
 import os, subprocess, xml.etree.ElementTree as E
 
 ROOT = Path(__file__).resolve().parents[1]
-INSTALL = Path(r'D:\AnyLogic 8.9 Personal Learning Edition')
+INSTALL = next(p for p in [Path(r'C:\Program Files\AnyLogic 8.9 Personal Learning Edition'), Path(r'D:\AnyLogic 8.9 Personal Learning Edition')] if p.is_dir())
 BUILD = Path.home()/'.AnyLogicPLE/Workspace8.8/Domitec_Interactivo_BUILD'
 
 def main():
@@ -27,6 +27,8 @@ public class TestVistasFijas extends Agent {
     com.anylogic.engine.markup.Level nivelPlanta3D;
     TestVistasFijas domitecPlant;
     int vistaActiva;
+    boolean mostrarGuia3D;
+    ShapeWindow3D ventanaPlanta3D;
     public ShapeTopLevelPresentationGroup getPresentationShape(){return presentation;}
 ''' + method[:method.index('public double stockProducto(')] + '\nvoid crearVistas(){\n' + setup + '''}
     public static void main(String[] args){
@@ -42,7 +44,7 @@ public class TestVistasFijas extends Agent {
             main.mostrarVista(i);
             if(main.vistaPlanta3D.getDrawMode()!=SHAPE_DRAW_3D)
                 throw new AssertionError("El modo debe permanecer fijo");
-            if(main.vistaPlanta3D.isVisible()!=(i==1))
+            if(main.vistaPlanta3D.isVisible()!=(i==0))
                 throw new AssertionError("Visibilidad incorrecta");
         }
         System.out.println("PASS: 40 tab transitions with real AnyLogic shapes; no simulation engine");

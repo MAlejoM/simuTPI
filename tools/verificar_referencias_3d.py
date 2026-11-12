@@ -7,7 +7,7 @@ from pathlib import Path
 import json, os, subprocess, xml.etree.ElementTree as E
 
 ROOT=Path(__file__).resolve().parents[1]
-INSTALL=Path(r'D:\AnyLogic 8.9 Personal Learning Edition')
+INSTALL=next(p for p in [Path(r'C:\Program Files\AnyLogic 8.9 Personal Learning Edition'), Path(r'D:\AnyLogic 8.9 Personal Learning Edition')] if p.is_dir())
 
 def method(code,name):
     start=code.index('public void '+name+'(');opening=code.index('{',start);depth=0

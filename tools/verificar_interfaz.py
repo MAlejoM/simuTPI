@@ -8,7 +8,7 @@ import xml.etree.ElementTree as E
 
 ROOT=Path(__file__).resolve().parents[1]
 FILE=ROOT/'domitec_interactivo/Domitec_Interactivo.alp'
-INSTALL=Path(r'D:\AnyLogic 8.9 Personal Learning Edition')
+INSTALL=next(p for p in [Path(r'C:\Program Files\AnyLogic 8.9 Personal Learning Edition'), Path(r'D:\AnyLogic 8.9 Personal Learning Edition')] if p.is_dir())
 
 def main():
     t=E.parse(FILE);model=t.find('Model')
@@ -50,7 +50,9 @@ def main():
     assert 'this, SHAPE_DRAW_3D, true' in ui_code
     assert 'nivelPlanta3D.add(vistaPlanta3D)' in ui_code
     assert 'presentation.add(nivelPlanta3D)' in ui_code
-    assert 'vistaPlanta3D.setVisible(vista == 1)' in ui_code
+    assert 'vistaPlanta3D.setVisible(vista == 0)' in ui_code
+    for subgroup in ['guia3D_grupo', 'statsSeries', 'statsResumen', 'cfgPolitica', 'cfgDemanda', 'cfgPlanta']:
+        assert any(n.findtext('Name')==subgroup for n in main.findall('.//Group')), subgroup
     assert 'setRealTimeScale' not in plant.findtext('AgentProperties/OnReceive')
     assert 'new Comparacion_100x3()' not in ui_code
     assert 'SesionEstudio.preparar(cfg,carpetaResultados)' in ui_code
@@ -81,7 +83,9 @@ def main():
         assert float(n.findtext('X'))>=1500
     for name in ['planoParqueRecepcion','planoParqueDilucion','planoParqueEnvasado','planoParqueDeposito','planoVicentinRecepcion','planoVicentinQc','planoVicentinPulmon','planoVicentinEnvasado','planoVicentinDeposito']:
         assert any(n.findtext('Name')==name for n in main.findall('.//Rectangle')),name
-    assert plant.findtext('ClientAreaTopLeft/X')=='-1400'
+    # ClientAreaTopLeft may be omitted once saved natively in AnyLogic IDE.
+    if plant.findtext('ClientAreaTopLeft/X') is not None:
+        assert plant.findtext('ClientAreaTopLeft/X')=='-1400'
     assert any(n.findtext('Name')=='guia_plano2D' for n in plant_scene.findall('Group'))
     for b in plant.findall('EmbeddedObjects/EmbeddedObject'):
         for generic in b.findall('GenericParameterSubstitute'):
@@ -100,36 +104,52 @@ def main():
     # Use the real, previously generated class API to type-check all changed
     # methods/properties; cached binaries are copied into the temporary workspace.
     native=Path.home()/'.AnyLogicPLE/Workspace8.8/Domitec_Main_3D_BUILD/classes'
-    imports='''package domitec_interactivo;
+    native_interactive=Path.home()/'.AnyLogicPLE/Workspace8.8/Domitec_Interactivo_BUILD/classes'
+    use_interactive = not (native/'domitec_main_3d/Main.class').is_file() and (native_interactive/'domitec_interactivo/Main.class').is_file()
+    base_pkg = 'domitec_interactivo' if use_interactive else 'domitec_main_3d'
+    target_pkg = 'domitec_interactivo_check' if use_interactive else 'domitec_interactivo'
+    imports=f'''package {target_pkg};
 import com.anylogic.engine.*;import com.anylogic.engine.presentation.*;
 import com.anylogic.libraries.processmodeling.*;
-import domitec_main_3d.*;import domitec_main_3d.ProductType;import domitec_main_3d.ProductState;
+import {base_pkg}.*;import {base_pkg}.ProductType;import {base_pkg}.ProductState;
 '''
     work=ROOT/'tools/_workspace_interfaz_verificacion';work.mkdir(exist_ok=True)
-    if (native/'domitec_main_3d/Main.class').is_file():
+    src_classes = native_interactive if use_interactive else native
+    if (src_classes/(f'{base_pkg}/Main.class')).is_file():
         with zipfile.ZipFile(work/'native.jar','w',zipfile.ZIP_DEFLATED) as z:
-            for p in native.rglob('*.class'):z.write(p,p.relative_to(native))
+            for p in src_classes.rglob('*.class'):z.write(p,p.relative_to(src_classes))
     else:
-        assert (work/'native.jar').is_file(), 'Open/build Domitec_Main_3D once to provide its native API, or run verificar_java_generado.py on the new model instead'
+        assert (work/'native.jar').is_file(), 'Open/build Domitec_Interactivo once to provide its native API'
     with zipfile.ZipFile(work/'native.jar') as z:
-        assert 'domitec_main_3d/Main.class' in z.namelist()
-    jmain=imports+'public class Main extends domitec_main_3d.Main {\n'
+        assert f'{base_pkg}/Main.class' in z.namelist()
+    jmain=imports+f'public class MainCheck extends {base_pkg}.Main {{\n'
     old_vars=set(['demandaHistorica','ordenesHistoricas','demandaSemanalActual','ordenesSemanalActual','produccionSemanalActual','produccionAnteriorGrafico','factorLatigoMain','escalaTurnoMain','lblFillRate','lblBacklog','lblSemana','lblEscenarioActual','barraGaugeFillRate','dsDemanda','dsOrdenes','dsProduccionSemanal','dsBacklog','dsWip'])
-    for v in main.findall('Variables/Variable'):
-        name=v.findtext('Name')
-        if name not in old_vars:jmain+='public '+v.findtext('Properties/Type')+' '+name+';\n'
-    for c in main.findall('.//Control'):
-        if c.get('Type')=='EditBox':jmain+='public ShapeTextField '+c.findtext('Name')+';\n'
-        if c.get('Type')=='Window3D':jmain+='public ShapeWindow3D '+c.findtext('Name')+';\n'
-    jmain+='public Camera3D camaraMain; public EventTimeout muestrearWip;\n'
-    jmain+=main.findtext('AdditionalClassCode')+'\n'
+    # When extending domitec_interactivo.Main directly, its generated Java already contains Main's Variables/Controls/Methods.
+    if not use_interactive:
+        for v in main.findall('Variables/Variable'):
+            name=v.findtext('Name')
+            if name not in old_vars:jmain+='public '+v.findtext('Properties/Type')+' '+name+';\n'
+        for c in main.findall('.//Control'):
+            if c.get('Type')=='EditBox':jmain+='public ShapeTextField '+c.findtext('Name')+';\n'
+            if c.get('Type')=='Window3D':jmain+='public ShapeWindow3D '+c.findtext('Name')+';\n'
+        jmain+='public Camera3D camaraMain; public EventTimeout muestrearWip;\n'
+        jmain+=main.findtext('AdditionalClassCode')+'\n'
+    else:
+        jmain+='public boolean animarOperarios; public int vistaActiva=0, subVistaStats=0, subVistaConfig=0, sector3DActivo=0, metricaIC=0;\n'
+        jmain+='public boolean mostrarGuia3D=false;\n'
+        jmain+='public void mostrarVista(int vista){if(vista<0||vista>3)throw new IllegalArgumentException(); vistaActiva=vista;}\n'
+        jmain+='public void alternarGuia3D(){mostrarGuia3D=!mostrarGuia3D;}\n'
     types={'TextCode':'String','VisibleCode':'boolean','XCode':'double','YCode':'double','WidthCode':'double','FillColorCode':'java.awt.Color'}
     for i,n in enumerate(main.findall('Presentation/Level/Presentation//*')):
         if n.tag in types and n.text:jmain+=f'{types[n.tag]} property{i}(){{return {n.text};}}\n'
     for i,n in enumerate(main.findall('.//Control/BasicProperties/ActionCode')):jmain+=f'void action{i}(){{{n.text}}}\n'
     for i,n in enumerate(main.findall('Events/Event/Action')):jmain+=f'void event{i}(){{{n.text}}}\n'
     jmain+='}\n'
-    jplant=imports+'public class DomitecPlant extends domitec_main_3d.DomitecPlant {\n@Override public Main get_Main(){return null;}\n'+plant.findtext('AdditionalClassCode')+'\n'
+    jplant=imports+f'public class DomitecPlantCheck extends {base_pkg}.DomitecPlant {{\n'
+    if not use_interactive:
+        jplant+=f'@Override public {base_pkg}.Main get_Main(){{return null;}}\n'+plant.findtext('AdditionalClassCode')+'\n'
+    else:
+        jplant+='public DomitecPlantCheck(){super(null,null,null);}\n'
     jplant+='void receipt(Object msg){'+plant.findtext('AgentProperties/OnReceive')+'}\n'
     plan=next(n for n in plant.findall('.//Group') if n.findtext('Name')=='guia_plano2D')
     for i,n in enumerate(plan.findall('.//TextCode')):jplant+=f'String planLabel{i}(){{return {n.text};}}\n'
@@ -138,16 +158,16 @@ import domitec_main_3d.*;import domitec_main_3d.ProductType;import domitec_main_
     for i,b in enumerate(plant.findall('EmbeddedObjects/EmbeddedObject')):
         pars={p.findtext('Name'):p.findtext('Value/Code','') for p in b.findall('Parameters/Parameter')}
         for key in ['onEnter','onExit']:
-            if pars.get(key):jplant+=f'void action{i}_{key}(Batch agent){{{pars[key]}}}\n'
-        for key,kind in [('delayTime','double'),('newEntity','Batch'),('condition','boolean')]:
-            if pars.get(key):jplant+=f'{kind} value{i}_{key}(Batch agent){{return {pars[key]};}}\n'
+            if pars.get(key):jplant+=f'void action{i}_{key}({base_pkg}.Batch agent){{{pars[key]}}}\n'
+        for key,kind in [('delayTime','double'),('newEntity',f'{base_pkg}.Batch'),('condition','boolean')]:
+            if pars.get(key):jplant+=f'{kind} value{i}_{key}({base_pkg}.Batch agent){{return {pars[key]};}}\n'
     for event in plant.findall('Events/Event'):
         if event.findtext('ExcludeFromBuild')!='true':jplant+='void event_'+event.findtext('Name')+'(){'+event.findtext('Action')+'}\n'
     jplant+='}\n'
-    jclient=imports+'public class Client extends domitec_main_3d.Client {\n@Override public Main get_Main(){return null;}\nvoid demand(){'+agents['Client'].findtext('Events/Event/Action')+'}\n}'
-    jsupplier=imports+'public class Supplier extends domitec_main_3d.Supplier {\n@Override public Main get_Main(){return null;}\nvoid receipt(Object msg){'+agents['Supplier'].findtext('AgentProperties/OnReceive')+'}\n}'
-    jbatch=imports+'public class Batch extends domitec_main_3d.Batch {public long indiceCRN;public Batch(ProductType t,double q){super(t,q);}}'
-    jstudy=imports+'public class Comparacion_100x3 extends domitec_main_3d.ParametersVariation {\n'+study.findtext('AdditionalClassCode')+'\nvoid after(Main root){'+study.findtext('AfterSimulationRunCode')+'}\n'
+    jclient=imports+f'public class ClientCheck extends {base_pkg}.Client {{\nvoid demand(){{'+agents['Client'].findtext('Events/Event/Action')+'}\n}'
+    jsupplier=imports+f'public class SupplierCheck extends {base_pkg}.Supplier {{\nvoid receipt(Object msg){{'+agents['Supplier'].findtext('AgentProperties/OnReceive')+'}\n}'
+    jbatch=imports+f'public class BatchCheck extends {base_pkg}.Batch {{public long indiceCRN;public BatchCheck(ProductType t,double q){{super(t,q);}}}}'
+    jstudy=imports+f'public class Comparacion_100x3Check extends {base_pkg}.ParametersVariation {{\n'+study.findtext('AdditionalClassCode')+f'\nvoid after({base_pkg}.Main root){{'+study.findtext('AfterSimulationRunCode')+'}\n'
     for i,n in enumerate(study.findall('.//Control/BasicProperties/ActionCode')):jstudy+=f'void controlAction{i}(){{{n.text}}}\n'
     for i,p in enumerate(study.findall('FreeformParamValue')):
         expr=p.findtext('Expression/Code')
@@ -157,11 +177,21 @@ import domitec_main_3d.*;import domitec_main_3d.ProductType;import domitec_main_
             var=next(v for v in main.findall('Variables/Variable') if v.findtext('Name')==name)
             jstudy+=var.findtext('Properties/Type')+f' expr{i}(){{return {expr};}}\n'
     jstudy+='}'
-    for name,source in [('Main',jmain),('DomitecPlant',jplant),('Client',jclient),('Supplier',jsupplier),('Batch',jbatch),('Comparacion_100x3',jstudy)]:
+    for old in ['Main','DomitecPlant','Client','Supplier','Batch','Comparacion_100x3']:
+        f=work/(old+'.java')
+        if f.exists():f.unlink()
+    for name,source in [('MainCheck',jmain),('DomitecPlantCheck',jplant),('ClientCheck',jclient),('SupplierCheck',jsupplier),('BatchCheck',jbatch),('Comparacion_100x3Check',jstudy)]:
         (work/(name+'.java')).write_text(source,encoding='utf8')
-    for cls in model.findall('JavaClasses/JavaClass'):
-        if cls.findtext('Name') in ['ComparacionEscenarios','ConfiguracionDomitec','RegistroCorrida','SesionEstudio','EstudioPareado','OperarioAnimation','DatosOperativos','BalanceMateriales','CalendarioPlanta']:
-            (work/(cls.findtext('Name')+'.java')).write_text('package domitec_interactivo;\n'+cls.findtext('Text'),encoding='utf8')
+    if not use_interactive:
+        for cls in model.findall('JavaClasses/JavaClass'):
+            if cls.findtext('Name') in ['ComparacionEscenarios','ConfiguracionDomitec','RegistroCorrida','SesionEstudio','EstudioPareado','OperarioAnimation','DatosOperativos','BalanceMateriales','CalendarioPlanta']:
+                (work/(cls.findtext('Name')+'.java')).write_text(f'package {target_pkg};\n'+cls.findtext('Text'),encoding='utf8')
+    else:
+        for old in ['ComparacionEscenarios','ConfiguracionDomitec','RegistroCorrida','SesionEstudio','EstudioPareado','OperarioAnimation','DatosOperativos','BalanceMateriales','CalendarioPlanta']:
+            f=work/(old+'.java')
+            if f.exists():f.unlink()
+    (work/'classes').mkdir(exist_ok=True)
+    for old_class in (work/'classes').rglob('*.class'):old_class.unlink()
     cp=[work/'native.jar']
     for plugin,jar in [('com.anylogic.engine','com.anylogic.engine.jar'),('com.anylogic.engine.datautil','com.anylogic.engine.datautil.jar'),('com.anylogic.engine.database','com.anylogic.engine.database.jar'),('com.anylogic.process_modeling_library','lib/ProcessModelingLibrary.jar')]:cp.append(next((INSTALL/'plugins').glob(plugin+'_*'))/jar)
     p=subprocess.run([str(INSTALL/'jre/bin/javac.exe'),'-encoding','UTF-8','-Xmaxerrs','10','-cp',os.pathsep.join(map(str,cp)),'-d',str(work/'classes'),*[str(f) for f in work.glob('*.java')]],text=True,capture_output=True)

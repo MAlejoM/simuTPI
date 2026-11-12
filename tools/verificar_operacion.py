@@ -7,7 +7,7 @@ import hashlib,json,subprocess,xml.etree.ElementTree as E
 from datetime import datetime,timezone
 
 ROOT=Path(__file__).resolve().parents[1]
-JAVA=Path(r'D:\AnyLogic 8.9 Personal Learning Edition/jre/bin')
+JAVA=next(p/'jre/bin' for p in [Path(r'C:\Program Files\AnyLogic 8.9 Personal Learning Edition'), Path(r'D:\AnyLogic 8.9 Personal Learning Edition')] if (p/'jre/bin/javac.exe').is_file())
 
 def main():
     path=ROOT/'domitec_interactivo/Domitec_Interactivo.alp'
@@ -21,7 +21,7 @@ def main():
     assert 'public double horas = 168.0;' in classes['ConfiguracionDomitec']
     assert 'operacion-24x7-v2' in classes['ConfiguracionDomitec']
     event=next(n for n in plant.findall('Events/Event') if n.findtext('Name')=='avanceProduccion')
-    assert event.findtext('ExcludeFromBuild')=='false' and event.findtext('Action')=='operarPlanta();'
+    assert event.findtext('ExcludeFromBuild') in (None, 'false') and event.findtext('Action')=='operarPlanta();'
     assert 'sourceLavandina.inject' not in plant.findtext('AgentProperties/OnReceive')
     assert 'materiales.recibir' in plant.findtext('AgentProperties/OnReceive')
     assert 'productionLines' not in plant.findtext('StartupCode')
@@ -46,7 +46,7 @@ def main():
                               *[str(ROOT/'tools'/f'{n}.java') for n in sources]],text=True,capture_output=True)
     assert compiled.returncode==0,compiled.stderr
     for name in tests:
-        p=subprocess.run([str(JAVA/'java.exe'),'-cp',str(work),name],capture_output=True,text=True,cwd=work)
+        p=subprocess.run([str(JAVA/'java.exe'),'-cp',str(work),name],capture_output=True,text=True,encoding='utf-8',errors='replace',cwd=work)
         assert p.returncode==0,name+'\n'+p.stdout+p.stderr
         print(p.stdout.strip())
     audit_path=ROOT/'tools/auditoria_estudio_real.json'
